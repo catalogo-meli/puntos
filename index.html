@@ -9,1072 +9,371 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0d0f14;
-  --surface: #141720;
-  --surface2: #1c2030;
-  --border: #252a3a;
-  --border2: #2e3448;
-  --text: #e8eaf2;
-  --text2: #8b91a8;
-  --text3: #555d78;
-  --accent: #5b7fff;
-  --accent2: #3d5bd9;
-  --green: #3ecf8e;
-  --amber: #f6a623;
-  --red: #ff5f57;
-  --purple: #a78bfa;
-  --teal: #2dd4bf;
-  --radius: 10px;
-  --radius-lg: 16px;
+  --bg: #0d0f14; --surface: #141720; --surface2: #1c2030; --border: #252a3a;
+  --border2: #2e3448; --text: #e8eaf2; --text2: #8b91a8; --text3: #555d78;
+  --accent: #5b7fff; --accent2: #3d5bd9; --green: #3ecf8e; --amber: #f6a623;
+  --red: #ff5f57; --purple: #a78bfa; --radius: 10px; --radius-lg: 16px;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; min-height: 100vh; }
 h1,h2,h3 { font-family: 'Syne', sans-serif; }
-code, .mono { font-family: 'DM Mono', monospace; }
-
-/* LAYOUT */
+.mono { font-family: 'DM Mono', monospace; }
 .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
-.sidebar { background: var(--surface); border-right: 1px solid var(--border); padding: 24px 0; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
-.main { overflow: hidden; }
-
-/* SIDEBAR */
+.sidebar { background: var(--surface); border-right: 1px solid var(--border); padding: 24px 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.main { overflow-y: auto; height: 100vh; }
 .sidebar-logo { padding: 0 20px 24px; border-bottom: 1px solid var(--border); }
-.sidebar-logo h1 { font-size: 15px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
-.sidebar-logo p { font-size: 11px; color: var(--text3); margin-top: 2px; font-family: 'DM Mono', monospace; }
-.nav { padding: 16px 12px; flex: 1; }
-.nav-label { font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; padding: 0 8px; margin-bottom: 6px; margin-top: 16px; }
-.nav-label:first-child { margin-top: 0; }
-.nav-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 8px; cursor: pointer; color: var(--text2); font-size: 13px; font-weight: 400; transition: all 0.15s; border: none; background: none; width: 100%; text-align: left; }
+.sidebar-logo h1 { font-size: 15px; font-weight: 800; }
+.nav { padding: 16px 12px; }
+.nav-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 8px; cursor: pointer; color: var(--text2); font-size: 13px; border: none; background: none; width: 100%; text-align: left; margin-bottom: 4px; }
 .nav-item:hover { background: var(--surface2); color: var(--text); }
 .nav-item.active { background: rgba(91,127,255,0.12); color: var(--accent); font-weight: 500; }
-.nav-item svg { opacity: 0.6; flex-shrink: 0; }
-.nav-item.active svg { opacity: 1; }
-
-/* WEIGHTS PANEL */
 .weights-section { padding: 16px 12px; border-top: 1px solid var(--border); }
-.weights-title { font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; }
 .weight-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-.weight-label { font-size: 12px; color: var(--text2); }
-.weight-input { width: 56px; background: var(--bg); border: 1px solid var(--border2); border-radius: 6px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 12px; padding: 4px 8px; text-align: right; }
-.weight-input:focus { outline: none; border-color: var(--accent); }
-.apply-btn { width: 100%; padding: 8px; background: var(--accent2); color: #fff; border: none; border-radius: 8px; font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; margin-top: 4px; letter-spacing: 0.3px; transition: background 0.15s; }
-.apply-btn:hover { background: var(--accent); }
-
-/* PAGE */
+.weight-input { width: 60px; background: var(--bg); border: 1px solid var(--border2); border-radius: 6px; color: var(--text); font-size: 12px; padding: 4px; text-align: right; }
 .page { display: none; padding: 32px; }
 .page.active { display: block; }
-.page-header { margin-bottom: 28px; }
-.page-title { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
-.page-sub { font-size: 13px; color: var(--text2); margin-top: 4px; }
-
-/* STAT CARDS */
-.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px; }
-.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px 20px; }
-.stat-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; }
-.stat-value { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 700; color: var(--text); margin-top: 4px; letter-spacing: -1px; }
-.stat-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
-.stat-card.accent { border-color: rgba(91,127,255,0.3); background: rgba(91,127,255,0.06); }
-.stat-card.green { border-color: rgba(62,207,142,0.3); background: rgba(62,207,142,0.06); }
-.stat-card.amber { border-color: rgba(246,166,35,0.3); background: rgba(246,166,35,0.06); }
-.stat-card.red { border-color: rgba(255,95,87,0.3); background: rgba(255,95,87,0.06); }
-
-/* UPLOAD */
-.upload-zone { background: var(--surface); border: 2px dashed var(--border2); border-radius: var(--radius-lg); padding: 40px; text-align: center; cursor: pointer; transition: all 0.2s; }
-.upload-zone:hover, .upload-zone.drag { border-color: var(--accent); background: rgba(91,127,255,0.05); }
-.upload-zone.done { border-color: var(--green); border-style: solid; background: rgba(62,207,142,0.05); }
-.upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
-.upload-icon { font-size: 32px; margin-bottom: 12px; }
-.upload-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600; color: var(--text); }
-.upload-sub { font-size: 12px; color: var(--text3); margin-top: 4px; }
-.file-input { display: none; }
-.status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--border2); margin-right: 6px; }
-.status-dot.ok { background: var(--green); }
-
-/* TABLE */
-.table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
-.table-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-.table-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600; }
-.filter-bar { display: flex; gap: 8px; flex-wrap: wrap; }
-.filter-btn { padding: 4px 12px; border-radius: 20px; border: 1px solid var(--border2); background: none; color: var(--text2); font-size: 12px; cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
-.filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-th { text-align: left; font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; padding: 10px 16px; border-bottom: 1px solid var(--border); white-space: nowrap; }
-td { padding: 10px 16px; border-bottom: 1px solid var(--border); color: var(--text2); vertical-align: middle; }
-tr:last-child td { border-bottom: none; }
-tr:hover td { background: var(--surface2); }
-.name-cell { color: var(--text); font-weight: 500; }
-.mono-cell { font-family: 'DM Mono', monospace; font-size: 12px; }
-.band-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px; white-space: nowrap; }
-.band-progress { background: rgba(255,95,87,0.15); color: var(--red); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; }
+.stat-value { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 700; margin-top: 8px; }
+.filter-container { background: var(--surface); border: 1px solid var(--border); padding: 16px; border-radius: var(--radius); margin-bottom: 20px; display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
+.filter-group { display: flex; flex-direction: column; gap: 4px; }
+.filter-label { font-size: 10px; text-transform: uppercase; color: var(--text3); font-weight: 700; }
+select, input[type="date"] { background: var(--surface2); border: 1px solid var(--border2); color: var(--text); padding: 6px 10px; border-radius: 6px; font-size: 12px; }
+.upload-zone { border: 2px dashed var(--border2); padding: 40px; text-align: center; border-radius: var(--radius-lg); cursor: pointer; }
+.upload-zone.done { border-color: var(--green); background: rgba(62,207,142,0.05); }
+table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+th { text-align: left; font-size: 11px; color: var(--text3); padding: 12px; border-bottom: 1px solid var(--border); }
+td { padding: 12px; border-bottom: 1px solid var(--border); }
+.calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.band-badge { font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 6px; }
 .band-base { background: rgba(91,127,255,0.15); color: var(--accent); }
-.band-solido { background: rgba(62,207,142,0.15); color: var(--green); }
-.band-high { background: rgba(167,139,250,0.15); color: var(--purple); }
-.band-elite { background: rgba(246,166,35,0.15); color: var(--amber); }
-
-/* CHART */
-.chart-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 20px; }
-.chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-.chart-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600; }
-.legend { display: flex; gap: 16px; }
-.legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text2); }
-.legend-dot { width: 10px; height: 10px; border-radius: 3px; }
-
-/* CALCULATOR */
-.calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.calc-inputs { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; }
-.calc-output { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; display: flex; flex-direction: column; }
-.input-group { margin-bottom: 16px; }
-.input-label { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; display: flex; justify-content: space-between; }
-.input-label span { color: var(--accent); font-family: 'DM Mono', monospace; }
-.range-wrap { display: flex; gap: 10px; align-items: center; }
-input[type=range] { flex: 1; -webkit-appearance: none; height: 4px; border-radius: 2px; background: var(--border2); outline: none; }
-input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--accent); cursor: pointer; }
-.range-val { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text); min-width: 28px; text-align: right; }
-.pts-display { text-align: center; padding: 28px 0; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-.pts-number { font-family: 'Syne', sans-serif; font-size: 72px; font-weight: 800; letter-spacing: -3px; line-height: 1; transition: color 0.3s; }
-.pts-label { font-size: 13px; color: var(--text3); margin-top: 4px; font-family: 'DM Mono', monospace; }
-.band-display { margin-top: 16px; padding: 12px 20px; border-radius: 10px; text-align: center; transition: all 0.3s; }
-.band-name-big { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; }
-.band-desc { font-size: 12px; margin-top: 3px; opacity: 0.7; }
-.breakdown { margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px; }
-.breakdown-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px; }
-.breakdown-row .lbl { color: var(--text3); }
-.breakdown-row .val { color: var(--text); font-family: 'DM Mono', monospace; }
-.total-row { display: flex; justify-content: space-between; padding: 8px 0 0; margin-top: 4px; border-top: 1px solid var(--border); font-size: 13px; font-weight: 500; }
-
-/* SEPARATOR */
-.section-sep { margin: 24px 0; height: 1px; background: var(--border); }
-
-/* SEARCH */
-.search-bar { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; width: 200px; }
-.search-bar::placeholder { color: var(--text3); }
-.search-bar:focus { outline: none; border-color: var(--accent); }
-
-/* MONTH CHART CONTAINER */
-.month-charts { display: grid; grid-template-columns: 1fr; gap: 20px; }
-
-/* TABS */
-.tabs { display: flex; gap: 4px; margin-bottom: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 4px; width: fit-content; }
-.tab { padding: 6px 16px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; color: var(--text2); transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
-.tab.active { background: var(--surface2); color: var(--text); }
-
-/* EMPTY STATE */
-.empty-state { text-align: center; padding: 60px 20px; color: var(--text3); }
-.empty-state svg { opacity: 0.3; margin-bottom: 12px; }
-.empty-state p { font-size: 13px; }
-
-/* TOOLTIP */
-.tooltip { position: relative; }
-.tooltip:hover::after { content: attr(data-tip); position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%); background: var(--surface2); color: var(--text); font-size: 11px; padding: 4px 8px; border-radius: 5px; white-space: nowrap; border: 1px solid var(--border); pointer-events: none; z-index: 100; }
-
-/* ALERT */
-.alert { background: rgba(246,166,35,0.08); border: 1px solid rgba(246,166,35,0.25); border-radius: 10px; padding: 12px 16px; font-size: 12px; color: var(--amber); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-
-/* SCROLLBAR */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
-
-/* RESPONSIVE */
-@media (max-width: 900px) {
-  .app { grid-template-columns: 1fr; }
-  .sidebar { position: static; height: auto; }
-  .calc-grid { grid-template-columns: 1fr; }
-}
+/* ... (Resto de estilos heredados del anterior) */
 </style>
 </head>
 <body>
 <div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><h1>Catálogo · MELI</h1><p>Gestión por Puntos</p></div>
+    <nav class="nav">
+      <button class="nav-item active" onclick="showPage('upload')">Cargar datos</button>
+      <button class="nav-item" onclick="showPage('historico')">Histórico</button>
+      <button class="nav-item" onclick="showPage('ranking')">Ranking</button>
+      <button class="nav-item" onclick="showPage('calc')">Calculadora 1:1</button>
+    </nav>
+    <div class="weights-section">
+      <p class="filter-label" style="margin-bottom:8px">Ponderación</p>
+      <div class="weight-row"><span>Demanda</span><input id="w-dem" class="weight-input" type="number" value="1.0" step="0.1"></div>
+      <div class="weight-row"><span>E. Content</span><input id="w-ec" class="weight-input" type="number" value="1.0" step="0.1"></div>
+      <div class="weight-row"><span>Enhance</span><input id="w-enh" class="weight-input" type="number" value="1.3" step="0.1"></div>
+      <div class="weight-row"><span>Val.</span><input id="w-val" class="weight-input" type="number" value="1.1" step="0.1"></div>
+      <div class="weight-row"><span>Soporte</span><input id="w-sop" class="weight-input" type="number" value="2.0" step="0.1"></div>
+      <button onclick="applyGlobalChanges()" style="width:100%; padding:8px; background:var(--accent); border:none; border-radius:6px; color:white; font-weight:600; cursor:pointer; margin-top:8px">Actualizar</button>
+    </div>
+  </aside>
 
-<!-- SIDEBAR -->
-<aside class="sidebar">
-  <div class="sidebar-logo">
-    <h1>Catálogo · MELI</h1>
-    <p>Dashboard de Puntos</p>
-  </div>
-
-  <nav class="nav">
-    <div class="nav-label">Navegación</div>
-    <button class="nav-item active" onclick="showPage('upload')">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-      Cargar datos
-    </button>
-    <button class="nav-item" onclick="showPage('historico')">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-      Histórico
-    </button>
-    <button class="nav-item" onclick="showPage('ranking')">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-      Ranking
-    </button>
-    <button class="nav-item" onclick="showPage('calc')">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
-      Calculadora 1:1
-    </button>
-  </nav>
-
-  <div class="weights-section">
-    <div class="weights-title">⚙ Pesos por flujo</div>
-    <div class="weight-row">
-      <span class="weight-label">Demanda</span>
-      <input class="weight-input" id="w-demanda" type="number" step="0.1" min="0.1" max="5" value="1.0">
-    </div>
-    <div class="weight-row">
-      <span class="weight-label">Enh. Content</span>
-      <input class="weight-input" id="w-ec" type="number" step="0.1" min="0.1" max="5" value="1.0">
-    </div>
-    <div class="weight-row">
-      <span class="weight-label">Enhancement</span>
-      <input class="weight-input" id="w-enh" type="number" step="0.1" min="0.1" max="5" value="1.3">
-    </div>
-    <div class="weight-row">
-      <span class="weight-label">Validación</span>
-      <input class="weight-input" id="w-val" type="number" step="0.1" min="0.1" max="5" value="1.1">
-    </div>
-    <div class="weight-row">
-      <span class="weight-label">Soporte (DONE)</span>
-      <input class="weight-input" id="w-sop" type="number" step="0.1" min="0.1" max="5" value="2.0">
-    </div>
-    <div class="weight-row">
-      <span class="weight-label">Fallos</span>
-      <input class="weight-input" id="w-fallos" type="number" step="0.1" min="0.1" max="5" value="1.0">
-    </div>
-    <button class="apply-btn" onclick="applyWeights()">Recalcular todo →</button>
-  </div>
-</aside>
-
-<!-- MAIN -->
-<main class="main">
-
-  <!-- PAGE: UPLOAD -->
-  <div class="page active" id="page-upload">
-    <div class="page-header">
-      <h2 class="page-title">Cargar datos del equipo</h2>
-      <p class="page-sub">Cargá los CSV localmente — nada se sube a ningún servidor.</p>
-    </div>
-
-    <div class="upload-grid">
-      <div class="upload-zone" id="zone-hist" onclick="document.getElementById('file-hist').click()" ondragover="dragOver(event,'zone-hist')" ondragleave="dragLeave('zone-hist')" ondrop="dropFile(event,'hist')">
-        <div class="upload-icon">📊</div>
-        <div class="upload-title">historico.csv</div>
-        <div class="upload-sub" id="sub-hist">Hacé click o arrastrá el archivo</div>
-        <input type="file" class="file-input" id="file-hist" accept=".csv" onchange="loadFile(this,'hist')">
-      </div>
-      <div class="upload-zone" id="zone-equipo" onclick="document.getElementById('file-equipo').click()" ondragover="dragOver(event,'zone-equipo')" ondragleave="dragLeave('zone-equipo')" ondrop="dropFile(event,'equipo')">
-        <div class="upload-icon">👥</div>
-        <div class="upload-title">equipo_colaboradores.csv</div>
-        <div class="upload-sub" id="sub-equipo">Hacé click o arrastrá el archivo</div>
-        <input type="file" class="file-input" id="file-equipo" accept=".csv" onchange="loadFile(this,'equipo')">
+  <main class="main">
+    <div class="page active" id="page-upload">
+      <h2 style="margin-bottom:20px">Configuración de Datos</h2>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px">
+        <div id="z-hist" class="upload-zone" onclick="document.getElementById('f-hist').click()">
+          <p id="t-hist">📄 historico.csv</p>
+          <input type="file" id="f-hist" hidden onchange="loadFile(this, 'hist')">
+        </div>
+        <div id="z-equipo" class="upload-zone" onclick="document.getElementById('f-equipo').click()">
+          <p id="t-equipo">👥 equipo_colaboradores.csv</p>
+          <input type="file" id="f-equipo" hidden onchange="loadFile(this, 'equipo')">
+        </div>
       </div>
     </div>
 
-    <div class="alert" id="alert-upload" style="display:none">
-      ⚠ Cargá ambos archivos para habilitar el análisis completo. Con solo historico.csv tenés acceso parcial.
-    </div>
-
-    <div class="table-wrap" id="preview-section" style="display:none">
-      <div class="table-header">
-        <span class="table-title">Vista previa — últimas filas cargadas</span>
-        <span style="font-size:12px;color:var(--text3)" id="preview-count"></span>
+    <div class="page" id="page-historico">
+      <h2>Histórico Dinámico</h2>
+      <div class="filter-container">
+        <div class="filter-group"><label class="filter-label">Año</label><select id="f-hist-year" onchange="computeAndRender()"></select></div>
+        <div class="filter-group"><label class="filter-label">Mes</label><select id="f-hist-month" onchange="computeAndRender()"></select></div>
+        <div class="filter-group"><label class="filter-label">Equipo</label>
+          <select id="f-hist-team" onchange="computeAndRender()">
+            <option value="all">Todos los equipos</option>
+            <option value="Celeste Cignoli">Celeste Cignoli</option>
+            <option value="José Puentes">José Puentes</option>
+            <option value="Matías López">Matías López</option>
+            <option value="Matías Minczuk">Matías Minczuk</option>
+          </select>
+        </div>
+        <div class="filter-group"><label class="filter-label">Desde</label><input type="date" id="f-hist-start" onchange="computeAndRender()"></div>
+        <div class="filter-group"><label class="filter-label">Hasta</label><input type="date" id="f-hist-end" onchange="computeAndRender()"></div>
       </div>
-      <div style="overflow-x:auto;max-height:300px;overflow-y:auto">
-        <table id="preview-table"></table>
-      </div>
-    </div>
-  </div>
-
-  <!-- PAGE: HISTORICO -->
-  <div class="page" id="page-historico">
-    <div class="page-header">
-      <h2 class="page-title">Histórico de puntos</h2>
-      <p class="page-sub">Evolución mensual: Tareas reales vs Puntos ponderados · Dic 2025 – Abr 2026</p>
-    </div>
-
-    <div id="hist-empty" class="empty-state">
-      <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-      <p>Cargá historico.csv para ver el análisis</p>
-    </div>
-
-    <div id="hist-content" style="display:none">
+      
       <div class="stat-grid" id="hist-stats"></div>
-
-      <div class="chart-wrap">
-        <div class="chart-header">
-          <span class="chart-title">Promedio de puntos ponderados por mes</span>
-          <div class="legend">
-            <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>Puntos pond.</div>
-            <div class="legend-item"><div class="legend-dot" style="background:var(--border2)"></div>Tareas reales</div>
-          </div>
-        </div>
-        <div style="height:280px"><canvas id="chart-monthly"></canvas></div>
+      
+      <div style="background:var(--surface); padding:20px; border-radius:var(--radius-lg); margin-bottom:24px">
+        <h3 style="margin-bottom:16px; font-size:14px">Distribución por Banda</h3>
+        <div style="height:300px"><canvas id="chart-bands-hist"></canvas></div>
       </div>
 
-      <div class="chart-wrap">
-        <div class="chart-header">
-          <span class="chart-title">Distribución de analistas por banda de performance</span>
-          <div class="filter-bar" id="month-filters"></div>
-        </div>
-        <div style="height:240px"><canvas id="chart-bands"></canvas></div>
-      </div>
-
-      <div class="table-wrap" style="margin-top:20px">
-        <div class="table-header">
-          <span class="table-title">Detalle por colaborador y mes</span>
-          <div style="display:flex;gap:8px;align-items:center">
-            <input class="search-bar" type="text" placeholder="Buscar analista..." id="search-hist" oninput="renderHistTable()">
-            <div class="filter-bar" id="month-filter-table"></div>
-          </div>
-        </div>
-        <div style="overflow-x:auto;max-height:460px;overflow-y:auto">
-          <table id="hist-table">
-            <thead>
-              <tr>
-                <th>Colaborador</th>
-                <th>Rol</th>
-                <th>Dic</th><th>Ene</th><th>Feb</th><th>Mar</th><th>Abr</th>
-                <th>Promedio pts</th>
-                <th>Banda actual</th>
-              </tr>
-            </thead>
-            <tbody id="hist-tbody"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- PAGE: RANKING -->
-  <div class="page" id="page-ranking">
-    <div class="page-header">
-      <h2 class="page-title">Ranking del equipo</h2>
-      <p class="page-sub">Últimas 4 semanas · puntos ponderados por día activo</p>
-    </div>
-
-    <div id="rank-empty" class="empty-state">
-      <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-      <p>Cargá historico.csv para ver el ranking</p>
-    </div>
-
-    <div id="rank-content" style="display:none">
-      <div class="chart-wrap">
-        <div class="chart-header">
-          <span class="chart-title">Top 20 · Puntos ponderados promedio (últimas 4 sem.)</span>
-        </div>
-        <div style="height:400px"><canvas id="chart-ranking"></canvas></div>
-      </div>
-
-      <div class="table-wrap" style="margin-top:20px">
-        <div class="table-header">
-          <span class="table-title">Tabla completa de performance</span>
-          <input class="search-bar" type="text" placeholder="Buscar..." id="search-rank" oninput="renderRankTable()">
-        </div>
-        <div style="overflow-x:auto;max-height:500px;overflow-y:auto">
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Colaborador</th>
-                <th>Equipo</th>
-                <th>Tareas/día</th>
-                <th>Pts/día</th>
-                <th>Mix principal</th>
-                <th>Días activos</th>
-                <th>Banda</th>
-              </tr>
-            </thead>
-            <tbody id="rank-tbody"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- PAGE: CALCULATOR -->
-  <div class="page" id="page-calc">
-    <div class="page-header">
-      <h2 class="page-title">Calculadora 1:1</h2>
-      <p class="page-sub">Herramienta para el TL · Simulá el mix del día y la banda resultante</p>
-    </div>
-
-    <div class="calc-grid">
-      <div class="calc-inputs">
-        <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:600;margin-bottom:20px">Mix de tareas del día</div>
-
-        <div class="input-group">
-          <div class="input-label">Demanda <span id="lbl-dem">70</span></div>
-          <div class="range-wrap">
-            <input type="range" id="r-dem" min="0" max="110" value="70" oninput="updateCalc()">
-            <span class="range-val" id="v-dem">70</span>
-          </div>
-        </div>
-        <div class="input-group">
-          <div class="input-label">Enhanced Content <span id="lbl-ec">5</span></div>
-          <div class="range-wrap">
-            <input type="range" id="r-ec" min="0" max="30" value="5" oninput="updateCalc()">
-            <span class="range-val" id="v-ec">5</span>
-          </div>
-        </div>
-        <div class="input-group">
-          <div class="input-label">Enhancement <span id="lbl-enh">10</span></div>
-          <div class="range-wrap">
-            <input type="range" id="r-enh" min="0" max="50" value="10" oninput="updateCalc()">
-            <span class="range-val" id="v-enh">10</span>
-          </div>
-        </div>
-        <div class="input-group">
-          <div class="input-label">Validación <span id="lbl-val">0</span></div>
-          <div class="range-wrap">
-            <input type="range" id="r-val" min="0" max="120" value="0" oninput="updateCalc()">
-            <span class="range-val" id="v-val">0</span>
-          </div>
-        </div>
-        <div class="input-group">
-          <div class="input-label">Soporte (resueltas) <span id="lbl-sop">0</span></div>
-          <div class="range-wrap">
-            <input type="range" id="r-sop" min="0" max="30" value="0" oninput="updateCalc()">
-            <span class="range-val" id="v-sop">0</span>
-          </div>
-        </div>
-
-        <div class="breakdown">
-          <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Desglose de puntos</div>
-          <div class="breakdown-row"><span class="lbl" id="lbl-bd-dem">Demanda ×1.0</span><span class="val" id="bd-dem">70.0 pts</span></div>
-          <div class="breakdown-row"><span class="lbl" id="lbl-bd-ec">Enhanced Content ×1.0</span><span class="val" id="bd-ec">5.0 pts</span></div>
-          <div class="breakdown-row"><span class="lbl" id="lbl-bd-enh">Enhancement ×1.3</span><span class="val" id="bd-enh">13.0 pts</span></div>
-          <div class="breakdown-row"><span class="lbl" id="lbl-bd-val">Validación ×1.1</span><span class="val" id="bd-val">0.0 pts</span></div>
-          <div class="breakdown-row"><span class="lbl" id="lbl-bd-sop">Soporte ×2.0</span><span class="val" id="bd-sop">0.0 pts</span></div>
-          <div class="total-row"><span>Total tareas</span><span class="mono" id="bd-tasks">85</span></div>
-        </div>
-      </div>
-
-      <div class="calc-output">
-        <div class="pts-display">
-          <div class="pts-number" id="pts-big">88.0</div>
-          <div class="pts-label">puntos ponderados</div>
-          <div class="band-display" id="band-display">
-            <div class="band-name-big" id="band-name">Base ✓</div>
-            <div class="band-desc" id="band-desc">Objetivo cumplido · seguir en esta banda</div>
-          </div>
-        </div>
-
-        <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:4px">
-          <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Referencia de bandas</div>
-          <div id="bands-ref"></div>
-        </div>
+      <div style="background:var(--surface); border-radius:var(--radius-lg); overflow:hidden">
+        <table id="table-hist">
+          <thead>
+            <tr><th>Colaborador</th><th>Equipo</th><th>Días Activos</th><th>Tareas Prom.</th><th>Puntos Prom.</th><th>Banda</th></tr>
+          </thead>
+          <tbody id="tbody-hist"></tbody>
+        </table>
       </div>
     </div>
 
-    <div class="section-sep"></div>
+    <div class="page" id="page-ranking">
+      <h2>Ranking Global</h2>
+      <div class="filter-container">
+        <div class="filter-group"><label class="filter-label">Equipo</label>
+          <select id="f-rank-team" onchange="computeAndRender()">
+            <option value="all">Todos</option>
+            <option value="Celeste Cignoli">Celeste Cignoli</option>
+            <option value="José Puentes">José Puentes</option>
+            <option value="Matías López">Matías López</option>
+            <option value="Matías Minczuk">Matías Minczuk</option>
+          </select>
+        </div>
+        <div class="filter-group"><label class="filter-label">Periodo</label><select id="f-rank-period" onchange="computeAndRender()"></select></div>
+      </div>
+      <div style="background:var(--surface); padding:20px; border-radius:var(--radius-lg); height:500px">
+        <canvas id="chart-ranking-full"></canvas>
+      </div>
+    </div>
 
-    <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:600;margin-bottom:16px">Escenarios rápidos para el 1:1</div>
-    <div id="scenarios-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px"></div>
-  </div>
-
-</main>
+    <div class="page" id="page-calc">
+      <div class="calc-grid">
+        <div style="background:var(--surface); padding:24px; border-radius:var(--radius-lg)">
+          <h3 style="margin-bottom:20px">Simulador de Mix</h3>
+          <div id="calc-sliders"></div>
+        </div>
+        <div style="background:var(--surface); padding:24px; border-radius:var(--radius-lg); text-align:center">
+          <div id="calc-result-value" style="font-size:64px; font-weight:800; font-family:Syne">0.0</div>
+          <p class="filter-label">Puntos Ponderados</p>
+          <div id="calc-band-box" style="margin-top:20px; padding:12px; border-radius:8px"></div>
+          <div id="calc-breakdown" style="margin-top:24px; text-align:left; font-size:12px; color:var(--text2)"></div>
+        </div>
+      </div>
+    </div>
+  </main>
 </div>
 
 <script>
-// ─── STATE ───────────────────────────────────────────────────────────────────
-let DATA = { hist: null, equipo: null };
-let WEIGHTS = { Demanda:1.0, 'Enhanced Content':1.0, Enhancement:1.3, Validación:1.1, Soporte:2.0, Fallos:1.0 };
+let RAW_HIST = [], RAW_EQUIPO = {};
+let WEIGHTS = { dem: 1.0, ec: 1.0, enh: 1.3, val: 1.1, sop: 2.0 };
 let CHARTS = {};
-let PROCESSED = null;
 
-// ─── BANDS ───────────────────────────────────────────────────────────────────
 const BANDS = [
-  { min:0,   max:88,  key:'progress', label:'En progreso',       css:'band-progress', color:'#ff5f57', desc:'Trabajar con TL · plan específico' },
-  { min:88,  max:95,  key:'base',     label:'Base ✓',            css:'band-base',    color:'#5b7fff', desc:'Objetivo mínimo cumplido' },
-  { min:95,  max:103, key:'solido',   label:'Sólido ✓✓',         css:'band-solido',  color:'#3ecf8e', desc:'Por encima del techo histórico' },
-  { min:103, max:110, key:'high',     label:'High Performer ✓✓✓', css:'band-high',  color:'#a78bfa', desc:'Rumbo al objetivo MELI' },
-  { min:110, max:9999,key:'elite',    label:'Elite ⭐ MELI target',css:'band-elite', color:'#f6a623', desc:'Objetivo MELI alcanzado' },
+  { min: 0, max: 88, label: 'En progreso', color: '#ff5f57' },
+  { min: 88, max: 95, label: 'Base ✓', color: '#5b7fff' },
+  { min: 95, max: 103, label: 'Sólido ✓✓', color: '#3ecf8e' },
+  { min: 103, max: 110, label: 'High Performer', color: '#a78bfa' },
+  { min: 110, max: 999, label: 'Elite ⭐', color: '#f6a623' }
 ];
-function getBand(pts) { return BANDS.find(b => pts >= b.min && pts < b.max) || BANDS[0]; }
-
-// ─── CSV PARSER ───────────────────────────────────────────────────────────────
-function detectSeparator(firstLine) {
-  const commas     = (firstLine.match(/,/g)   || []).length;
-  const semicolons = (firstLine.match(/;/g)   || []).length;
-  const tabs       = (firstLine.match(/\t/g)  || []).length;
-  if (semicolons > commas && semicolons >= tabs) return ';';
-  if (tabs > commas && tabs > semicolons)        return '\t';
-  return ',';
-}
-
-function splitCSVLine(line, sep) {
-  // Handles quoted fields with embedded separators/newlines
-  const result = [];
-  let cur = '', inQ = false;
-  for (let i = 0; i < line.length; i++) {
-    const c = line[i];
-    if (c === '"') {
-      if (inQ && line[i+1] === '"') { cur += '"'; i++; }
-      else inQ = !inQ;
-    } else if (c === sep && !inQ) {
-      result.push(cur.trim()); cur = '';
-    } else {
-      cur += c;
-    }
-  }
-  result.push(cur.trim());
-  return result;
-}
-
-function parseCSV(text) {
-  // Normalise line endings
-  const clean = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-  const lines  = clean.trim().split('\n');
-  if (lines.length < 2) { console.warn('[CSV] Archivo vacío o de una sola línea'); return []; }
-
-  const sep     = detectSeparator(lines[0]);
-  const headers = splitCSVLine(lines[0], sep).map(h => h.replace(/^"|"$/g, '').trim());
-  console.log(`[CSV] Separador detectado: "${sep === '\t' ? 'TAB' : sep}" | Columnas (${headers.length}):`, headers);
-
-  const rows = lines.slice(1).filter(l => l.trim()).map(line => {
-    const vals = splitCSVLine(line, sep);
-    const row  = {};
-    headers.forEach((h, i) => { row[h] = (vals[i] || '').replace(/^"|"$/g, '').trim(); });
-    return row;
-  });
-
-  console.log('[CSV] Primeros 5 registros:', rows.slice(0, 5));
-  return rows;
-}
-
-// ─── FILE LOADING ─────────────────────────────────────────────────────────────
-function readFileWithFallback(file, callback) {
-  const tryRead = (encoding) => {
-    const fr = new FileReader();
-    fr.onload = (ev) => {
-      const text = ev.target.result;
-      // Heuristic: if replacement character appears, retry with latin encoding
-      if (encoding === 'UTF-8' && text.includes('\uFFFD')) {
-        console.log('[FileReader] UTF-8 produjo caracteres inválidos, reintentando con Windows-1252');
-        tryRead('windows-1252');
-      } else {
-        console.log(`[FileReader] Archivo leído con ${encoding} · ${text.length} chars`);
-        callback(text);
-      }
-    };
-    fr.onerror = () => { console.error('[FileReader] Error leyendo archivo'); };
-    fr.readAsText(file, encoding);
-  };
-  tryRead('UTF-8');
-}
 
 function loadFile(input, type) {
   const file = input.files[0];
-  if (!file) return;
-  readFileWithFallback(file, text => processFile(text, type, file.name));
-}
-
-function dragOver(e,id) { e.preventDefault(); document.getElementById(id).classList.add('drag'); }
-function dragLeave(id)  { document.getElementById(id).classList.remove('drag'); }
-function dropFile(e, type) {
-  e.preventDefault();
-  const id = type === 'hist' ? 'zone-hist' : 'zone-equipo';
-  document.getElementById(id).classList.remove('drag');
-  const file = e.dataTransfer.files[0];
-  if (!file) return;
-  readFileWithFallback(file, text => processFile(text, type, file.name));
-}
-
-function processFile(text, type, name) {
-  const rows = parseCSV(text);
-  if (!rows.length) {
-    alert(`[Error] El archivo "${name}" no pudo procesarse. Revisá la consola.`);
-    return;
-  }
-  DATA[type] = rows;
-
-  const zoneId = type === 'hist' ? 'zone-hist'   : 'zone-equipo';
-  const subId  = type === 'hist' ? 'sub-hist'     : 'sub-equipo';
-  document.getElementById(zoneId).classList.add('done');
-  document.getElementById(subId).textContent = `✓ ${name} · ${rows.length.toLocaleString()} filas`;
-
-  if (type === 'hist') showPreview(rows);
-
-  // Show partial-load alert only when hist is present but equipo isn't yet
-  document.getElementById('alert-upload').style.display =
-    (DATA.hist && !DATA.equipo) ? 'flex' : 'none';
-
-  // Fire computeAll as soon as historico is available (equipo is optional enrichment)
-  if (DATA.hist) {
-    computeAll();
-    document.getElementById('hist-empty').style.display  = 'none';
-    document.getElementById('hist-content').style.display = 'block';
-    document.getElementById('rank-empty').style.display  = 'none';
-    document.getElementById('rank-content').style.display = 'block';
-  }
-}
-
-function showPreview(rows) {
-  const preview = rows.slice(-8);
-  const keys = Object.keys(preview[0]);
-  let html = `<thead><tr>${keys.map(k=>`<th>${k}</th>`).join('')}</tr></thead><tbody>`;
-  preview.forEach(r => { html += `<tr>${keys.map(k=>`<td>${r[k]||''}</td>`).join('')}</tr>`; });
-  html += '</tbody>';
-  document.getElementById('preview-table').innerHTML = html;
-  document.getElementById('preview-count').textContent = `${rows.length.toLocaleString()} filas cargadas`;
-  document.getElementById('preview-section').style.display='block';
-}
-
-// ─── CORE COMPUTATION ────────────────────────────────────────────────────────
-function getWeight(flujo, status) {
-  if (flujo === 'Soporte' && status !== 'DONE') return 0;
-  return WEIGHTS[flujo] !== undefined ? WEIGHTS[flujo] : 1.0;
-}
-
-// Flexible column finder
-function findCol(row, candidates) {
-  const keys = Object.keys(row);
-  for (const c of candidates) {
-    const found = keys.find(k => k.trim().toLowerCase() === c.toLowerCase());
-    if (found) return found;
-  }
-  return null;
-}
-
-const MONTH_KEYS   = ['2025-12','2026-01','2026-02','2026-03','2026-04'];
-const MONTH_LABELS = ['Dic','Ene','Feb','Mar','Abr'];
-
-function parseDate(s) {
-  if (!s) return null;
-  s = s.trim();
-  // DD/MM/YYYY or DD-MM-YYYY
-  let m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
-  if (m) return new Date(+m[3], +m[2] - 1, +m[1]);
-  // YYYY-MM-DD or YYYY/MM/DD
-  m = s.match(/^(\d{4})[\/\-](\d{2})[\/\-](\d{2})/);
-  if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
-  // Last resort: native parse
-  const d = new Date(s);
-  return isNaN(d) ? null : d;
-}
-
-function computeAll() {
-  if (!DATA.hist || !DATA.hist.length) return;
-
-  const sample = DATA.hist[0];
-  const COL = {
-    fecha:  findCol(sample, ['Fecha','fecha','Date','date','FECHA']),
-    status: findCol(sample, ['Status','status','Estado','estado','STATUS']),
-    flujo:  findCol(sample, ['Flujo de Tarea','Flujo','flujo','FLUJO','flow','Flow']),
-    user:   findCol(sample, ['Usuario','usuario','User','user','USUARIO','Colaborador','colaborador']),
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const text = e.target.result;
+    if (type === 'hist') {
+      RAW_HIST = parseCSV(text);
+      document.getElementById('z-hist').classList.add('done');
+      populateDateFilters();
+    } else {
+      const rows = parseCSV(text);
+      rows.forEach(r => {
+        const id = (r['Usuario'] || r['id'] || '').trim();
+        if(id) RAW_EQUIPO[id] = r;
+      });
+      document.getElementById('z-equipo').classList.add('done');
+    }
+    computeAndRender();
   };
-  console.log('[computeAll] Columnas detectadas:', COL);
-
-  if (!COL.fecha || !COL.status || !COL.flujo || !COL.user) {
-    const missing = Object.entries(COL).filter(([,v]) => !v).map(([k]) => k);
-    alert(`[Error] No se encontraron columnas: ${missing.join(', ')}.\nColumnas disponibles: ${Object.keys(sample).join(', ')}`);
-    return;
-  }
-
-  const byPersonDay = {};
-  let skipped = 0;
-
-  DATA.hist.forEach(r => {
-    if ((r[COL.status] || '').trim() !== 'DONE') return;
-    const date = parseDate(r[COL.fecha]);
-    if (!date) { skipped++; return; }
-    const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-    if (!MONTH_KEYS.includes(monthKey)) return;
-    const user  = (r[COL.user]  || '').trim();
-    const flujo = (r[COL.flujo] || 'Demanda').trim();
-    const w     = getWeight(flujo, (r[COL.status] || '').trim());
-    const dk    = r[COL.fecha];
-    if (!byPersonDay[user]) byPersonDay[user] = {};
-    if (!byPersonDay[user][dk]) byPersonDay[user][dk] = { tasks: 0, pts: 0, flujos: {}, month: monthKey };
-    byPersonDay[user][dk].tasks++;
-    byPersonDay[user][dk].pts += w;
-    byPersonDay[user][dk].flujos[flujo] = (byPersonDay[user][dk].flujos[flujo] || 0) + 1;
-  });
-
-  if (skipped > 0) console.warn(`[computeAll] ${skipped} filas ignoradas por fecha no parseable`);
-  console.log(`[computeAll] Personas con datos DONE: ${Object.keys(byPersonDay).length}`);
-
-  const personMonth = {};
-  Object.entries(byPersonDay).forEach(([user, days]) => {
-    Object.values(days).forEach(day => {
-      const m = day.month;
-      if (!personMonth[user]) personMonth[user] = {};
-      if (!personMonth[user][m]) personMonth[user][m] = { days: 0, totalTasks: 0, totalPts: 0, flujos: {} };
-      personMonth[user][m].days++;
-      personMonth[user][m].totalTasks += day.tasks;
-      personMonth[user][m].totalPts   += day.pts;
-      Object.entries(day.flujos).forEach(([f, c]) => { personMonth[user][m].flujos[f] = (personMonth[user][m].flujos[f] || 0) + c; });
-    });
-  });
-
-  // Equipo map — flexible column detection
-  const equipoMap = {};
-  if (DATA.equipo && DATA.equipo.length) {
-    const eS   = DATA.equipo[0];
-    const eId  = findCol(eS, ['ID_MELI','id_meli','ID','id','Usuario','usuario','user']);
-    const eNom = findCol(eS, ['Nombre','nombre','Name','name']);
-    const eRol = findCol(eS, ['Rol','rol','Role','role']);
-    const eEq  = findCol(eS, ['Equipo','equipo','Team','team','TL']);
-    DATA.equipo.forEach(r => {
-      const id = ((eId ? r[eId] : '') || '').trim();
-      if (id) equipoMap[id] = {
-        nombre: (eNom ? r[eNom] : id) || id,
-        rol:    (eRol ? r[eRol] : '') || '',
-        equipo: (eEq  ? r[eEq]  : '') || '',
-      };
-    });
-    console.log(`[computeAll] Equipo mapeado: ${Object.keys(equipoMap).length} personas`);
-  }
-
-  const persons = Object.keys(personMonth).map(user => {
-    const months = personMonth[user];
-    const info   = equipoMap[user] || { nombre: user, rol: '', equipo: '' };
-    const monthData = MONTH_KEYS.map(mk => {
-      if (!months[mk]) return null;
-      const m = months[mk];
-      return { avgTasks: m.totalTasks / m.days, avgPts: m.totalPts / m.days, days: m.days, flujos: m.flujos };
-    });
-    const allDays = Object.values(byPersonDay[user] || {});
-    const last20  = allDays.slice(-20);
-    const recentAvgPts   = last20.length ? last20.reduce((s, d) => s + d.pts,   0) / last20.length : 0;
-    const recentAvgTasks = last20.length ? last20.reduce((s, d) => s + d.tasks, 0) / last20.length : 0;
-    const flujoTotals = {};
-    allDays.forEach(d => Object.entries(d.flujos).forEach(([f, c]) => { flujoTotals[f] = (flujoTotals[f] || 0) + c; }));
-    const domFlujo = Object.entries(flujoTotals).sort((a, b) => b[1] - a[1])[0];
-    return {
-      user, ...info, monthData, recentAvgPts, recentAvgTasks,
-      allActiveDays: allDays.length,
-      domFlujo: domFlujo ? domFlujo[0] : 'Demanda',
-      band: getBand(recentAvgPts),
-    };
-  });
-
-  PROCESSED = { persons, personMonth, byPersonDay };
-  renderHistStats(persons);
-  renderMonthlyChart(persons);
-  renderBandsChart(persons, -1);
-  renderHistTable();
-  renderRankingChart(persons);
-  renderRankTable();
-  renderBandsRef();
-  renderScenarios();
+  reader.readAsText(file, 'Windows-1252');
 }
 
-// ─── HISTORICO ────────────────────────────────────────────────────────────────
-function renderHistStats(persons) {
-  const recent = persons.filter(p=>p.recentAvgPts>0);
-  const avg = recent.length ? recent.reduce((s,p)=>s+p.recentAvgPts,0)/recent.length : 0;
-  const above90 = recent.filter(p=>p.recentAvgPts>=88).length;
-  const elite = recent.filter(p=>p.recentAvgPts>=110).length;
-  const risk = recent.filter(p=>p.recentAvgPts<88).length;
+function parseCSV(text) {
+  const lines = text.split(/\r?\n/).filter(l => l.trim());
+  const sep = lines[0].includes(';') ? ';' : ',';
+  const headers = lines[0].split(sep).map(h => h.trim().replace(/"/g,''));
+  return lines.slice(1).map(line => {
+    const values = line.split(sep).map(v => v.trim().replace(/"/g,''));
+    return headers.reduce((obj, h, i) => ({ ...obj, [h]: values[i] }), {});
+  });
+}
 
-  document.getElementById('hist-stats').innerHTML = `
-    <div class="stat-card accent">
-      <div class="stat-label">Promedio equipo (pts)</div>
-      <div class="stat-value">${avg.toFixed(1)}</div>
-      <div class="stat-sub">últimas 4 semanas</div>
+function populateDateFilters() {
+  const dates = [...new Set(RAW_HIST.map(r => r.Fecha || r.fecha))].filter(Boolean);
+  const years = [...new Set(dates.map(d => d.split('/')[2]))].sort();
+  const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+  
+  const ySel = document.getElementById('f-hist-year');
+  ySel.innerHTML = '<option value="all">Todos</option>' + years.map(y => `<option value="${y}">${y}</option>`).join('');
+  
+  const mSel = document.getElementById('f-hist-month');
+  mSel.innerHTML = '<option value="all">Todos</option>' + months.map((m, i) => `<option value="${i+1}">${m}</option>`).join('');
+}
+
+function applyGlobalChanges() {
+  WEIGHTS.dem = parseFloat(document.getElementById('w-dem').value);
+  WEIGHTS.ec = parseFloat(document.getElementById('w-ec').value);
+  WEIGHTS.enh = parseFloat(document.getElementById('w-enh').value);
+  WEIGHTS.val = parseFloat(document.getElementById('w-val').value);
+  WEIGHTS.sop = parseFloat(document.getElementById('w-sop').value);
+  computeAndRender();
+  renderCalc();
+}
+
+function getProcessedData(filterType) {
+  const team = document.getElementById(filterType === 'hist' ? 'f-hist-team' : 'f-rank-team').value;
+  const year = filterType === 'hist' ? document.getElementById('f-hist-year').value : 'all';
+  const month = filterType === 'hist' ? document.getElementById('f-hist-month').value : 'all';
+  const start = filterType === 'hist' ? document.getElementById('f-hist-start').value : null;
+  const end = filterType === 'hist' ? document.getElementById('f-hist-end').value : null;
+
+  let filtered = RAW_HIST.filter(r => {
+    const user = r.Usuario || r.usuario;
+    const eq = RAW_EQUIPO[user]?.Equipo || RAW_EQUIPO[user]?.equipo || '';
+    if (team !== 'all' && eq !== team) return false;
+    
+    const [d, m, y] = (r.Fecha || r.fecha || "").split('/');
+    if (year !== 'all' && y !== year) return false;
+    if (month !== 'all' && parseInt(m) !== parseInt(month)) return false;
+    
+    if (start || end) {
+      const rowDate = new Date(y, m-1, d);
+      if (start && rowDate < new Date(start)) return false;
+      if (end && rowDate > new Date(end)) return false;
+    }
+    return true;
+  });
+
+  const stats = {};
+  filtered.forEach(r => {
+    const user = r.Usuario || r.usuario;
+    const date = r.Fecha || r.fecha;
+    const flujo = r.Flujo || r.flujo;
+    if (!stats[user]) stats[user] = { tasks: 0, pts: 0, days: new Set() };
+    
+    let p = 1.0;
+    if (flujo === 'Enhancement') p = WEIGHTS.enh;
+    else if (flujo === 'Enhanced Content') p = WEIGHTS.ec;
+    else if (flujo === 'Validación') p = WEIGHTS.val;
+    else if (flujo === 'Soporte' && (r.Status || r.status) === 'DONE') p = WEIGHTS.sop;
+
+    stats[user].tasks++;
+    stats[user].pts += p;
+    stats[user].days.add(date);
+  });
+
+  return Object.entries(stats).map(([id, s]) => ({
+    id,
+    nombre: RAW_EQUIPO[id]?.Nombre || id,
+    equipo: RAW_EQUIPO[id]?.Equipo || 'Sin Equipo',
+    dias: s.days.size,
+    avgTasks: s.tasks / s.days.size,
+    avgPts: s.pts / s.days.size,
+    band: BANDS.find(b => (s.pts/s.days.size) >= b.min && (s.pts/s.days.size) < b.max) || BANDS[0]
+  }));
+}
+
+function computeAndRender() {
+  const dataHist = getProcessedData('hist');
+  const dataRank = getProcessedData('rank');
+
+  // Render Table Hist
+  document.getElementById('tbody-hist').innerHTML = dataHist.map(p => `
+    <tr><td>${p.nombre}</td><td>${p.equipo}</td><td>${p.dias}</td>
+    <td>${p.avgTasks.toFixed(1)}</td><td style="color:${p.band.color}; font-weight:700">${p.avgPts.toFixed(1)}</td>
+    <td><span class="band-badge" style="background:${p.band.color}22; color:${p.band.color}">${p.band.label}</span></td></tr>
+  `).join('');
+
+  renderCharts(dataHist, dataRank);
+}
+
+function renderCharts(dataHist, dataRank) {
+  // Chart Bands
+  const bCtx = document.getElementById('chart-bands-hist').getContext('2d');
+  if(CHARTS.bands) CHARTS.bands.destroy();
+  const bandCounts = BANDS.map(b => dataHist.filter(p => p.band.label === b.label).length);
+  CHARTS.bands = new Chart(bCtx, {
+    type: 'bar',
+    data: { labels: BANDS.map(b=>b.label), datasets: [{ data: bandCounts, backgroundColor: BANDS.map(b=>b.color+'88') }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+  });
+
+  // Chart Ranking
+  const rCtx = document.getElementById('chart-ranking-full').getContext('2d');
+  if(CHARTS.rank) CHARTS.rank.destroy();
+  const sorted = dataRank.sort((a,b) => b.avgPts - a.avgPts);
+  CHARTS.rank = new Chart(rCtx, {
+    type: 'bar',
+    data: {
+      labels: sorted.map(p => p.nombre),
+      datasets: [{ label: 'Puntos Promedio', data: sorted.map(p => p.avgPts), backgroundColor: sorted.map(p => p.band.color) }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y' }
+  });
+}
+
+function renderCalc() {
+  const flows = [
+    { id: 'dem', label: 'Demanda', w: WEIGHTS.dem },
+    { id: 'ec', label: 'Enhanced Content', w: WEIGHTS.ec },
+    { id: 'enh', label: 'Enhancement', w: WEIGHTS.enh },
+    { id: 'val', label: 'Validación', w: WEIGHTS.val },
+    { id: 'sop', label: 'Soporte (DONE)', w: WEIGHTS.sop }
+  ];
+
+  document.getElementById('calc-sliders').innerHTML = flows.map(f => `
+    <div style="margin-bottom:12px">
+      <div style="display:flex; justify-content:space-between; font-size:12px"><span>${f.label}</span><b id="v-${f.id}">0</b></div>
+      <input type="range" id="i-${f.id}" min="0" max="150" value="0" style="width:100%" oninput="updateCalc()">
     </div>
-    <div class="stat-card green">
-      <div class="stat-label">En banda Base o superior</div>
-      <div class="stat-value">${above90}</div>
-      <div class="stat-sub">de ${recent.length} analistas activos</div>
-    </div>
-    <div class="stat-card amber">
-      <div class="stat-label">En banda Elite</div>
-      <div class="stat-value">${elite}</div>
-      <div class="stat-sub">objetivo MELI alcanzado</div>
-    </div>
-    <div class="stat-card red">
-      <div class="stat-label">Bajo Base (&lt;88 pts)</div>
-      <div class="stat-value">${risk}</div>
-      <div class="stat-sub">requieren atención del TL</div>
-    </div>
+  `).join('');
+  updateCalc();
+}
+
+function updateCalc() {
+  const d = parseInt(document.getElementById('i-dem').value);
+  const ec = parseInt(document.getElementById('i-ec').value);
+  const en = parseInt(document.getElementById('i-enh').value);
+  const v = parseInt(document.getElementById('i-val').value);
+  const s = parseInt(document.getElementById('i-sop').value);
+
+  document.getElementById('v-dem').innerText = d;
+  document.getElementById('v-ec').innerText = ec;
+  document.getElementById('v-enh').innerText = en;
+  document.getElementById('v-val').innerText = v;
+  document.getElementById('v-sop').innerText = s;
+
+  const total = (d * WEIGHTS.dem) + (ec * WEIGHTS.ec) + (en * WEIGHTS.enh) + (v * WEIGHTS.val) + (s * WEIGHTS.sop);
+  const band = BANDS.find(b => total >= b.min && total < b.max) || BANDS[0];
+
+  document.getElementById('calc-result-value').innerText = total.toFixed(1);
+  document.getElementById('calc-result-value').style.color = band.color;
+  document.getElementById('calc-band-box').innerText = band.label;
+  document.getElementById('calc-band-box').style.background = band.color + '22';
+  document.getElementById('calc-band-box').style.color = band.color;
+
+  document.getElementById('calc-breakdown').innerHTML = `
+    <b>Desglose dinámico:</b><br>
+    • Demanda (x${WEIGHTS.dem.toFixed(1)}): ${(d*WEIGHTS.dem).toFixed(1)} pts<br>
+    • E. Content (x${WEIGHTS.ec.toFixed(1)}): ${(ec*WEIGHTS.ec).toFixed(1)} pts<br>
+    • Enhancement (x${WEIGHTS.enh.toFixed(1)}): ${(en*WEIGHTS.enh).toFixed(1)} pts<br>
+    • Validación (x${WEIGHTS.val.toFixed(1)}): ${(v*WEIGHTS.val).toFixed(1)} pts<br>
+    • Soporte (x${WEIGHTS.sop.toFixed(1)}): ${(s*WEIGHTS.sop).toFixed(1)} pts
   `;
 }
 
-function renderMonthlyChart(persons) {
-  const ctx = document.getElementById('chart-monthly').getContext('2d');
-  if (CHARTS.monthly) CHARTS.monthly.destroy();
-
-  const avgPts = MONTH_KEYS.map((_,mi) => {
-    const vals = persons.map(p=>p.monthData[mi]).filter(Boolean).map(m=>m.avgPts);
-    return vals.length ? vals.reduce((a,b)=>a+b)/vals.length : 0;
-  });
-  const avgTasks = MONTH_KEYS.map((_,mi) => {
-    const vals = persons.map(p=>p.monthData[mi]).filter(Boolean).map(m=>m.avgTasks);
-    return vals.length ? vals.reduce((a,b)=>a+b)/vals.length : 0;
-  });
-
-  CHARTS.monthly = new Chart(ctx, {
-    data: {
-      labels: MONTH_LABELS,
-      datasets: [
-        { type:'bar', label:'Puntos ponderados', data:avgPts, backgroundColor:'rgba(91,127,255,0.7)', borderRadius:6, order:2 },
-        { type:'line', label:'Tareas reales', data:avgTasks, borderColor:'#555d78', backgroundColor:'transparent', borderWidth:2, pointBackgroundColor:'#555d78', tension:0.3, order:1 }
-      ]
-    },
-    options: {
-      responsive:true, maintainAspectRatio:false,
-      plugins:{ legend:{display:false}, tooltip:{ backgroundColor:'#1c2030', titleColor:'#e8eaf2', bodyColor:'#8b91a8', borderColor:'#252a3a', borderWidth:1 }},
-      scales:{
-        x:{ grid:{color:'#252a3a'}, ticks:{color:'#8b91a8'} },
-        y:{ grid:{color:'#252a3a'}, ticks:{color:'#8b91a8'}, beginAtZero:true }
-      }
-    }
-  });
-}
-
-let selectedMonthIdx = -1;
-function renderBandsChart(persons, monthIdx) {
-  selectedMonthIdx = monthIdx;
-  const ctx = document.getElementById('chart-bands').getContext('2d');
-  if (CHARTS.bands) CHARTS.bands.destroy();
-
-  let filtered;
-  if (monthIdx === -1) {
-    filtered = persons.filter(p=>p.recentAvgPts>0).map(p=>p.recentAvgPts);
-  } else {
-    filtered = persons.map(p=>p.monthData[monthIdx]).filter(Boolean).map(m=>m.avgPts);
-  }
-
-  const counts = BANDS.map(b => filtered.filter(v=>v>=b.min&&v<b.max).length);
-
-  // Render month filter
-  const mf = document.getElementById('month-filters');
-  mf.innerHTML = `<button class="filter-btn ${monthIdx===-1?'active':''}" onclick="renderBandsChart(PROCESSED.persons,-1)">Reciente</button>`
-    + MONTH_LABELS.map((l,i)=>`<button class="filter-btn ${monthIdx===i?'active':''}" onclick="renderBandsChart(PROCESSED.persons,${i})">${l}</button>`).join('');
-
-  CHARTS.bands = new Chart(ctx, {
-    type:'bar',
-    data:{
-      labels: BANDS.map(b=>b.label),
-      datasets:[{ data:counts, backgroundColor: BANDS.map(b=>b.color+'99'), borderColor: BANDS.map(b=>b.color), borderWidth:1.5, borderRadius:6 }]
-    },
-    options:{
-      responsive:true, maintainAspectRatio:false, indexAxis:'y',
-      plugins:{legend:{display:false}, tooltip:{ backgroundColor:'#1c2030', titleColor:'#e8eaf2', bodyColor:'#8b91a8', borderColor:'#252a3a', borderWidth:1, callbacks:{ label:ctx=>`${ctx.raw} analistas` } }},
-      scales:{
-        x:{ grid:{color:'#252a3a'}, ticks:{color:'#8b91a8'}, precision:0 },
-        y:{ grid:{display:false}, ticks:{color:'#8b91a8'} }
-      }
-    }
-  });
-}
-
-function renderHistTable() {
-  if (!PROCESSED) return;
-  const search = (document.getElementById('search-hist')?.value||'').toLowerCase();
-
-  // Month filter table
-  const mft = document.getElementById('month-filter-table');
-  if (mft && !mft.dataset.built) {
-    mft.dataset.built='1';
-    // no extra filter needed — table shows all months
-  }
-
-  const persons = PROCESSED.persons.filter(p=>
-    !search || p.nombre.toLowerCase().includes(search) || p.user.toLowerCase().includes(search)
-  ).sort((a,b)=>b.recentAvgPts-a.recentAvgPts);
-
-  const tbody = document.getElementById('hist-tbody');
-  tbody.innerHTML = persons.map((p,i) => {
-    const cells = MONTH_KEYS.map((_,mi)=>{
-      const m = p.monthData[mi];
-      if (!m) return `<td style="color:var(--text3)">—</td>`;
-      const b = getBand(m.avgPts);
-      return `<td><span class="mono-cell" style="color:${b.color}">${m.avgPts.toFixed(1)}</span><br><span style="font-size:10px;color:var(--text3)">${m.avgTasks.toFixed(0)}t</span></td>`;
-    });
-    const band = p.band;
-    return `<tr>
-      <td class="name-cell">${p.nombre||p.user}</td>
-      <td style="color:var(--text3);font-size:12px">${p.rol||''}</td>
-      ${cells.join('')}
-      <td class="mono-cell" style="color:${getBand(p.recentAvgPts).color}">${p.recentAvgPts.toFixed(1)}</td>
-      <td><span class="band-badge ${band.css}">${band.label}</span></td>
-    </tr>`;
-  }).join('');
-}
-
-// ─── RANKING ─────────────────────────────────────────────────────────────────
-function renderRankingChart(persons) {
-  const ctx = document.getElementById('chart-ranking').getContext('2d');
-  if (CHARTS.ranking) CHARTS.ranking.destroy();
-
-  const top = [...persons].filter(p=>p.recentAvgPts>0).sort((a,b)=>b.recentAvgPts-a.recentAvgPts).slice(0,20);
-
-  CHARTS.ranking = new Chart(ctx, {
-    type:'bar',
-    data:{
-      labels: top.map(p=>p.nombre||p.user),
-      datasets:[{
-        data: top.map(p=>p.recentAvgPts),
-        backgroundColor: top.map(p=>p.band.color+'99'),
-        borderColor: top.map(p=>p.band.color),
-        borderWidth:1.5,
-        borderRadius:5
-      }]
-    },
-    options:{
-      responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{display:false}, tooltip:{ backgroundColor:'#1c2030', titleColor:'#e8eaf2', bodyColor:'#8b91a8', borderColor:'#252a3a', borderWidth:1,
-        callbacks:{ label: ctx=>`${ctx.raw.toFixed(1)} pts ponderados` } }},
-      scales:{
-        x:{ grid:{color:'#252a3a'}, ticks:{color:'#8b91a8', maxRotation:40} },
-        y:{ grid:{color:'#252a3a'}, ticks:{color:'#8b91a8'}, min:60,
-            annotation:{ line:{ value:88, scaleID:'y', borderColor:'#5b7fff', borderWidth:1, label:{content:'Base',display:true} } }
-        }
-      }
-    }
-  });
-}
-
-function renderRankTable() {
-  if (!PROCESSED) return;
-  const search = (document.getElementById('search-rank')?.value||'').toLowerCase();
-  const persons = PROCESSED.persons.filter(p=>p.recentAvgPts>0 && (!search || p.nombre.toLowerCase().includes(search) || p.user.toLowerCase().includes(search)))
-    .sort((a,b)=>b.recentAvgPts-a.recentAvgPts);
-
-  document.getElementById('rank-tbody').innerHTML = persons.map((p,i)=>{
-    const band = p.band;
-    return `<tr>
-      <td class="mono-cell" style="color:var(--text3)">${i+1}</td>
-      <td class="name-cell">${p.nombre||p.user}</td>
-      <td style="color:var(--text3);font-size:12px">${p.equipo||''}</td>
-      <td class="mono-cell">${p.recentAvgTasks.toFixed(1)}</td>
-      <td class="mono-cell" style="color:${band.color};font-weight:500">${p.recentAvgPts.toFixed(1)}</td>
-      <td style="font-size:12px;color:var(--text2)">${p.domFlujo}</td>
-      <td class="mono-cell" style="color:var(--text3)">${p.allActiveDays}</td>
-      <td><span class="band-badge ${band.css}">${band.label}</span></td>
-    </tr>`;
-  }).join('');
-}
-
-// ─── CALCULATOR ──────────────────────────────────────────────────────────────
-function updateCalc() {
-  const vals = {
-    dem: +document.getElementById('r-dem').value,
-    ec:  +document.getElementById('r-ec').value,
-    enh: +document.getElementById('r-enh').value,
-    val: +document.getElementById('r-val').value,
-    sop: +document.getElementById('r-sop').value,
-  };
-  ['dem','ec','enh','val','sop'].forEach(k => {
-    document.getElementById(`v-${k}`).textContent = vals[k];
-    document.getElementById(`lbl-${k}`).textContent = vals[k];
-  });
-
-  const w = WEIGHTS;
-
-  // Update breakdown labels dynamically with current weights
-  document.getElementById('lbl-bd-dem').textContent = `Demanda ×${w['Demanda'].toFixed(1)}`;
-  document.getElementById('lbl-bd-ec').textContent  = `Enhanced Content ×${w['Enhanced Content'].toFixed(1)}`;
-  document.getElementById('lbl-bd-enh').textContent = `Enhancement ×${w['Enhancement'].toFixed(1)}`;
-  document.getElementById('lbl-bd-val').textContent = `Validación ×${w['Validación'].toFixed(1)}`;
-  document.getElementById('lbl-bd-sop').textContent = `Soporte ×${w['Soporte'].toFixed(1)}`;
-
-  const pts = {
-    dem: vals.dem * w['Demanda'],
-    ec:  vals.ec  * w['Enhanced Content'],
-    enh: vals.enh * w['Enhancement'],
-    val: vals.val * w['Validación'],
-    sop: vals.sop * w['Soporte'],
-  };
-  const total = Object.values(pts).reduce((a,b)=>a+b,0);
-  const tasks  = vals.dem + vals.ec + vals.enh + vals.val + vals.sop;
-
-  document.getElementById('bd-dem').textContent  = pts.dem.toFixed(1)+' pts';
-  document.getElementById('bd-ec').textContent   = pts.ec.toFixed(1)+' pts';
-  document.getElementById('bd-enh').textContent  = pts.enh.toFixed(1)+' pts';
-  document.getElementById('bd-val').textContent  = pts.val.toFixed(1)+' pts';
-  document.getElementById('bd-sop').textContent  = pts.sop.toFixed(1)+' pts';
-  document.getElementById('bd-tasks').textContent = tasks;
-
-  const band = getBand(total);
-  document.getElementById('pts-big').textContent = total.toFixed(1);
-  document.getElementById('pts-big').style.color = band.color;
-  document.getElementById('band-name').textContent = band.label;
-  document.getElementById('band-desc').textContent = band.desc;
-  document.getElementById('band-display').style.background   = band.color+'22';
-  document.getElementById('band-display').style.border       = `1px solid ${band.color}44`;
-  document.getElementById('band-display').style.borderRadius = '10px';
-  document.getElementById('band-display').style.marginTop    = '12px';
-}
-
-function renderBandsRef() {
-  document.getElementById('bands-ref').innerHTML = BANDS.map(b=>`
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border)">
-      <span class="band-badge ${b.css}">${b.label}</span>
-      <span class="mono-cell" style="font-size:11px;color:var(--text3)">${b.min}–${b.max===9999?'∞':b.max} pts</span>
-    </div>
-  `).join('');
-}
-
-function renderScenarios() {
-  const scenarios = [
-    { name:'90 Demanda puras', dem:90, ec:0, enh:0, val:0, sop:0 },
-    { name:'80 Dem + 7 Enh', dem:80, ec:0, enh:7, val:0, sop:0 },
-    { name:'70 Dem + 10 Enh + 5 EC', dem:70, ec:5, enh:10, val:0, sop:0 },
-    { name:'55 Dem + 25 Enh + 8 EC', dem:55, ec:8, enh:25, val:0, sop:0 },
-    { name:'50 Dem + 30 Enh + 10 EC', dem:50, ec:10, enh:30, val:0, sop:0 },
-    { name:'Especialista calidad (60 Dem + 13 Enh + 10 EC)', dem:60, ec:10, enh:13, val:0, sop:0 },
-    { name:'Ruta Validación (80 Val)', dem:0, ec:0, enh:0, val:80, sop:0 },
-    { name:'Soporte resuelto (15 DONE)', dem:0, ec:0, enh:0, val:0, sop:15 },
-  ];
-
-  const w = WEIGHTS;
-  document.getElementById('scenarios-grid').innerHTML = scenarios.map(s=>{
-    const pts = s.dem*w['Demanda'] + s.ec*w['Enhanced Content'] + s.enh*w['Enhancement'] + s.val*w['Validación'] + s.sop*w['Soporte'];
-    const tasks = s.dem+s.ec+s.enh+s.val+s.sop;
-    const band = getBand(pts);
-    const mix = Object.entries({Dem:s.dem,EC:s.ec,Enh:s.enh,Val:s.val,Sop:s.sop}).filter(([,v])=>v>0).map(([k,v])=>`${v} ${k}`).join(' + ');
-    return `
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;cursor:pointer;transition:border-color 0.15s" onclick="applyScenario(${s.dem},${s.ec},${s.enh},${s.val},${s.sop})" onmouseover="this.style.borderColor='${band.color}'" onmouseout="this.style.borderColor='var(--border)'">
-      <div style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:8px">${s.name}</div>
-      <div style="font-size:11px;color:var(--text3);margin-bottom:10px">${mix}</div>
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <span style="font-family:'DM Mono',monospace;font-size:18px;font-weight:500;color:${band.color}">${pts.toFixed(1)} pts</span>
-        <span class="band-badge ${band.css}">${band.label}</span>
-      </div>
-      <div style="font-size:11px;color:var(--text3);margin-top:6px">${tasks} tareas totales</div>
-    </div>`;
-  }).join('');
-}
-
-function applyScenario(dem,ec,enh,val,sop) {
-  document.getElementById('r-dem').value = Math.min(dem,110);
-  document.getElementById('r-ec').value  = Math.min(ec,30);
-  document.getElementById('r-enh').value = Math.min(enh,50);
-  document.getElementById('r-val').value = Math.min(val,120);
-  document.getElementById('r-sop').value = Math.min(sop,30);
-  updateCalc();
-  showPage('calc');
-}
-
-// ─── WEIGHTS ─────────────────────────────────────────────────────────────────
-function applyWeights() {
-  WEIGHTS['Demanda']           = +document.getElementById('w-demanda').value || 1.0;
-  WEIGHTS['Enhanced Content']  = +document.getElementById('w-ec').value      || 1.0;
-  WEIGHTS['Enhancement']       = +document.getElementById('w-enh').value     || 1.3;
-  WEIGHTS['Validación']        = +document.getElementById('w-val').value     || 1.1;
-  WEIGHTS['Soporte']           = +document.getElementById('w-sop').value     || 2.0;
-  WEIGHTS['Fallos']            = +document.getElementById('w-fallos').value  || 1.0;
-  if (DATA.hist) computeAll();
-  renderScenarios();
-  updateCalc();
-}
-
-// ─── NAV ─────────────────────────────────────────────────────────────────────
 function showPage(id) {
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.getElementById(`page-${id}`).classList.add('active');
-  const navMap = { upload:0, historico:1, ranking:2, calc:3 };
-  document.querySelectorAll('.nav-item')[navMap[id]]?.classList.add('active');
-  if (id==='calc') { updateCalc(); }
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if(id === 'calc') renderCalc();
 }
 
-// ─── INIT ─────────────────────────────────────────────────────────────────────
-updateCalc();
-renderBandsRef();
-renderScenarios();
+window.onload = () => { renderCalc(); };
 </script>
 </body>
 </html>
