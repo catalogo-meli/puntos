@@ -6,374 +6,1036 @@
 <title>Catálogo · Dashboard de Puntos Ponderados</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #0d0f14; --surface: #141720; --surface2: #1c2030; --border: #252a3a;
-  --border2: #2e3448; --text: #e8eaf2; --text2: #8b91a8; --text3: #555d78;
-  --accent: #5b7fff; --accent2: #3d5bd9; --green: #3ecf8e; --amber: #f6a623;
-  --red: #ff5f57; --purple: #a78bfa; --radius: 10px; --radius-lg: 16px;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; min-height: 100vh; }
-h1,h2,h3 { font-family: 'Syne', sans-serif; }
-.mono { font-family: 'DM Mono', monospace; }
-.app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
-.sidebar { background: var(--surface); border-right: 1px solid var(--border); padding: 24px 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
-.main { overflow-y: auto; height: 100vh; }
-.sidebar-logo { padding: 0 20px 24px; border-bottom: 1px solid var(--border); }
-.sidebar-logo h1 { font-size: 15px; font-weight: 800; }
-.nav { padding: 16px 12px; }
-.nav-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 8px; cursor: pointer; color: var(--text2); font-size: 13px; border: none; background: none; width: 100%; text-align: left; margin-bottom: 4px; }
-.nav-item:hover { background: var(--surface2); color: var(--text); }
-.nav-item.active { background: rgba(91,127,255,0.12); color: var(--accent); font-weight: 500; }
-.weights-section { padding: 16px 12px; border-top: 1px solid var(--border); }
-.weight-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-.weight-input { width: 60px; background: var(--bg); border: 1px solid var(--border2); border-radius: 6px; color: var(--text); font-size: 12px; padding: 4px; text-align: right; }
-.page { display: none; padding: 32px; }
-.page.active { display: block; }
-.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
-.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; }
-.stat-value { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 700; margin-top: 8px; }
-.filter-container { background: var(--surface); border: 1px solid var(--border); padding: 16px; border-radius: var(--radius); margin-bottom: 20px; display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
-.filter-group { display: flex; flex-direction: column; gap: 4px; }
-.filter-label { font-size: 10px; text-transform: uppercase; color: var(--text3); font-weight: 700; }
-select, input[type="date"] { background: var(--surface2); border: 1px solid var(--border2); color: var(--text); padding: 6px 10px; border-radius: 6px; font-size: 12px; }
-.upload-zone { border: 2px dashed var(--border2); padding: 40px; text-align: center; border-radius: var(--radius-lg); cursor: pointer; }
-.upload-zone.done { border-color: var(--green); background: rgba(62,207,142,0.05); }
-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
-th { text-align: left; font-size: 11px; color: var(--text3); padding: 12px; border-bottom: 1px solid var(--border); }
-td { padding: 12px; border-bottom: 1px solid var(--border); }
-.calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-.band-badge { font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 6px; }
-.band-base { background: rgba(91,127,255,0.15); color: var(--accent); }
-/* ... (Resto de estilos heredados del anterior) */
+:root{--bg:#0d0f14;--surface:#141720;--surface2:#1c2030;--border:#252a3a;--border2:#2e3448;--text:#e8eaf2;--text2:#8b91a8;--text3:#555d78;--accent:#5b7fff;--accent2:#3d5bd9;--green:#3ecf8e;--amber:#f6a623;--red:#ff5f57;--purple:#a78bfa;--teal:#2dd4bf;--radius:10px;--radius-lg:16px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;min-height:100vh}
+h1,h2,h3{font-family:'Syne',sans-serif}
+.mono{font-family:'DM Mono',monospace}
+.app{display:grid;grid-template-columns:248px 1fr;min-height:100vh}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:24px 0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.main{overflow:hidden;min-width:0}
+.sidebar-logo{padding:0 20px 20px;border-bottom:1px solid var(--border)}
+.sidebar-logo h1{font-size:15px;font-weight:800;letter-spacing:-.3px}
+.sidebar-logo p{font-size:11px;color:var(--text3);margin-top:2px;font-family:'DM Mono',monospace}
+.nav{padding:14px 12px;flex:1}
+.nav-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;padding:0 8px;margin-bottom:5px;margin-top:14px}
+.nav-label:first-child{margin-top:0}
+.nav-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;color:var(--text2);font-size:13px;transition:all .15s;border:none;background:none;width:100%;text-align:left}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{background:rgba(91,127,255,.12);color:var(--accent);font-weight:500}
+.nav-item svg{opacity:.6;flex-shrink:0}
+.nav-item.active svg{opacity:1}
+.weights-section{padding:14px 12px;border-top:1px solid var(--border)}
+.weights-title{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px}
+.weight-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.weight-label{font-size:12px;color:var(--text2)}
+.weight-input{width:54px;background:var(--bg);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:'DM Mono',monospace;font-size:12px;padding:4px 7px;text-align:right}
+.weight-input:focus{outline:none;border-color:var(--accent)}
+.apply-btn{width:100%;padding:8px;background:var(--accent2);color:#fff;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-size:12px;font-weight:600;cursor:pointer;margin-top:4px;letter-spacing:.3px;transition:background .15s}
+.apply-btn:hover{background:var(--accent)}
+.page{display:none;padding:28px 32px}
+.page.active{display:block}
+.page-header{margin-bottom:24px}
+.page-title{font-size:22px;font-weight:700;letter-spacing:-.5px}
+.page-sub{font-size:13px;color:var(--text2);margin-top:4px}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:20px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px}
+.stat-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-weight:500}
+.stat-value{font-family:'Syne',sans-serif;font-size:26px;font-weight:700;margin-top:4px;letter-spacing:-1px}
+.stat-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.stat-card.acc{border-color:rgba(91,127,255,.3);background:rgba(91,127,255,.06)}
+.stat-card.grn{border-color:rgba(62,207,142,.3);background:rgba(62,207,142,.06)}
+.stat-card.amb{border-color:rgba(246,166,35,.3);background:rgba(246,166,35,.06)}
+.stat-card.redd{border-color:rgba(255,95,87,.3);background:rgba(255,95,87,.06)}
+.upload-zone{background:var(--surface);border:2px dashed var(--border2);border-radius:var(--radius-lg);padding:36px;text-align:center;cursor:pointer;transition:all .2s}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--accent);background:rgba(91,127,255,.05)}
+.upload-zone.done{border-color:var(--green);border-style:solid;background:rgba(62,207,142,.05)}
+.upload-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.upload-icon{font-size:28px;margin-bottom:10px}
+.upload-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:600}
+.upload-sub{font-size:12px;color:var(--text3);margin-top:4px}
+.file-input{display:none}
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.table-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.table-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:600}
+.filter-bar{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.filter-btn{padding:4px 11px;border-radius:20px;border:1px solid var(--border2);background:none;color:var(--text2);font-size:12px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif}
+.filter-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;padding:9px 14px;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none}
+th:hover{color:var(--text2)}
+td{padding:9px 14px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface2)}
+.name-cell{color:var(--text);font-weight:500}
+.mono-cell{font-family:'DM Mono',monospace;font-size:12px}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;padding:3px 8px;border-radius:6px;white-space:nowrap}
+.bp{background:rgba(255,95,87,.15);color:var(--red)}
+.bb{background:rgba(91,127,255,.15);color:var(--accent)}
+.bs{background:rgba(62,207,142,.15);color:var(--green)}
+.bh{background:rgba(167,139,250,.15);color:var(--purple)}
+.be{background:rgba(246,166,35,.15);color:var(--amber)}
+.chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;margin-bottom:18px}
+.chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.chart-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:600}
+.legend{display:flex;gap:14px}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2)}
+.legend-dot{width:10px;height:10px;border-radius:3px}
+.calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.calc-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;display:flex;flex-direction:column}
+.input-group{margin-bottom:14px}
+.input-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;display:flex;justify-content:space-between}
+.input-label span{color:var(--accent);font-family:'DM Mono',monospace}
+.range-wrap{display:flex;gap:10px;align-items:center}
+input[type=range]{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--border2);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--accent);cursor:pointer}
+.range-val{font-family:'DM Mono',monospace;font-size:13px;color:var(--text);min-width:28px;text-align:right}
+.pts-display{text-align:center;padding:24px 0;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.pts-number{font-family:'Syne',sans-serif;font-size:68px;font-weight:800;letter-spacing:-3px;line-height:1;transition:color .3s}
+.pts-label{font-size:12px;color:var(--text3);margin-top:4px;font-family:'DM Mono',monospace}
+.band-display{margin-top:14px;padding:11px 18px;border-radius:10px;text-align:center;transition:all .3s}
+.band-name-big{font-family:'Syne',sans-serif;font-size:16px;font-weight:700}
+.band-desc{font-size:12px;margin-top:2px;opacity:.7}
+.breakdown{margin-top:14px;border-top:1px solid var(--border);padding-top:14px}
+.bd-row{display:flex;justify-content:space-between;padding:4px 0;font-size:12px}
+.bd-lbl{color:var(--text3)}
+.bd-val{color:var(--text);font-family:'DM Mono',monospace}
+.total-row{display:flex;justify-content:space-between;padding:7px 0 0;margin-top:4px;border-top:1px solid var(--border);font-size:13px;font-weight:500}
+.sep{margin:20px 0;height:1px;background:var(--border)}
+.search-bar{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 11px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;width:180px}
+.search-bar::placeholder{color:var(--text3)}
+.search-bar:focus{outline:none;border-color:var(--accent)}
+.sel{background:var(--surface2);border:1px solid var(--border2);border-radius:7px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:12px;padding:5px 8px;cursor:pointer}
+.sel:focus{outline:none;border-color:var(--accent)}
+.empty-state{text-align:center;padding:60px 20px;color:var(--text3)}
+.empty-state p{font-size:13px;margin-top:10px}
+.alert-box{background:rgba(246,166,35,.08);border:1px solid rgba(246,166,35,.25);border-radius:10px;padding:11px 14px;font-size:12px;color:var(--amber);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
+.filter-row label{font-size:11px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.06em}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{position:static;height:auto}.calc-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="app">
-  <aside class="sidebar">
-    <div class="sidebar-logo"><h1>Catálogo · MELI</h1><p>Gestión por Puntos</p></div>
-    <nav class="nav">
-      <button class="nav-item active" onclick="showPage('upload')">Cargar datos</button>
-      <button class="nav-item" onclick="showPage('historico')">Histórico</button>
-      <button class="nav-item" onclick="showPage('ranking')">Ranking</button>
-      <button class="nav-item" onclick="showPage('calc')">Calculadora 1:1</button>
-    </nav>
-    <div class="weights-section">
-      <p class="filter-label" style="margin-bottom:8px">Ponderación</p>
-      <div class="weight-row"><span>Demanda</span><input id="w-dem" class="weight-input" type="number" value="1.0" step="0.1"></div>
-      <div class="weight-row"><span>E. Content</span><input id="w-ec" class="weight-input" type="number" value="1.0" step="0.1"></div>
-      <div class="weight-row"><span>Enhance</span><input id="w-enh" class="weight-input" type="number" value="1.3" step="0.1"></div>
-      <div class="weight-row"><span>Val.</span><input id="w-val" class="weight-input" type="number" value="1.1" step="0.1"></div>
-      <div class="weight-row"><span>Soporte</span><input id="w-sop" class="weight-input" type="number" value="2.0" step="0.1"></div>
-      <button onclick="applyGlobalChanges()" style="width:100%; padding:8px; background:var(--accent); border:none; border-radius:6px; color:white; font-weight:600; cursor:pointer; margin-top:8px">Actualizar</button>
-    </div>
-  </aside>
 
-  <main class="main">
-    <div class="page active" id="page-upload">
-      <h2 style="margin-bottom:20px">Configuración de Datos</h2>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px">
-        <div id="z-hist" class="upload-zone" onclick="document.getElementById('f-hist').click()">
-          <p id="t-hist">📄 historico.csv</p>
-          <input type="file" id="f-hist" hidden onchange="loadFile(this, 'hist')">
-        </div>
-        <div id="z-equipo" class="upload-zone" onclick="document.getElementById('f-equipo').click()">
-          <p id="t-equipo">👥 equipo_colaboradores.csv</p>
-          <input type="file" id="f-equipo" hidden onchange="loadFile(this, 'equipo')">
-        </div>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <h1>Catálogo · MELI</h1>
+    <p>Dashboard de Puntos</p>
+  </div>
+  <nav class="nav">
+    <div class="nav-label">Navegación</div>
+    <button class="nav-item active" onclick="showPage('upload')">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Cargar datos
+    </button>
+    <button class="nav-item" onclick="showPage('historico')">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      Histórico
+    </button>
+    <button class="nav-item" onclick="showPage('ranking')">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Ranking
+    </button>
+    <button class="nav-item" onclick="showPage('calc')">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
+      Calculadora 1:1
+    </button>
+  </nav>
+  <div class="weights-section">
+    <div class="weights-title">⚙ Pesos por flujo</div>
+    <div class="weight-row"><span class="weight-label">Demanda</span><input class="weight-input" id="w-demanda" type="number" step="0.1" min="0.1" max="5" value="1.0"></div>
+    <div class="weight-row"><span class="weight-label">Enh. Content</span><input class="weight-input" id="w-ec" type="number" step="0.1" min="0.1" max="5" value="1.0"></div>
+    <div class="weight-row"><span class="weight-label">Enhancement</span><input class="weight-input" id="w-enh" type="number" step="0.1" min="0.1" max="5" value="1.3"></div>
+    <div class="weight-row"><span class="weight-label">Validación</span><input class="weight-input" id="w-val" type="number" step="0.1" min="0.1" max="5" value="1.1"></div>
+    <div class="weight-row"><span class="weight-label">Soporte (DONE)</span><input class="weight-input" id="w-sop" type="number" step="0.1" min="0.1" max="5" value="2.0"></div>
+    <div class="weight-row"><span class="weight-label">Fallos</span><input class="weight-input" id="w-fallos" type="number" step="0.1" min="0.1" max="5" value="1.0"></div>
+    <button class="apply-btn" onclick="applyWeights()">Recalcular todo →</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- UPLOAD -->
+<div class="page active" id="page-upload">
+  <div class="page-header">
+    <h2 class="page-title">Cargar datos del equipo</h2>
+    <p class="page-sub">Procesamiento 100% local · nada sale del navegador</p>
+  </div>
+  <div class="upload-grid">
+    <div class="upload-zone" id="zone-hist" onclick="document.getElementById('file-hist').click()" ondragover="evDrag(event,'zone-hist')" ondragleave="evLeave('zone-hist')" ondrop="evDrop(event,'hist')">
+      <div class="upload-icon">📊</div>
+      <div class="upload-title">historico.csv</div>
+      <div class="upload-sub" id="sub-hist">Click o arrastrar · soporta , ; TAB · UTF-8 / ISO-8859-1</div>
+      <input type="file" class="file-input" id="file-hist" accept=".csv,.txt" onchange="handleFile(this,'hist')">
+    </div>
+    <div class="upload-zone" id="zone-equipo" onclick="document.getElementById('file-equipo').click()" ondragover="evDrag(event,'zone-equipo')" ondragleave="evLeave('zone-equipo')" ondrop="evDrop(event,'equipo')">
+      <div class="upload-icon">👥</div>
+      <div class="upload-title">equipo_colaboradores.csv</div>
+      <div class="upload-sub" id="sub-equipo">Click o arrastrar · opcional pero recomendado</div>
+      <input type="file" class="file-input" id="file-equipo" accept=".csv,.txt" onchange="handleFile(this,'equipo')">
+    </div>
+  </div>
+  <div class="alert-box" id="alert-partial" style="display:none">⚠ Solo historico.csv cargado. Sin equipo_colaboradores.csv los nombres aparecerán como IDs.</div>
+  <div class="table-wrap" id="preview-section" style="display:none">
+    <div class="table-header"><span class="table-title">Vista previa — últimas 8 filas</span><span class="mono" style="font-size:11px;color:var(--text3)" id="preview-count"></span></div>
+    <div style="overflow-x:auto;max-height:260px;overflow-y:auto"><table id="preview-table"></table></div>
+  </div>
+</div>
+
+<!-- HISTORICO -->
+<div class="page" id="page-historico">
+  <div class="page-header">
+    <h2 class="page-title">Histórico de puntos</h2>
+    <p class="page-sub">Tareas reales vs puntos ponderados · filtrado dinámico</p>
+  </div>
+  <div id="hist-empty" class="empty-state">
+    <svg width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    <p>Cargá historico.csv para ver el análisis</p>
+  </div>
+  <div id="hist-content" style="display:none">
+    <!-- Filtros -->
+    <div class="filter-row">
+      <label>Año</label>
+      <select class="sel" id="h-year" onchange="applyHistFilter()"><option value="">Todos</option></select>
+      <label>Mes</label>
+      <select class="sel" id="h-month" onchange="applyHistFilter()"><option value="">Todos</option></select>
+      <label>Semana</label>
+      <select class="sel" id="h-week" onchange="applyHistFilter()"><option value="">Todas</option></select>
+      <label>Desde</label>
+      <input type="date" class="sel" id="h-from" onchange="applyHistFilter()">
+      <label>Hasta</label>
+      <input type="date" class="sel" id="h-to" onchange="applyHistFilter()">
+      <button class="filter-btn" onclick="clearHistFilter()">✕ Limpiar</button>
+    </div>
+    <!-- Stat cards -->
+    <div class="stat-grid" id="hist-stats"></div>
+    <!-- Bandas chart -->
+    <div class="chart-wrap">
+      <div class="chart-header">
+        <span class="chart-title">Distribución del equipo por banda de performance</span>
+        <div class="filter-bar" id="bands-month-filters"></div>
       </div>
+      <div style="height:220px"><canvas id="chart-bands"></canvas></div>
     </div>
-
-    <div class="page" id="page-historico">
-      <h2>Histórico Dinámico</h2>
-      <div class="filter-container">
-        <div class="filter-group"><label class="filter-label">Año</label><select id="f-hist-year" onchange="computeAndRender()"></select></div>
-        <div class="filter-group"><label class="filter-label">Mes</label><select id="f-hist-month" onchange="computeAndRender()"></select></div>
-        <div class="filter-group"><label class="filter-label">Equipo</label>
-          <select id="f-hist-team" onchange="computeAndRender()">
-            <option value="all">Todos los equipos</option>
+    <!-- Tabla detalle -->
+    <div class="table-wrap">
+      <div class="table-header">
+        <span class="table-title">Detalle por colaborador</span>
+        <div class="filter-bar">
+          <select class="sel" id="h-equipo-filter" onchange="renderHistTable()">
+            <option value="">Todos los equipos</option>
             <option value="Celeste Cignoli">Celeste Cignoli</option>
             <option value="José Puentes">José Puentes</option>
             <option value="Matías López">Matías López</option>
             <option value="Matías Minczuk">Matías Minczuk</option>
           </select>
+          <input class="search-bar" type="text" placeholder="Buscar..." id="search-hist" oninput="renderHistTable()">
         </div>
-        <div class="filter-group"><label class="filter-label">Desde</label><input type="date" id="f-hist-start" onchange="computeAndRender()"></div>
-        <div class="filter-group"><label class="filter-label">Hasta</label><input type="date" id="f-hist-end" onchange="computeAndRender()"></div>
       </div>
-      
-      <div class="stat-grid" id="hist-stats"></div>
-      
-      <div style="background:var(--surface); padding:20px; border-radius:var(--radius-lg); margin-bottom:24px">
-        <h3 style="margin-bottom:16px; font-size:14px">Distribución por Banda</h3>
-        <div style="height:300px"><canvas id="chart-bands-hist"></canvas></div>
-      </div>
-
-      <div style="background:var(--surface); border-radius:var(--radius-lg); overflow:hidden">
-        <table id="table-hist">
-          <thead>
-            <tr><th>Colaborador</th><th>Equipo</th><th>Días Activos</th><th>Tareas Prom.</th><th>Puntos Prom.</th><th>Banda</th></tr>
-          </thead>
-          <tbody id="tbody-hist"></tbody>
-        </table>
+      <div style="overflow-x:auto;max-height:480px;overflow-y:auto">
+        <table><thead id="hist-thead"></thead><tbody id="hist-tbody"></tbody></table>
       </div>
     </div>
+  </div>
+</div>
 
-    <div class="page" id="page-ranking">
-      <h2>Ranking Global</h2>
-      <div class="filter-container">
-        <div class="filter-group"><label class="filter-label">Equipo</label>
-          <select id="f-rank-team" onchange="computeAndRender()">
-            <option value="all">Todos</option>
-            <option value="Celeste Cignoli">Celeste Cignoli</option>
-            <option value="José Puentes">José Puentes</option>
-            <option value="Matías López">Matías López</option>
-            <option value="Matías Minczuk">Matías Minczuk</option>
-          </select>
-        </div>
-        <div class="filter-group"><label class="filter-label">Periodo</label><select id="f-rank-period" onchange="computeAndRender()"></select></div>
+<!-- RANKING -->
+<div class="page" id="page-ranking">
+  <div class="page-header">
+    <h2 class="page-title">Ranking del equipo</h2>
+    <p class="page-sub">Puntos ponderados por día activo · filtrado dinámico</p>
+  </div>
+  <div id="rank-empty" class="empty-state">
+    <svg width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    <p>Cargá historico.csv para ver el ranking</p>
+  </div>
+  <div id="rank-content" style="display:none">
+    <!-- Filtros ranking -->
+    <div class="filter-row">
+      <label>Año</label>
+      <select class="sel" id="r-year" onchange="applyRankFilter()"><option value="">Todos</option></select>
+      <label>Mes</label>
+      <select class="sel" id="r-month" onchange="applyRankFilter()"><option value="">Todos</option></select>
+      <label>Semana</label>
+      <select class="sel" id="r-week" onchange="applyRankFilter()"><option value="">Todas</option></select>
+      <label>Desde</label>
+      <input type="date" class="sel" id="r-from" onchange="applyRankFilter()">
+      <label>Hasta</label>
+      <input type="date" class="sel" id="r-to" onchange="applyRankFilter()">
+      <label>Equipo</label>
+      <select class="sel" id="r-equipo" onchange="applyRankFilter()">
+        <option value="">Todos</option>
+        <option value="Celeste Cignoli">Celeste Cignoli</option>
+        <option value="José Puentes">José Puentes</option>
+        <option value="Matías López">Matías López</option>
+        <option value="Matías Minczuk">Matías Minczuk</option>
+      </select>
+      <button class="filter-btn" onclick="clearRankFilter()">✕ Limpiar</button>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-header"><span class="chart-title">Puntos ponderados promedio por colaborador</span></div>
+      <div style="height:420px;overflow-y:auto"><canvas id="chart-ranking"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- CALCULADORA -->
+<div class="page" id="page-calc">
+  <div class="page-header">
+    <h2 class="page-title">Calculadora 1:1</h2>
+    <p class="page-sub">Herramienta para el TL · simulá el mix del día y la banda resultante</p>
+  </div>
+  <div class="calc-grid">
+    <div class="calc-box">
+      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:600;margin-bottom:18px">Mix de tareas del día</div>
+      <div class="input-group">
+        <div class="input-label">Demanda <span id="lbl-dem">70</span></div>
+        <div class="range-wrap"><input type="range" id="r-dem" min="0" max="150" value="70" oninput="updateCalc()"><span class="range-val" id="v-dem">70</span></div>
       </div>
-      <div style="background:var(--surface); padding:20px; border-radius:var(--radius-lg); height:500px">
-        <canvas id="chart-ranking-full"></canvas>
+      <div class="input-group">
+        <div class="input-label">Enhanced Content <span id="lbl-ec">5</span></div>
+        <div class="range-wrap"><input type="range" id="r-ec" min="0" max="150" value="5" oninput="updateCalc()"><span class="range-val" id="v-ec">5</span></div>
+      </div>
+      <div class="input-group">
+        <div class="input-label">Enhancement <span id="lbl-enh">10</span></div>
+        <div class="range-wrap"><input type="range" id="r-enh" min="0" max="150" value="10" oninput="updateCalc()"><span class="range-val" id="v-enh">10</span></div>
+      </div>
+      <div class="input-group">
+        <div class="input-label">Validación <span id="lbl-val">0</span></div>
+        <div class="range-wrap"><input type="range" id="r-val" min="0" max="150" value="0" oninput="updateCalc()"><span class="range-val" id="v-val">0</span></div>
+      </div>
+      <div class="input-group">
+        <div class="input-label">Soporte (resueltas) <span id="lbl-sop">0</span></div>
+        <div class="range-wrap"><input type="range" id="r-sop" min="0" max="150" value="0" oninput="updateCalc()"><span class="range-val" id="v-sop">0</span></div>
+      </div>
+      <div class="breakdown">
+        <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px">Desglose de puntos</div>
+        <div class="bd-row"><span class="bd-lbl" id="lbl-bd-dem">Demanda ×1.0</span><span class="bd-val" id="bd-dem">70.0 pts</span></div>
+        <div class="bd-row"><span class="bd-lbl" id="lbl-bd-ec">Enhanced Content ×1.0</span><span class="bd-val" id="bd-ec">5.0 pts</span></div>
+        <div class="bd-row"><span class="bd-lbl" id="lbl-bd-enh">Enhancement ×1.3</span><span class="bd-val" id="bd-enh">13.0 pts</span></div>
+        <div class="bd-row"><span class="bd-lbl" id="lbl-bd-val">Validación ×1.1</span><span class="bd-val" id="bd-val">0.0 pts</span></div>
+        <div class="bd-row"><span class="bd-lbl" id="lbl-bd-sop">Soporte ×2.0</span><span class="bd-val" id="bd-sop">0.0 pts</span></div>
+        <div class="total-row"><span>Total tareas</span><span class="mono" id="bd-tasks">85</span></div>
       </div>
     </div>
-
-    <div class="page" id="page-calc">
-      <div class="calc-grid">
-        <div style="background:var(--surface); padding:24px; border-radius:var(--radius-lg)">
-          <h3 style="margin-bottom:20px">Simulador de Mix</h3>
-          <div id="calc-sliders"></div>
-        </div>
-        <div style="background:var(--surface); padding:24px; border-radius:var(--radius-lg); text-align:center">
-          <div id="calc-result-value" style="font-size:64px; font-weight:800; font-family:Syne">0.0</div>
-          <p class="filter-label">Puntos Ponderados</p>
-          <div id="calc-band-box" style="margin-top:20px; padding:12px; border-radius:8px"></div>
-          <div id="calc-breakdown" style="margin-top:24px; text-align:left; font-size:12px; color:var(--text2)"></div>
+    <div class="calc-box">
+      <div class="pts-display">
+        <div class="pts-number" id="pts-big">88.0</div>
+        <div class="pts-label">puntos ponderados</div>
+        <div class="band-display" id="band-display">
+          <div class="band-name-big" id="band-name">Base ✓</div>
+          <div class="band-desc" id="band-desc">Objetivo mínimo cumplido</div>
         </div>
       </div>
+      <div style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
+        <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Referencia de bandas</div>
+        <div id="bands-ref"></div>
+      </div>
     </div>
-  </main>
+  </div>
+  <div class="sep"></div>
+  <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:600;margin-bottom:14px">Escenarios rápidos para el 1:1</div>
+  <div id="scenarios-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px"></div>
+</div>
+
+</main>
 </div>
 
 <script>
-let RAW_HIST = [], RAW_EQUIPO = {};
-let WEIGHTS = { dem: 1.0, ec: 1.0, enh: 1.3, val: 1.1, sop: 2.0 };
-let CHARTS = {};
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+let DATA    = { hist: null, equipo: null };
+let WEIGHTS = { Demanda:1.0,'Enhanced Content':1.0,Enhancement:1.3,Validación:1.1,Soporte:2.0,Fallos:1.0 };
+let CHARTS  = {};
+let PROC    = null;         // processed data
+let HIST_FILTER = {};       // active filters for historico
+let RANK_FILTER = {};       // active filters for ranking
+let HIST_SORT   = { col:'avgPts', dir:-1 };
 
 const BANDS = [
-  { min: 0, max: 88, label: 'En progreso', color: '#ff5f57' },
-  { min: 88, max: 95, label: 'Base ✓', color: '#5b7fff' },
-  { min: 95, max: 103, label: 'Sólido ✓✓', color: '#3ecf8e' },
-  { min: 103, max: 110, label: 'High Performer', color: '#a78bfa' },
-  { min: 110, max: 999, label: 'Elite ⭐', color: '#f6a623' }
+  { min:0,   max:88,  css:'bp', label:'En progreso',        color:'#ff5f57', desc:'Trabajar con TL · plan específico' },
+  { min:88,  max:95,  css:'bb', label:'Base ✓',             color:'#5b7fff', desc:'Objetivo mínimo cumplido' },
+  { min:95,  max:103, css:'bs', label:'Sólido ✓✓',          color:'#3ecf8e', desc:'Por encima del techo histórico' },
+  { min:103, max:110, css:'bh', label:'High Performer ✓✓✓', color:'#a78bfa', desc:'Rumbo al objetivo MELI' },
+  { min:110, max:1e9, css:'be', label:'Elite ⭐ MELI',       color:'#f6a623', desc:'Objetivo MELI alcanzado' },
 ];
+function getBand(pts){ return BANDS.find(b=>pts>=b.min&&pts<b.max)||BANDS[0]; }
 
-function loadFile(input, type) {
-  const file = input.files[0];
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const text = e.target.result;
-    if (type === 'hist') {
-      RAW_HIST = parseCSV(text);
-      document.getElementById('z-hist').classList.add('done');
-      populateDateFilters();
-    } else {
-      const rows = parseCSV(text);
-      rows.forEach(r => {
-        const id = (r['Usuario'] || r['id'] || '').trim();
-        if(id) RAW_EQUIPO[id] = r;
-      });
-      document.getElementById('z-equipo').classList.add('done');
-    }
-    computeAndRender();
-  };
-  reader.readAsText(file, 'Windows-1252');
+const MONTH_NAMES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+// ═══════════════════════════════════════════════════════════════
+// CSV PARSER — robust: auto-detect separator, handle quoted fields,
+// support UTF-8 with BOM and Windows-1252 fallback
+// ═══════════════════════════════════════════════════════════════
+function detectSep(line){
+  const sc = (line.match(/;/g)||[]).length;
+  const cc = (line.match(/,/g)||[]).length;
+  const tc = (line.match(/\t/g)||[]).length;
+  if(sc>=cc&&sc>=tc) return ';';
+  if(tc>=cc&&tc>sc)  return '\t';
+  return ',';
 }
 
-function parseCSV(text) {
-  const lines = text.split(/\r?\n/).filter(l => l.trim());
-  const sep = lines[0].includes(';') ? ';' : ',';
-  const headers = lines[0].split(sep).map(h => h.trim().replace(/"/g,''));
-  return lines.slice(1).map(line => {
-    const values = line.split(sep).map(v => v.trim().replace(/"/g,''));
-    return headers.reduce((obj, h, i) => ({ ...obj, [h]: values[i] }), {});
+function splitLine(line, sep){
+  const res=[]; let cur='', inQ=false;
+  for(let i=0;i<line.length;i++){
+    const c=line[i];
+    if(c==='"'){
+      if(inQ&&line[i+1]==='"'){cur+='"';i++;}
+      else inQ=!inQ;
+    } else if(c===sep&&!inQ){
+      res.push(cur.trim()); cur='';
+    } else cur+=c;
+  }
+  res.push(cur.trim());
+  return res;
+}
+
+function parseCSV(text){
+  // Strip BOM
+  if(text.charCodeAt(0)===0xFEFF) text=text.slice(1);
+  // Normalize line endings
+  const lines=text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').trim().split('\n');
+  if(lines.length<2){console.warn('[CSV] Archivo vacío');return [];}
+  const sep=detectSep(lines[0]);
+  const headers=splitLine(lines[0],sep).map(h=>h.replace(/^"|"$/g,'').trim());
+  console.log(`[CSV] sep="${sep==='	'?'TAB':sep}" headers(${headers.length}):`,headers);
+  const rows=lines.slice(1).filter(l=>l.trim()).map(l=>{
+    const vals=splitLine(l,sep);
+    const r={};
+    headers.forEach((h,i)=>{ r[h]=(vals[i]||'').replace(/^"|"$/g,'').trim(); });
+    return r;
+  });
+  console.log('[CSV] primeros 5 registros:',rows.slice(0,5));
+  return rows;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FILE READING — UTF-8 first, fallback to Windows-1252
+// ═══════════════════════════════════════════════════════════════
+function readWithFallback(file, cb){
+  const tryEnc=(enc)=>{
+    const fr=new FileReader();
+    fr.onload=ev=>{
+      const txt=ev.target.result;
+      if(enc==='UTF-8'&&txt.includes('\uFFFD')){
+        console.log('[FileReader] UTF-8 falló, reintentando con windows-1252');
+        tryEnc('windows-1252');
+      } else { console.log(`[FileReader] OK con ${enc}`); cb(txt); }
+    };
+    fr.onerror=()=>{ alert('Error leyendo el archivo'); };
+    fr.readAsText(file, enc);
+  };
+  tryEnc('UTF-8');
+}
+
+function handleFile(input,type){
+  const file=input.files[0]; if(!file)return;
+  readWithFallback(file,txt=>processFile(txt,type,file.name));
+}
+function evDrag(e,id){e.preventDefault();document.getElementById(id).classList.add('drag');}
+function evLeave(id){document.getElementById(id).classList.remove('drag');}
+function evDrop(e,type){
+  e.preventDefault();
+  const id=type==='hist'?'zone-hist':'zone-equipo';
+  document.getElementById(id).classList.remove('drag');
+  const file=e.dataTransfer.files[0]; if(!file)return;
+  readWithFallback(file,txt=>processFile(txt,type,file.name));
+}
+
+function processFile(txt,type,name){
+  const rows=parseCSV(txt);
+  if(!rows.length){alert(`No se pudo parsear "${name}". Ver consola.`);return;}
+  DATA[type]=rows;
+  const zId=type==='hist'?'zone-hist':'zone-equipo';
+  const sId=type==='hist'?'sub-hist':'sub-equipo';
+  document.getElementById(zId).classList.add('done');
+  document.getElementById(sId).textContent=`✓ ${name} · ${rows.length.toLocaleString()} filas`;
+  if(type==='hist') showPreview(rows);
+  document.getElementById('alert-partial').style.display=(DATA.hist&&!DATA.equipo)?'flex':'none';
+  if(DATA.hist){ computeAll(); activatePages(); }
+}
+
+function showPreview(rows){
+  const prev=rows.slice(-8);
+  const keys=Object.keys(prev[0]);
+  let h=`<thead><tr>${keys.map(k=>`<th>${k}</th>`).join('')}</tr></thead><tbody>`;
+  prev.forEach(r=>{ h+=`<tr>${keys.map(k=>`<td style="color:var(--text2)">${r[k]||''}</td>`).join('')}</tr>`; });
+  document.getElementById('preview-table').innerHTML=h+'</tbody>';
+  document.getElementById('preview-count').textContent=`${rows.length.toLocaleString()} filas cargadas`;
+  document.getElementById('preview-section').style.display='block';
+}
+
+function activatePages(){
+  ['hist-empty','rank-empty'].forEach(id=>document.getElementById(id).style.display='none');
+  ['hist-content','rank-content'].forEach(id=>document.getElementById(id).style.display='block');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// COLUMN AUTO-DETECT
+// ═══════════════════════════════════════════════════════════════
+function findCol(row, candidates){
+  const keys=Object.keys(row);
+  for(const c of candidates){
+    const f=keys.find(k=>k.trim().toLowerCase()===c.toLowerCase());
+    if(f)return f;
+  }
+  return null;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// DATE PARSER — flexible multi-format
+// ═══════════════════════════════════════════════════════════════
+function parseDate(s){
+  if(!s)return null; s=s.trim();
+  let m=s.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/);
+  if(m)return new Date(+m[3],+m[2]-1,+m[1]);
+  m=s.match(/^(\d{4})[\/\-](\d{2})[\/\-](\d{2})/);
+  if(m)return new Date(+m[1],+m[2]-1,+m[3]);
+  const d=new Date(s);
+  return isNaN(d)?null:d;
+}
+
+function isoWeek(d){
+  const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
+  const day=t.getUTCDay()||7;
+  t.setUTCDate(t.getUTCDate()+4-day);
+  const yearStart=new Date(Date.UTC(t.getUTCFullYear(),0,1));
+  return{year:t.getUTCFullYear(),week:Math.ceil(((t-yearStart)/86400000+1)/7)};
+}
+
+// ═══════════════════════════════════════════════════════════════
+// COMPUTE ALL
+// ═══════════════════════════════════════════════════════════════
+function getWeight(flujo, status){
+  if(flujo==='Soporte'&&status!=='DONE')return 0;
+  return WEIGHTS[flujo]!==undefined?WEIGHTS[flujo]:1.0;
+}
+
+function computeAll(){
+  if(!DATA.hist||!DATA.hist.length)return;
+  const sample=DATA.hist[0];
+  const COL={
+    fecha:  findCol(sample,['Fecha','fecha','Date','date','FECHA']),
+    status: findCol(sample,['Status','status','Estado','estado','STATUS']),
+    flujo:  findCol(sample,['Flujo de Tarea','Flujo','flujo','FLUJO','flow','Flow']),
+    user:   findCol(sample,['Usuario','usuario','User','user','USUARIO','Colaborador','colaborador']),
+  };
+  console.log('[computeAll] cols:',COL);
+  if(!COL.fecha||!COL.status||!COL.flujo||!COL.user){
+    const miss=Object.entries(COL).filter(([,v])=>!v).map(([k])=>k);
+    alert(`Columnas no encontradas: ${miss.join(', ')}\nColumnas disponibles: ${Object.keys(sample).join(', ')}`);
+    return;
+  }
+
+  // Build per-person per-day aggregates  → rows[]
+  const rawRows=[];
+  let skipped=0;
+
+  DATA.hist.forEach(r=>{
+    const st=(r[COL.status]||'').trim();
+    const date=parseDate(r[COL.fecha]);
+    if(!date){skipped++;return;}
+    const user=(r[COL.user]||'').trim();
+    const flujo=(r[COL.flujo]||'Demanda').trim();
+    const w=getWeight(flujo,st);
+    if(st!=='DONE')return; // only DONE contributes points
+    const wk=isoWeek(date);
+    rawRows.push({
+      user, flujo, w,
+      date,
+      dateStr:r[COL.fecha].trim(),
+      year:date.getFullYear(),
+      month:date.getMonth()+1,
+      week:wk.week,
+      weekYear:wk.year,
+      monthKey:`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}`,
+    });
+  });
+  if(skipped) console.warn(`[computeAll] ${skipped} filas ignoradas (fecha inválida)`);
+  console.log(`[computeAll] DONE rows: ${rawRows.length}`);
+
+  // Equipo map
+  const equipoMap={};
+  if(DATA.equipo&&DATA.equipo.length){
+    const eS=DATA.equipo[0];
+    const eId  =findCol(eS,['ID_MELI','id_meli','ID','id','Usuario','usuario','user']);
+    const eNom =findCol(eS,['Nombre','nombre','Name','name']);
+    const eRol =findCol(eS,['Rol','rol','Role','role']);
+    const eEq  =findCol(eS,['Equipo','equipo','Team','team','TL']);
+    DATA.equipo.forEach(r=>{
+      const id=((eId?r[eId]:'')||'').trim();
+      if(id) equipoMap[id]={
+        nombre:(eNom?r[eNom]:id)||id,
+        rol:(eRol?r[eRol]:'')||'',
+        equipo:(eEq?r[eEq]:'')||'',
+      };
+    });
+    console.log(`[computeAll] equipoMap: ${Object.keys(equipoMap).length}`);
+  }
+
+  // Collect unique filter values
+  const years  =[...new Set(rawRows.map(r=>r.year))].sort();
+  const months =[...new Set(rawRows.map(r=>r.monthKey))].sort();
+  const weeks  =[...new Set(rawRows.map(r=>`${r.weekYear}-W${String(r.week).padStart(2,'0')}`))].sort();
+
+  PROC={ rawRows, equipoMap, years, months, weeks };
+
+  populateFilterSelects();
+  applyHistFilter();
+  applyRankFilter();
+  renderBandsRef();
+  renderScenarios();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FILTER SELECTS POPULATION
+// ═══════════════════════════════════════════════════════════════
+function populateFilterSelects(){
+  ['h-year','r-year'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.innerHTML='<option value="">Todos</option>';
+    PROC.years.forEach(y=>el.insertAdjacentHTML('beforeend',`<option value="${y}">${y}</option>`));
+  });
+  ['h-month','r-month'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.innerHTML='<option value="">Todos</option>';
+    PROC.months.forEach(mk=>{
+      const [y,m]=mk.split('-');
+      el.insertAdjacentHTML('beforeend',`<option value="${mk}">${MONTH_NAMES[+m-1]} ${y}</option>`);
+    });
+  });
+  ['h-week','r-week'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.innerHTML='<option value="">Todas</option>';
+    PROC.weeks.forEach(w=>el.insertAdjacentHTML('beforeend',`<option value="${w}">Sem. ${w}</option>`));
   });
 }
 
-function populateDateFilters() {
-  const dates = [...new Set(RAW_HIST.map(r => r.Fecha || r.fecha))].filter(Boolean);
-  const years = [...new Set(dates.map(d => d.split('/')[2]))].sort();
-  const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-  
-  const ySel = document.getElementById('f-hist-year');
-  ySel.innerHTML = '<option value="all">Todos</option>' + years.map(y => `<option value="${y}">${y}</option>`).join('');
-  
-  const mSel = document.getElementById('f-hist-month');
-  mSel.innerHTML = '<option value="all">Todos</option>' + months.map((m, i) => `<option value="${i+1}">${m}</option>`).join('');
+// ═══════════════════════════════════════════════════════════════
+// FILTER LOGIC — shared
+// ═══════════════════════════════════════════════════════════════
+function buildFilter(prefix){
+  return{
+    year:  document.getElementById(`${prefix}-year`).value,
+    month: document.getElementById(`${prefix}-month`).value,
+    week:  document.getElementById(`${prefix}-week`).value,
+    from:  document.getElementById(`${prefix}-from`).value,
+    to:    document.getElementById(`${prefix}-to`).value,
+  };
 }
 
-function applyGlobalChanges() {
-  WEIGHTS.dem = parseFloat(document.getElementById('w-dem').value);
-  WEIGHTS.ec = parseFloat(document.getElementById('w-ec').value);
-  WEIGHTS.enh = parseFloat(document.getElementById('w-enh').value);
-  WEIGHTS.val = parseFloat(document.getElementById('w-val').value);
-  WEIGHTS.sop = parseFloat(document.getElementById('w-sop').value);
-  computeAndRender();
-  renderCalc();
-}
-
-function getProcessedData(filterType) {
-  const team = document.getElementById(filterType === 'hist' ? 'f-hist-team' : 'f-rank-team').value;
-  const year = filterType === 'hist' ? document.getElementById('f-hist-year').value : 'all';
-  const month = filterType === 'hist' ? document.getElementById('f-hist-month').value : 'all';
-  const start = filterType === 'hist' ? document.getElementById('f-hist-start').value : null;
-  const end = filterType === 'hist' ? document.getElementById('f-hist-end').value : null;
-
-  let filtered = RAW_HIST.filter(r => {
-    const user = r.Usuario || r.usuario;
-    const eq = RAW_EQUIPO[user]?.Equipo || RAW_EQUIPO[user]?.equipo || '';
-    if (team !== 'all' && eq !== team) return false;
-    
-    const [d, m, y] = (r.Fecha || r.fecha || "").split('/');
-    if (year !== 'all' && y !== year) return false;
-    if (month !== 'all' && parseInt(m) !== parseInt(month)) return false;
-    
-    if (start || end) {
-      const rowDate = new Date(y, m-1, d);
-      if (start && rowDate < new Date(start)) return false;
-      if (end && rowDate > new Date(end)) return false;
+function filterRows(rows, f){
+  return rows.filter(r=>{
+    if(f.year   && r.year!==+f.year) return false;
+    if(f.month  && r.monthKey!==f.month) return false;
+    if(f.week){
+      const wk=`${r.weekYear}-W${String(r.week).padStart(2,'0')}`;
+      if(wk!==f.week) return false;
     }
+    if(f.from && r.date<new Date(f.from)) return false;
+    if(f.to   && r.date>new Date(f.to+' 23:59:59')) return false;
     return true;
   });
-
-  const stats = {};
-  filtered.forEach(r => {
-    const user = r.Usuario || r.usuario;
-    const date = r.Fecha || r.fecha;
-    const flujo = r.Flujo || r.flujo;
-    if (!stats[user]) stats[user] = { tasks: 0, pts: 0, days: new Set() };
-    
-    let p = 1.0;
-    if (flujo === 'Enhancement') p = WEIGHTS.enh;
-    else if (flujo === 'Enhanced Content') p = WEIGHTS.ec;
-    else if (flujo === 'Validación') p = WEIGHTS.val;
-    else if (flujo === 'Soporte' && (r.Status || r.status) === 'DONE') p = WEIGHTS.sop;
-
-    stats[user].tasks++;
-    stats[user].pts += p;
-    stats[user].days.add(date);
-  });
-
-  return Object.entries(stats).map(([id, s]) => ({
-    id,
-    nombre: RAW_EQUIPO[id]?.Nombre || id,
-    equipo: RAW_EQUIPO[id]?.Equipo || 'Sin Equipo',
-    dias: s.days.size,
-    avgTasks: s.tasks / s.days.size,
-    avgPts: s.pts / s.days.size,
-    band: BANDS.find(b => (s.pts/s.days.size) >= b.min && (s.pts/s.days.size) < b.max) || BANDS[0]
-  }));
 }
 
-function computeAndRender() {
-  const dataHist = getProcessedData('hist');
-  const dataRank = getProcessedData('rank');
-
-  // Render Table Hist
-  document.getElementById('tbody-hist').innerHTML = dataHist.map(p => `
-    <tr><td>${p.nombre}</td><td>${p.equipo}</td><td>${p.dias}</td>
-    <td>${p.avgTasks.toFixed(1)}</td><td style="color:${p.band.color}; font-weight:700">${p.avgPts.toFixed(1)}</td>
-    <td><span class="band-badge" style="background:${p.band.color}22; color:${p.band.color}">${p.band.label}</span></td></tr>
-  `).join('');
-
-  renderCharts(dataHist, dataRank);
+function clearHistFilter(){
+  ['h-year','h-month','h-week'].forEach(id=>document.getElementById(id).value='');
+  ['h-from','h-to'].forEach(id=>document.getElementById(id).value='');
+  applyHistFilter();
+}
+function clearRankFilter(){
+  ['r-year','r-month','r-week'].forEach(id=>document.getElementById(id).value='');
+  ['r-from','r-to'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('r-equipo').value='';
+  applyRankFilter();
 }
 
-function renderCharts(dataHist, dataRank) {
-  // Chart Bands
-  const bCtx = document.getElementById('chart-bands-hist').getContext('2d');
-  if(CHARTS.bands) CHARTS.bands.destroy();
-  const bandCounts = BANDS.map(b => dataHist.filter(p => p.band.label === b.label).length);
-  CHARTS.bands = new Chart(bCtx, {
-    type: 'bar',
-    data: { labels: BANDS.map(b=>b.label), datasets: [{ data: bandCounts, backgroundColor: BANDS.map(b=>b.color+'88') }] },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+// ═══════════════════════════════════════════════════════════════
+// HISTORICO
+// ═══════════════════════════════════════════════════════════════
+let HIST_PERSONS=[];
+
+function applyHistFilter(){
+  if(!PROC)return;
+  HIST_FILTER=buildFilter('h');
+  const filtered=filterRows(PROC.rawRows, HIST_FILTER);
+  HIST_PERSONS=aggregatePersons(filtered, PROC.equipoMap);
+  renderHistStats(HIST_PERSONS);
+  renderBandsChart(filtered);
+  renderHistTable();
+}
+
+function aggregatePersons(rows, equipoMap){
+  // group by user → day → {pts, tasks, flujos}
+  const byUserDay={};
+  rows.forEach(r=>{
+    if(!byUserDay[r.user])byUserDay[r.user]={};
+    if(!byUserDay[r.user][r.dateStr])byUserDay[r.user][r.dateStr]={pts:0,tasks:0,flujos:{},monthKey:r.monthKey};
+    byUserDay[r.user][r.dateStr].pts+=r.w;
+    byUserDay[r.user][r.dateStr].tasks++;
+    byUserDay[r.user][r.dateStr].flujos[r.flujo]=(byUserDay[r.user][r.dateStr].flujos[r.flujo]||0)+1;
   });
 
-  // Chart Ranking
-  const rCtx = document.getElementById('chart-ranking-full').getContext('2d');
-  if(CHARTS.rank) CHARTS.rank.destroy();
-  const sorted = dataRank.sort((a,b) => b.avgPts - a.avgPts);
-  CHARTS.rank = new Chart(rCtx, {
-    type: 'bar',
-    data: {
-      labels: sorted.map(p => p.nombre),
-      datasets: [{ label: 'Puntos Promedio', data: sorted.map(p => p.avgPts), backgroundColor: sorted.map(p => p.band.color) }]
+  return Object.entries(byUserDay).map(([user,days])=>{
+    const info=equipoMap[user]||{nombre:user,rol:'',equipo:''};
+    const dayArr=Object.values(days);
+    const activeDays=dayArr.length;
+    const totalPts=dayArr.reduce((s,d)=>s+d.pts,0);
+    const totalTasks=dayArr.reduce((s,d)=>s+d.tasks,0);
+    const avgPts=activeDays?totalPts/activeDays:0;
+    const avgTasks=activeDays?totalTasks/activeDays:0;
+    // Month breakdown
+    const byMonth={};
+    dayArr.forEach(d=>{
+      const mk=d.monthKey;
+      if(!byMonth[mk])byMonth[mk]={pts:0,tasks:0,days:0};
+      byMonth[mk].pts+=d.pts; byMonth[mk].tasks+=d.tasks; byMonth[mk].days++;
+    });
+    // Dominant flujo
+    const ft={};
+    dayArr.forEach(d=>Object.entries(d.flujos).forEach(([f,c])=>{ft[f]=(ft[f]||0)+c;}));
+    const dom=Object.entries(ft).sort((a,b)=>b[1]-a[1])[0];
+    return{user,...info,activeDays,avgPts,avgTasks,byMonth,domFlujo:dom?dom[0]:'Demanda',band:getBand(avgPts)};
+  });
+}
+
+function renderHistStats(persons){
+  const active=persons.filter(p=>p.avgPts>0);
+  const avg=active.length?active.reduce((s,p)=>s+p.avgPts,0)/active.length:0;
+  const aboveBase=active.filter(p=>p.avgPts>=88).length;
+  const elite=active.filter(p=>p.avgPts>=110).length;
+  const risk=active.filter(p=>p.avgPts<88).length;
+  document.getElementById('hist-stats').innerHTML=`
+    <div class="stat-card acc"><div class="stat-label">Promedio equipo (pts)</div><div class="stat-value">${avg.toFixed(1)}</div><div class="stat-sub">período seleccionado</div></div>
+    <div class="stat-card grn"><div class="stat-label">En banda Base o sup.</div><div class="stat-value">${aboveBase}</div><div class="stat-sub">de ${active.length} analistas</div></div>
+    <div class="stat-card amb"><div class="stat-label">Banda Elite</div><div class="stat-value">${elite}</div><div class="stat-sub">objetivo MELI alcanzado</div></div>
+    <div class="stat-card redd"><div class="stat-label">Bajo Base (&lt;88 pts)</div><div class="stat-value">${risk}</div><div class="stat-sub">requieren atención TL</div></div>`;
+}
+
+function renderBandsChart(rows){
+  // Group by month, count bands
+  const monthRows={};
+  rows.forEach(r=>{
+    if(!monthRows[r.monthKey])monthRows[r.monthKey]=[];
+    monthRows[r.monthKey].push(r);
+  });
+  const months=Object.keys(monthRows).sort();
+  if(!months.length)return;
+
+  // For each month, build per-user avg pts then classify
+  const bandCounts=months.map(mk=>{
+    const byUser={};
+    monthRows[mk].forEach(r=>{
+      if(!byUser[r.user])byUser[r.user]={pts:0,days:new Set()};
+      byUser[r.user].pts+=r.w;
+      byUser[r.user].days.add(r.dateStr);
+    });
+    const counts=new Array(BANDS.length).fill(0);
+    Object.values(byUser).forEach(u=>{
+      const avg=u.pts/u.days.size;
+      const bi=BANDS.findIndex(b=>avg>=b.min&&avg<b.max);
+      if(bi>=0)counts[bi]++;
+    });
+    return counts;
+  });
+
+  // month filter buttons
+  const mfEl=document.getElementById('bands-month-filters');
+  if(mfEl&&months.length>0){
+    mfEl.innerHTML=months.map((mk,i)=>{
+      const [y,m]=mk.split('-');
+      return `<button class="filter-btn" onclick="highlightBandMonth(${i})" id="bmf-${i}">${MONTH_NAMES[+m-1]} ${y}</button>`;
+    }).join('');
+  }
+
+  const ctx=document.getElementById('chart-bands').getContext('2d');
+  if(CHARTS.bands)CHARTS.bands.destroy();
+  CHARTS.bands=new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels:months.map(mk=>{const[y,m]=mk.split('-');return MONTH_NAMES[+m-1]+' '+y;}),
+      datasets:BANDS.map((b,bi)=>({
+        label:b.label,
+        data:bandCounts.map(c=>c[bi]),
+        backgroundColor:b.color+'88',
+        borderColor:b.color,
+        borderWidth:1.5,
+        borderRadius:4,
+      }))
     },
-    options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y' }
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{labels:{color:'#8b91a8',font:{size:11},boxWidth:12,padding:10}},
+        tooltip:{backgroundColor:'#1c2030',titleColor:'#e8eaf2',bodyColor:'#8b91a8',borderColor:'#252a3a',borderWidth:1,
+          callbacks:{label:c=>`${c.dataset.label}: ${c.raw} analistas`}}
+      },
+      scales:{
+        x:{stacked:true,grid:{color:'#252a3a'},ticks:{color:'#8b91a8'}},
+        y:{stacked:true,grid:{color:'#252a3a'},ticks:{color:'#8b91a8',precision:0}}
+      }
+    }
   });
 }
 
-function renderCalc() {
-  const flows = [
-    { id: 'dem', label: 'Demanda', w: WEIGHTS.dem },
-    { id: 'ec', label: 'Enhanced Content', w: WEIGHTS.ec },
-    { id: 'enh', label: 'Enhancement', w: WEIGHTS.enh },
-    { id: 'val', label: 'Validación', w: WEIGHTS.val },
-    { id: 'sop', label: 'Soporte (DONE)', w: WEIGHTS.sop }
-  ];
+function highlightBandMonth(i){
+  document.querySelectorAll('[id^="bmf-"]').forEach(b=>b.classList.remove('active'));
+  document.getElementById(`bmf-${i}`)?.classList.add('active');
+}
 
-  document.getElementById('calc-sliders').innerHTML = flows.map(f => `
-    <div style="margin-bottom:12px">
-      <div style="display:flex; justify-content:space-between; font-size:12px"><span>${f.label}</span><b id="v-${f.id}">0</b></div>
-      <input type="range" id="i-${f.id}" min="0" max="150" value="0" style="width:100%" oninput="updateCalc()">
-    </div>
-  `).join('');
+function renderHistTable(){
+  if(!HIST_PERSONS.length)return;
+  const search=(document.getElementById('search-hist')?.value||'').toLowerCase();
+  const eqFilter=(document.getElementById('h-equipo-filter')?.value||'');
+
+  // Build month list from data
+  const allMonths=[...new Set(HIST_PERSONS.flatMap(p=>Object.keys(p.byMonth)))].sort();
+
+  // Header
+  document.getElementById('hist-thead').innerHTML=`<tr>
+    <th onclick="sortHist('nombre')">Colaborador</th>
+    <th onclick="sortHist('equipo')">Equipo</th>
+    ${allMonths.map(mk=>{const[y,m]=mk.split('-');return`<th>${MONTH_NAMES[+m-1]} ${y}<br><span style="font-weight:400;color:var(--text3)">pts/t</span></th>`}).join('')}
+    <th onclick="sortHist('avgPts')">Pts/día ▾</th>
+    <th onclick="sortHist('avgTasks')">T/día</th>
+    <th onclick="sortHist('activeDays')">Días act.</th>
+    <th>Banda</th>
+  </tr>`;
+
+  let persons=[...HIST_PERSONS];
+  if(eqFilter) persons=persons.filter(p=>p.equipo===eqFilter);
+  if(search)   persons=persons.filter(p=>(p.nombre||p.user).toLowerCase().includes(search)||p.equipo.toLowerCase().includes(search));
+
+  // Sort
+  persons.sort((a,b)=>{
+    let va=a[HIST_SORT.col], vb=b[HIST_SORT.col];
+    if(typeof va==='string') va=va.toLowerCase(), vb=vb.toLowerCase();
+    return va<vb?HIST_SORT.dir:-HIST_SORT.dir;
+  });
+
+  document.getElementById('hist-tbody').innerHTML=persons.map(p=>{
+    const mcells=allMonths.map(mk=>{
+      const m=p.byMonth[mk];
+      if(!m)return`<td style="color:var(--text3)">—</td>`;
+      const b=getBand(m.pts/m.days);
+      return`<td><span class="mono-cell" style="color:${b.color}">${(m.pts/m.days).toFixed(1)}</span><span style="color:var(--text3);font-size:11px"> / ${(m.tasks/m.days).toFixed(0)}</span></td>`;
+    });
+    return`<tr>
+      <td class="name-cell">${p.nombre||p.user}</td>
+      <td style="font-size:12px;color:var(--text3)">${p.equipo||'—'}</td>
+      ${mcells.join('')}
+      <td class="mono-cell" style="color:${p.band.color};font-weight:500">${p.avgPts.toFixed(1)}</td>
+      <td class="mono-cell">${p.avgTasks.toFixed(1)}</td>
+      <td class="mono-cell" style="color:var(--text3)">${p.activeDays}</td>
+      <td><span class="badge ${p.band.css}">${p.band.label}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function sortHist(col){
+  if(HIST_SORT.col===col) HIST_SORT.dir*=-1;
+  else { HIST_SORT.col=col; HIST_SORT.dir=-1; }
+  renderHistTable();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RANKING
+// ═══════════════════════════════════════════════════════════════
+function applyRankFilter(){
+  if(!PROC)return;
+  RANK_FILTER=buildFilter('r');
+  const eqFilter=document.getElementById('r-equipo')?.value||'';
+  const filtered=filterRows(PROC.rawRows, RANK_FILTER);
+  const persons=aggregatePersons(filtered, PROC.equipoMap);
+  const byEquipo=eqFilter?persons.filter(p=>p.equipo===eqFilter):persons;
+  renderRankingChart(byEquipo);
+}
+
+function renderRankingChart(persons){
+  const sorted=[...persons].filter(p=>p.avgPts>0).sort((a,b)=>b.avgPts-a.avgPts);
+  if(!sorted.length)return;
+
+  // Dynamic canvas height
+  const barH=28, padH=80;
+  const h=Math.max(300, sorted.length*barH+padH);
+  const canvas=document.getElementById('chart-ranking');
+  canvas.style.height=h+'px';
+  canvas.height=h;
+
+  const ctx=canvas.getContext('2d');
+  if(CHARTS.ranking)CHARTS.ranking.destroy();
+  CHARTS.ranking=new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels:sorted.map(p=>p.nombre||p.user),
+      datasets:[{
+        data:sorted.map(p=>p.avgPts),
+        backgroundColor:sorted.map(p=>p.band.color+'99'),
+        borderColor:sorted.map(p=>p.band.color),
+        borderWidth:1.5,
+        borderRadius:5,
+      }]
+    },
+    options:{
+      indexAxis:'y',
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{backgroundColor:'#1c2030',titleColor:'#e8eaf2',bodyColor:'#8b91a8',borderColor:'#252a3a',borderWidth:1,
+          callbacks:{label:c=>`${c.raw.toFixed(1)} pts · ${sorted[c.dataIndex].activeDays} días activos`}}
+      },
+      scales:{
+        x:{grid:{color:'#252a3a'},ticks:{color:'#8b91a8'},min:0},
+        y:{grid:{display:false},ticks:{color:'#8b91a8',font:{size:12}}}
+      }
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CALCULATOR
+// ═══════════════════════════════════════════════════════════════
+function updateCalc(){
+  const vals={
+    dem:+document.getElementById('r-dem').value,
+    ec: +document.getElementById('r-ec').value,
+    enh:+document.getElementById('r-enh').value,
+    val:+document.getElementById('r-val').value,
+    sop:+document.getElementById('r-sop').value,
+  };
+  ['dem','ec','enh','val','sop'].forEach(k=>{
+    document.getElementById(`v-${k}`).textContent=vals[k];
+    document.getElementById(`lbl-${k}`).textContent=vals[k];
+  });
+  const w=WEIGHTS;
+  // Dynamic labels
+  document.getElementById('lbl-bd-dem').textContent=`Demanda ×${w['Demanda'].toFixed(1)}`;
+  document.getElementById('lbl-bd-ec').textContent =`Enhanced Content ×${w['Enhanced Content'].toFixed(1)}`;
+  document.getElementById('lbl-bd-enh').textContent=`Enhancement ×${w['Enhancement'].toFixed(1)}`;
+  document.getElementById('lbl-bd-val').textContent=`Validación ×${w['Validación'].toFixed(1)}`;
+  document.getElementById('lbl-bd-sop').textContent=`Soporte ×${w['Soporte'].toFixed(1)}`;
+
+  const pts={
+    dem:vals.dem*w['Demanda'],
+    ec: vals.ec *w['Enhanced Content'],
+    enh:vals.enh*w['Enhancement'],
+    val:vals.val*w['Validación'],
+    sop:vals.sop*w['Soporte'],
+  };
+  const total=Object.values(pts).reduce((a,b)=>a+b,0);
+  const tasks=vals.dem+vals.ec+vals.enh+vals.val+vals.sop;
+
+  document.getElementById('bd-dem').textContent=pts.dem.toFixed(1)+' pts';
+  document.getElementById('bd-ec').textContent =pts.ec.toFixed(1)+' pts';
+  document.getElementById('bd-enh').textContent=pts.enh.toFixed(1)+' pts';
+  document.getElementById('bd-val').textContent=pts.val.toFixed(1)+' pts';
+  document.getElementById('bd-sop').textContent=pts.sop.toFixed(1)+' pts';
+  document.getElementById('bd-tasks').textContent=tasks;
+
+  const band=getBand(total);
+  document.getElementById('pts-big').textContent=total.toFixed(1);
+  document.getElementById('pts-big').style.color=band.color;
+  document.getElementById('band-name').textContent=band.label;
+  document.getElementById('band-desc').textContent=band.desc;
+  const bd=document.getElementById('band-display');
+  bd.style.background=band.color+'22';
+  bd.style.border=`1px solid ${band.color}44`;
+  bd.style.borderRadius='10px';
+  bd.style.marginTop='12px';
+}
+
+function renderBandsRef(){
+  document.getElementById('bands-ref').innerHTML=BANDS.map(b=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border)">
+      <span class="badge ${b.css}">${b.label}</span>
+      <span class="mono-cell" style="font-size:11px;color:var(--text3)">${b.min}–${b.max>=1e9?'∞':b.max} pts</span>
+    </div>`).join('');
+}
+
+function renderScenarios(){
+  const scenarios=[
+    {name:'90 Demanda puras',dem:90,ec:0,enh:0,val:0,sop:0},
+    {name:'80 Dem + 7 Enh',dem:80,ec:0,enh:7,val:0,sop:0},
+    {name:'70 Dem + 10 Enh + 5 EC',dem:70,ec:5,enh:10,val:0,sop:0},
+    {name:'55 Dem + 25 Enh + 8 EC',dem:55,ec:8,enh:25,val:0,sop:0},
+    {name:'50 Dem + 30 Enh + 10 EC',dem:50,ec:10,enh:30,val:0,sop:0},
+    {name:'Especialista calidad (60+13+10)',dem:60,ec:10,enh:13,val:0,sop:0},
+    {name:'Ruta Validación (80 Val)',dem:0,ec:0,enh:0,val:80,sop:0},
+    {name:'Soporte resuelto (15 DONE)',dem:0,ec:0,enh:0,val:0,sop:15},
+  ];
+  const w=WEIGHTS;
+  document.getElementById('scenarios-grid').innerHTML=scenarios.map(s=>{
+    const pts=s.dem*w['Demanda']+s.ec*w['Enhanced Content']+s.enh*w['Enhancement']+s.val*w['Validación']+s.sop*w['Soporte'];
+    const tasks=s.dem+s.ec+s.enh+s.val+s.sop;
+    const band=getBand(pts);
+    const mix=Object.entries({Dem:s.dem,EC:s.ec,Enh:s.enh,Val:s.val,Sop:s.sop}).filter(([,v])=>v>0).map(([k,v])=>`${v} ${k}`).join(' + ');
+    return`<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;cursor:pointer;transition:border-color .15s"
+      onclick="applyScenario(${s.dem},${s.ec},${s.enh},${s.val},${s.sop})"
+      onmouseover="this.style.borderColor='${band.color}'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:7px">${s.name}</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:9px">${mix}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span class="mono-cell" style="font-size:17px;color:${band.color}">${pts.toFixed(1)} pts</span>
+        <span class="badge ${band.css}">${band.label}</span>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:5px">${tasks} tareas totales</div>
+    </div>`;
+  }).join('');
+}
+
+function applyScenario(dem,ec,enh,val,sop){
+  document.getElementById('r-dem').value=Math.min(dem,150);
+  document.getElementById('r-ec').value =Math.min(ec,150);
+  document.getElementById('r-enh').value=Math.min(enh,150);
+  document.getElementById('r-val').value=Math.min(val,150);
+  document.getElementById('r-sop').value=Math.min(sop,150);
+  updateCalc();
+  showPage('calc');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// WEIGHTS
+// ═══════════════════════════════════════════════════════════════
+function applyWeights(){
+  WEIGHTS['Demanda']          =+(document.getElementById('w-demanda').value)||1.0;
+  WEIGHTS['Enhanced Content'] =+(document.getElementById('w-ec').value)    ||1.0;
+  WEIGHTS['Enhancement']      =+(document.getElementById('w-enh').value)   ||1.3;
+  WEIGHTS['Validación']       =+(document.getElementById('w-val').value)   ||1.1;
+  WEIGHTS['Soporte']          =+(document.getElementById('w-sop').value)   ||2.0;
+  WEIGHTS['Fallos']           =+(document.getElementById('w-fallos').value)||1.0;
+  if(DATA.hist){ computeAll(); }
+  renderScenarios();
   updateCalc();
 }
 
-function updateCalc() {
-  const d = parseInt(document.getElementById('i-dem').value);
-  const ec = parseInt(document.getElementById('i-ec').value);
-  const en = parseInt(document.getElementById('i-enh').value);
-  const v = parseInt(document.getElementById('i-val').value);
-  const s = parseInt(document.getElementById('i-sop').value);
-
-  document.getElementById('v-dem').innerText = d;
-  document.getElementById('v-ec').innerText = ec;
-  document.getElementById('v-enh').innerText = en;
-  document.getElementById('v-val').innerText = v;
-  document.getElementById('v-sop').innerText = s;
-
-  const total = (d * WEIGHTS.dem) + (ec * WEIGHTS.ec) + (en * WEIGHTS.enh) + (v * WEIGHTS.val) + (s * WEIGHTS.sop);
-  const band = BANDS.find(b => total >= b.min && total < b.max) || BANDS[0];
-
-  document.getElementById('calc-result-value').innerText = total.toFixed(1);
-  document.getElementById('calc-result-value').style.color = band.color;
-  document.getElementById('calc-band-box').innerText = band.label;
-  document.getElementById('calc-band-box').style.background = band.color + '22';
-  document.getElementById('calc-band-box').style.color = band.color;
-
-  document.getElementById('calc-breakdown').innerHTML = `
-    <b>Desglose dinámico:</b><br>
-    • Demanda (x${WEIGHTS.dem.toFixed(1)}): ${(d*WEIGHTS.dem).toFixed(1)} pts<br>
-    • E. Content (x${WEIGHTS.ec.toFixed(1)}): ${(ec*WEIGHTS.ec).toFixed(1)} pts<br>
-    • Enhancement (x${WEIGHTS.enh.toFixed(1)}): ${(en*WEIGHTS.enh).toFixed(1)} pts<br>
-    • Validación (x${WEIGHTS.val.toFixed(1)}): ${(v*WEIGHTS.val).toFixed(1)} pts<br>
-    • Soporte (x${WEIGHTS.sop.toFixed(1)}): ${(s*WEIGHTS.sop).toFixed(1)} pts
-  `;
+// ═══════════════════════════════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════════════════════════════
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById(`page-${id}`).classList.add('active');
+  const map={upload:0,historico:1,ranking:2,calc:3};
+  document.querySelectorAll('.nav-item')[map[id]]?.classList.add('active');
+  if(id==='calc') updateCalc();
 }
 
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
-  if(id === 'calc') renderCalc();
-}
-
-window.onload = () => { renderCalc(); };
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+updateCalc();
+renderBandsRef();
+renderScenarios();
 </script>
 </body>
 </html>
