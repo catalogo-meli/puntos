@@ -438,11 +438,11 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px;
 
         <div class="breakdown">
           <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Desglose de puntos</div>
-          <div class="breakdown-row"><span class="lbl">Demanda</span><span class="val" id="bd-dem">70.0 pts</span></div>
-          <div class="breakdown-row"><span class="lbl">Enhanced Content</span><span class="val" id="bd-ec">5.0 pts</span></div>
-          <div class="breakdown-row"><span class="lbl">Enhancement ×1.3</span><span class="val" id="bd-enh">13.0 pts</span></div>
-          <div class="breakdown-row"><span class="lbl">Validación ×1.1</span><span class="val" id="bd-val">0.0 pts</span></div>
-          <div class="breakdown-row"><span class="lbl">Soporte ×2.0</span><span class="val" id="bd-sop">0.0 pts</span></div>
+          <div class="breakdown-row"><span class="lbl" id="lbl-bd-dem">Demanda ×1.0</span><span class="val" id="bd-dem">70.0 pts</span></div>
+          <div class="breakdown-row"><span class="lbl" id="lbl-bd-ec">Enhanced Content ×1.0</span><span class="val" id="bd-ec">5.0 pts</span></div>
+          <div class="breakdown-row"><span class="lbl" id="lbl-bd-enh">Enhancement ×1.3</span><span class="val" id="bd-enh">13.0 pts</span></div>
+          <div class="breakdown-row"><span class="lbl" id="lbl-bd-val">Validación ×1.1</span><span class="val" id="bd-val">0.0 pts</span></div>
+          <div class="breakdown-row"><span class="lbl" id="lbl-bd-sop">Soporte ×2.0</span><span class="val" id="bd-sop">0.0 pts</span></div>
           <div class="total-row"><span>Total tareas</span><span class="mono" id="bd-tasks">85</span></div>
         </div>
       </div>
@@ -491,58 +491,119 @@ const BANDS = [
 function getBand(pts) { return BANDS.find(b => pts >= b.min && pts < b.max) || BANDS[0]; }
 
 // ─── CSV PARSER ───────────────────────────────────────────────────────────────
+function detectSeparator(firstLine) {
+  const commas     = (firstLine.match(/,/g)   || []).length;
+  const semicolons = (firstLine.match(/;/g)   || []).length;
+  const tabs       = (firstLine.match(/\t/g)  || []).length;
+  if (semicolons > commas && semicolons >= tabs) return ';';
+  if (tabs > commas && tabs > semicolons)        return '\t';
+  return ',';
+}
+
+function splitCSVLine(line, sep) {
+  // Handles quoted fields with embedded separators/newlines
+  const result = [];
+  let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '"') {
+      if (inQ && line[i+1] === '"') { cur += '"'; i++; }
+      else inQ = !inQ;
+    } else if (c === sep && !inQ) {
+      result.push(cur.trim()); cur = '';
+    } else {
+      cur += c;
+    }
+  }
+  result.push(cur.trim());
+  return result;
+}
+
 function parseCSV(text) {
-  const lines = text.trim().split('\n');
-  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g,''));
-  return lines.slice(1).filter(l=>l.trim()).map(line => {
-    const vals = line.match(/(".*?"|[^,]+|(?<=,)(?=,)|^(?=,))/g) || [];
-    const row = {};
-    headers.forEach((h,i) => { row[h] = (vals[i]||'').replace(/^"|"$/g,'').trim(); });
+  // Normalise line endings
+  const clean = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  const lines  = clean.trim().split('\n');
+  if (lines.length < 2) { console.warn('[CSV] Archivo vacío o de una sola línea'); return []; }
+
+  const sep     = detectSeparator(lines[0]);
+  const headers = splitCSVLine(lines[0], sep).map(h => h.replace(/^"|"$/g, '').trim());
+  console.log(`[CSV] Separador detectado: "${sep === '\t' ? 'TAB' : sep}" | Columnas (${headers.length}):`, headers);
+
+  const rows = lines.slice(1).filter(l => l.trim()).map(line => {
+    const vals = splitCSVLine(line, sep);
+    const row  = {};
+    headers.forEach((h, i) => { row[h] = (vals[i] || '').replace(/^"|"$/g, '').trim(); });
     return row;
   });
+
+  console.log('[CSV] Primeros 5 registros:', rows.slice(0, 5));
+  return rows;
 }
 
 // ─── FILE LOADING ─────────────────────────────────────────────────────────────
+function readFileWithFallback(file, callback) {
+  const tryRead = (encoding) => {
+    const fr = new FileReader();
+    fr.onload = (ev) => {
+      const text = ev.target.result;
+      // Heuristic: if replacement character appears, retry with latin encoding
+      if (encoding === 'UTF-8' && text.includes('\uFFFD')) {
+        console.log('[FileReader] UTF-8 produjo caracteres inválidos, reintentando con Windows-1252');
+        tryRead('windows-1252');
+      } else {
+        console.log(`[FileReader] Archivo leído con ${encoding} · ${text.length} chars`);
+        callback(text);
+      }
+    };
+    fr.onerror = () => { console.error('[FileReader] Error leyendo archivo'); };
+    fr.readAsText(file, encoding);
+  };
+  tryRead('UTF-8');
+}
+
 function loadFile(input, type) {
   const file = input.files[0];
   if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => processFile(e.target.result, type, file.name);
-  reader.readAsText(e => {}, 'UTF-8');
-  const fr2 = new FileReader();
-  fr2.onload = ev => processFile(ev.target.result, type, file.name);
-  fr2.readAsText(file);
+  readFileWithFallback(file, text => processFile(text, type, file.name));
 }
+
 function dragOver(e,id) { e.preventDefault(); document.getElementById(id).classList.add('drag'); }
-function dragLeave(id) { document.getElementById(id).classList.remove('drag'); }
+function dragLeave(id)  { document.getElementById(id).classList.remove('drag'); }
 function dropFile(e, type) {
   e.preventDefault();
-  const id = type==='hist'?'zone-hist':'zone-equipo';
+  const id = type === 'hist' ? 'zone-hist' : 'zone-equipo';
   document.getElementById(id).classList.remove('drag');
   const file = e.dataTransfer.files[0];
   if (!file) return;
-  const fr = new FileReader();
-  fr.onload = ev => processFile(ev.target.result, type, file.name);
-  fr.readAsText(file);
+  readFileWithFallback(file, text => processFile(text, type, file.name));
 }
 
 function processFile(text, type, name) {
   const rows = parseCSV(text);
+  if (!rows.length) {
+    alert(`[Error] El archivo "${name}" no pudo procesarse. Revisá la consola.`);
+    return;
+  }
   DATA[type] = rows;
-  const zoneId = type==='hist'?'zone-hist':'zone-equipo';
-  const subId  = type==='hist'?'sub-hist':'sub-equipo';
+
+  const zoneId = type === 'hist' ? 'zone-hist'   : 'zone-equipo';
+  const subId  = type === 'hist' ? 'sub-hist'     : 'sub-equipo';
   document.getElementById(zoneId).classList.add('done');
   document.getElementById(subId).textContent = `✓ ${name} · ${rows.length.toLocaleString()} filas`;
 
-  if (type==='hist') showPreview(rows);
-  document.getElementById('alert-upload').style.display = (DATA.hist && !DATA.equipo) ? 'flex' : 'none';
+  if (type === 'hist') showPreview(rows);
 
+  // Show partial-load alert only when hist is present but equipo isn't yet
+  document.getElementById('alert-upload').style.display =
+    (DATA.hist && !DATA.equipo) ? 'flex' : 'none';
+
+  // Fire computeAll as soon as historico is available (equipo is optional enrichment)
   if (DATA.hist) {
     computeAll();
-    document.getElementById('hist-empty').style.display='none';
-    document.getElementById('hist-content').style.display='block';
-    document.getElementById('rank-empty').style.display='none';
-    document.getElementById('rank-content').style.display='block';
+    document.getElementById('hist-empty').style.display  = 'none';
+    document.getElementById('hist-content').style.display = 'block';
+    document.getElementById('rank-empty').style.display  = 'none';
+    document.getElementById('rank-content').style.display = 'block';
   }
 }
 
@@ -559,114 +620,134 @@ function showPreview(rows) {
 
 // ─── CORE COMPUTATION ────────────────────────────────────────────────────────
 function getWeight(flujo, status) {
-  if (flujo==='Soporte' && status!=='DONE') return 0;
-  return WEIGHTS[flujo] || 1.0;
+  if (flujo === 'Soporte' && status !== 'DONE') return 0;
+  return WEIGHTS[flujo] !== undefined ? WEIGHTS[flujo] : 1.0;
 }
 
-function parseDate(s) {
-  if (!s) return null;
-  // Try DD/MM/YYYY or YYYY-MM-DD
-  const d1 = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-  if (d1) return new Date(+d1[3], +d1[2]-1, +d1[1]);
-  const d2 = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if (d2) return new Date(+d2[1], +d2[2]-1, +d2[3]);
+// Flexible column finder
+function findCol(row, candidates) {
+  const keys = Object.keys(row);
+  for (const c of candidates) {
+    const found = keys.find(k => k.trim().toLowerCase() === c.toLowerCase());
+    if (found) return found;
+  }
   return null;
 }
 
-const MONTH_KEYS = ['2025-12','2026-01','2026-02','2026-03','2026-04'];
+const MONTH_KEYS   = ['2025-12','2026-01','2026-02','2026-03','2026-04'];
 const MONTH_LABELS = ['Dic','Ene','Feb','Mar','Abr'];
 
-function computeAll() {
-  if (!DATA.hist) return;
+function parseDate(s) {
+  if (!s) return null;
+  s = s.trim();
+  // DD/MM/YYYY or DD-MM-YYYY
+  let m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+  if (m) return new Date(+m[3], +m[2] - 1, +m[1]);
+  // YYYY-MM-DD or YYYY/MM/DD
+  m = s.match(/^(\d{4})[\/\-](\d{2})[\/\-](\d{2})/);
+  if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
+  // Last resort: native parse
+  const d = new Date(s);
+  return isNaN(d) ? null : d;
+}
 
-  // Build per-person per-day per-flujo aggregates
-  const byPersonDay = {}; // person -> date -> {tasks, pts, flujos}
+function computeAll() {
+  if (!DATA.hist || !DATA.hist.length) return;
+
+  const sample = DATA.hist[0];
+  const COL = {
+    fecha:  findCol(sample, ['Fecha','fecha','Date','date','FECHA']),
+    status: findCol(sample, ['Status','status','Estado','estado','STATUS']),
+    flujo:  findCol(sample, ['Flujo de Tarea','Flujo','flujo','FLUJO','flow','Flow']),
+    user:   findCol(sample, ['Usuario','usuario','User','user','USUARIO','Colaborador','colaborador']),
+  };
+  console.log('[computeAll] Columnas detectadas:', COL);
+
+  if (!COL.fecha || !COL.status || !COL.flujo || !COL.user) {
+    const missing = Object.entries(COL).filter(([,v]) => !v).map(([k]) => k);
+    alert(`[Error] No se encontraron columnas: ${missing.join(', ')}.\nColumnas disponibles: ${Object.keys(sample).join(', ')}`);
+    return;
+  }
+
+  const byPersonDay = {};
+  let skipped = 0;
 
   DATA.hist.forEach(r => {
-    if (r['Status'] !== 'DONE') return;
-    const date = parseDate(r['Fecha']);
-    if (!date) return;
-    const monthKey = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}`;
+    if ((r[COL.status] || '').trim() !== 'DONE') return;
+    const date = parseDate(r[COL.fecha]);
+    if (!date) { skipped++; return; }
+    const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
     if (!MONTH_KEYS.includes(monthKey)) return;
-
-    const user = r['Usuario'];
-    const flujo = r['Flujo de Tarea'] || 'Demanda';
-    const w = getWeight(flujo, r['Status']);
-
+    const user  = (r[COL.user]  || '').trim();
+    const flujo = (r[COL.flujo] || 'Demanda').trim();
+    const w     = getWeight(flujo, (r[COL.status] || '').trim());
+    const dk    = r[COL.fecha];
     if (!byPersonDay[user]) byPersonDay[user] = {};
-    const dk = r['Fecha'];
-    if (!byPersonDay[user][dk]) byPersonDay[user][dk] = { tasks:0, pts:0, flujos:{}, month: monthKey };
+    if (!byPersonDay[user][dk]) byPersonDay[user][dk] = { tasks: 0, pts: 0, flujos: {}, month: monthKey };
     byPersonDay[user][dk].tasks++;
     byPersonDay[user][dk].pts += w;
-    byPersonDay[user][dk].flujos[flujo] = (byPersonDay[user][dk].flujos[flujo]||0)+1;
+    byPersonDay[user][dk].flujos[flujo] = (byPersonDay[user][dk].flujos[flujo] || 0) + 1;
   });
 
-  // Aggregate per person per month
-  const personMonth = {}; // person -> month -> {days, totalTasks, totalPts}
+  if (skipped > 0) console.warn(`[computeAll] ${skipped} filas ignoradas por fecha no parseable`);
+  console.log(`[computeAll] Personas con datos DONE: ${Object.keys(byPersonDay).length}`);
+
+  const personMonth = {};
   Object.entries(byPersonDay).forEach(([user, days]) => {
     Object.values(days).forEach(day => {
       const m = day.month;
       if (!personMonth[user]) personMonth[user] = {};
-      if (!personMonth[user][m]) personMonth[user][m] = { days:0, totalTasks:0, totalPts:0, flujos:{} };
+      if (!personMonth[user][m]) personMonth[user][m] = { days: 0, totalTasks: 0, totalPts: 0, flujos: {} };
       personMonth[user][m].days++;
       personMonth[user][m].totalTasks += day.tasks;
       personMonth[user][m].totalPts   += day.pts;
-      Object.entries(day.flujos).forEach(([f,c]) => {
-        personMonth[user][m].flujos[f] = (personMonth[user][m].flujos[f]||0)+c;
-      });
+      Object.entries(day.flujos).forEach(([f, c]) => { personMonth[user][m].flujos[f] = (personMonth[user][m].flujos[f] || 0) + c; });
     });
   });
 
-  // Get equipo map
+  // Equipo map — flexible column detection
   const equipoMap = {};
-  if (DATA.equipo) {
+  if (DATA.equipo && DATA.equipo.length) {
+    const eS   = DATA.equipo[0];
+    const eId  = findCol(eS, ['ID_MELI','id_meli','ID','id','Usuario','usuario','user']);
+    const eNom = findCol(eS, ['Nombre','nombre','Name','name']);
+    const eRol = findCol(eS, ['Rol','rol','Role','role']);
+    const eEq  = findCol(eS, ['Equipo','equipo','Team','team','TL']);
     DATA.equipo.forEach(r => {
-      equipoMap[r['ID_MELI']] = { nombre: r['Nombre'], rol: r['Rol'], equipo: r['Equipo'] };
+      const id = ((eId ? r[eId] : '') || '').trim();
+      if (id) equipoMap[id] = {
+        nombre: (eNom ? r[eNom] : id) || id,
+        rol:    (eRol ? r[eRol] : '') || '',
+        equipo: (eEq  ? r[eEq]  : '') || '',
+      };
     });
+    console.log(`[computeAll] Equipo mapeado: ${Object.keys(equipoMap).length} personas`);
   }
 
-  // Build per-person summary
   const persons = Object.keys(personMonth).map(user => {
     const months = personMonth[user];
-    const info = equipoMap[user] || { nombre: user, rol:'', equipo:'' };
-
+    const info   = equipoMap[user] || { nombre: user, rol: '', equipo: '' };
     const monthData = MONTH_KEYS.map(mk => {
       if (!months[mk]) return null;
       const m = months[mk];
-      return {
-        avgTasks: m.totalTasks / m.days,
-        avgPts:   m.totalPts   / m.days,
-        days: m.days,
-        flujos: m.flujos
-      };
+      return { avgTasks: m.totalTasks / m.days, avgPts: m.totalPts / m.days, days: m.days, flujos: m.flujos };
     });
-
-    const allDaysData = Object.values(byPersonDay[user] || {});
-    // Last 4 weeks: use last 20 active days
-    const sorted = allDaysData.sort((a,b)=> (a.month+a.date)<(b.month+b.date)?1:-1);
-    const last20 = allDaysData.slice(0,20);
-    const recentAvgPts   = last20.length ? last20.reduce((s,d)=>s+d.pts,0)/last20.length : 0;
-    const recentAvgTasks = last20.length ? last20.reduce((s,d)=>s+d.tasks,0)/last20.length : 0;
-    const allActiveDays  = allDaysData.length;
-
-    // Dominant flujo
+    const allDays = Object.values(byPersonDay[user] || {});
+    const last20  = allDays.slice(-20);
+    const recentAvgPts   = last20.length ? last20.reduce((s, d) => s + d.pts,   0) / last20.length : 0;
+    const recentAvgTasks = last20.length ? last20.reduce((s, d) => s + d.tasks, 0) / last20.length : 0;
     const flujoTotals = {};
-    allDaysData.forEach(d => Object.entries(d.flujos).forEach(([f,c])=>{ flujoTotals[f]=(flujoTotals[f]||0)+c; }));
-    const domFlujo = Object.entries(flujoTotals).sort((a,b)=>b[1]-a[1])[0];
-
+    allDays.forEach(d => Object.entries(d.flujos).forEach(([f, c]) => { flujoTotals[f] = (flujoTotals[f] || 0) + c; }));
+    const domFlujo = Object.entries(flujoTotals).sort((a, b) => b[1] - a[1])[0];
     return {
-      user, ...info,
-      monthData,
-      recentAvgPts,
-      recentAvgTasks,
-      allActiveDays,
+      user, ...info, monthData, recentAvgPts, recentAvgTasks,
+      allActiveDays: allDays.length,
       domFlujo: domFlujo ? domFlujo[0] : 'Demanda',
-      band: getBand(recentAvgPts)
+      band: getBand(recentAvgPts),
     };
   });
 
   PROCESSED = { persons, personMonth, byPersonDay };
-
   renderHistStats(persons);
   renderMonthlyChart(persons);
   renderBandsChart(persons, -1);
@@ -881,6 +962,14 @@ function updateCalc() {
   });
 
   const w = WEIGHTS;
+
+  // Update breakdown labels dynamically with current weights
+  document.getElementById('lbl-bd-dem').textContent = `Demanda ×${w['Demanda'].toFixed(1)}`;
+  document.getElementById('lbl-bd-ec').textContent  = `Enhanced Content ×${w['Enhanced Content'].toFixed(1)}`;
+  document.getElementById('lbl-bd-enh').textContent = `Enhancement ×${w['Enhancement'].toFixed(1)}`;
+  document.getElementById('lbl-bd-val').textContent = `Validación ×${w['Validación'].toFixed(1)}`;
+  document.getElementById('lbl-bd-sop').textContent = `Soporte ×${w['Soporte'].toFixed(1)}`;
+
   const pts = {
     dem: vals.dem * w['Demanda'],
     ec:  vals.ec  * w['Enhanced Content'],
@@ -893,9 +982,9 @@ function updateCalc() {
 
   document.getElementById('bd-dem').textContent  = pts.dem.toFixed(1)+' pts';
   document.getElementById('bd-ec').textContent   = pts.ec.toFixed(1)+' pts';
-  document.getElementById(`bd-enh`).textContent  = pts.enh.toFixed(1)+' pts';
-  document.getElementById(`bd-val`).textContent  = pts.val.toFixed(1)+' pts';
-  document.getElementById(`bd-sop`).textContent  = pts.sop.toFixed(1)+' pts';
+  document.getElementById('bd-enh').textContent  = pts.enh.toFixed(1)+' pts';
+  document.getElementById('bd-val').textContent  = pts.val.toFixed(1)+' pts';
+  document.getElementById('bd-sop').textContent  = pts.sop.toFixed(1)+' pts';
   document.getElementById('bd-tasks').textContent = tasks;
 
   const band = getBand(total);
@@ -903,11 +992,10 @@ function updateCalc() {
   document.getElementById('pts-big').style.color = band.color;
   document.getElementById('band-name').textContent = band.label;
   document.getElementById('band-desc').textContent = band.desc;
-  document.getElementById('band-display').style.background = band.color+'22';
-  document.getElementById('band-display').style.borderColor = band.color+'44';
-  document.getElementById('band-display').style.border = `1px solid ${band.color}44`;
+  document.getElementById('band-display').style.background   = band.color+'22';
+  document.getElementById('band-display').style.border       = `1px solid ${band.color}44`;
   document.getElementById('band-display').style.borderRadius = '10px';
-  document.getElementById('band-display').style.marginTop = '12px';
+  document.getElementById('band-display').style.marginTop    = '12px';
 }
 
 function renderBandsRef() {
