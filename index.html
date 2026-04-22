@@ -377,11 +377,11 @@ let RANK_FILTER = {};       // active filters for ranking
 let HIST_SORT   = { col:'avgPts', dir:-1 };
 
 const BANDS = [
-  { min:0,   max:88,  css:'bp', label:'En progreso',        color:'#ff5f57', desc:'Trabajar con TL · plan específico' },
+  { min:0,   max:88,  css:'bp', label:'En progreso',        color:'#ff5f57', desc:'Trabajar con TL · Plan específico' },
   { min:88,  max:95,  css:'bb', label:'Base ✓',             color:'#5b7fff', desc:'Objetivo mínimo cumplido' },
   { min:95,  max:103, css:'bs', label:'Sólido ✓✓',          color:'#3ecf8e', desc:'Por encima del techo histórico' },
-  { min:103, max:110, css:'bh', label:'High Performer ✓✓✓', color:'#a78bfa', desc:'Rumbo al objetivo MELI' },
-  { min:110, max:1e9, css:'be', label:'Elite ⭐ MELI',       color:'#f6a623', desc:'Objetivo MELI alcanzado' },
+  { min:103, max:110, css:'bh', label:'High Performer ✓✓✓', color:'#a78bfa', desc:'Rumbo al objetivo' },
+  { min:110, max:1e9, css:'be', label:'Elite ⭐',       color:'#f6a623', desc:'Objetivo alcanzado' },
 ];
 function getBand(pts){ return BANDS.find(b=>pts>=b.min&&pts<b.max)||BANDS[0]; }
 
@@ -733,7 +733,7 @@ function renderHistStats(persons){
   document.getElementById('hist-stats').innerHTML=`
     <div class="stat-card acc"><div class="stat-label">Promedio equipo (pts)</div><div class="stat-value">${avg.toFixed(1)}</div><div class="stat-sub">período seleccionado</div></div>
     <div class="stat-card grn"><div class="stat-label">En banda Base o sup.</div><div class="stat-value">${aboveBase}</div><div class="stat-sub">de ${active.length} analistas</div></div>
-    <div class="stat-card amb"><div class="stat-label">Banda Elite</div><div class="stat-value">${elite}</div><div class="stat-sub">objetivo MELI alcanzado</div></div>
+    <div class="stat-card amb"><div class="stat-label">Banda Elite</div><div class="stat-value">${elite}</div><div class="stat-sub">objetivo alcanzado</div></div>
     <div class="stat-card redd"><div class="stat-label">Bajo Base (&lt;88 pts)</div><div class="stat-value">${risk}</div><div class="stat-sub">requieren atención TL</div></div>`;
 }
 
