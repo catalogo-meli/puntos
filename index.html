@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Catálogo · Dashboard de Puntos Ponderados</title>
+<title>Catálogo · Sistema de Puntos Ponderados</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -127,7 +127,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
 <aside class="sidebar">
   <div class="sidebar-logo">
     <h1>Catálogo · MELI</h1>
-    <p>Dashboard de Puntos</p>
+    <p>Sistema de Puntos</p>
   </div>
   <nav class="nav">
     <div class="nav-label">Navegación</div>
@@ -145,7 +145,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
     </button>
     <button class="nav-item" onclick="showPage('calc')">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
-      Calculadora 1:1
+      Calculadora
     </button>
   </nav>
   <div class="weights-section">
@@ -154,10 +154,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
     <div class="weight-row"><span class="weight-label">Enh. Content</span><input class="weight-input" id="w-ec" type="number" step="0.1" min="0.1" max="5" value="1.0"></div>
     <div class="weight-row"><span class="weight-label">Enhancement</span><input class="weight-input" id="w-enh" type="number" step="0.1" min="0.1" max="5" value="1.3"></div>
     <div class="weight-row"><span class="weight-label">Validación</span><input class="weight-input" id="w-val" type="number" step="0.1" min="0.1" max="5" value="1.1"></div>
-    <div class="weight-row"><span class="weight-label">Soporte (DONE)</span><input class="weight-input" id="w-sop" type="number" step="0.1" min="0.1" max="5" value="2.0"></div>
+    <div class="weight-row"><span class="weight-label">Soporte</span><input class="weight-input" id="w-sop" type="number" step="0.1" min="0.1" max="5" value="2.0"></div>
     <div class="weight-row"><span class="weight-label">Fallos</span><input class="weight-input" id="w-fallos" type="number" step="0.1" min="0.1" max="5" value="1.0"></div>
     <div class="weight-row"><span class="weight-label">Known Values</span><input class="weight-input" id="w-kv" type="number" step="0.1" min="0.1" max="5" value="1.0"></div>
-    <button class="apply-btn" onclick="applyWeights()">Recalcular todo →</button>
+    <button class="apply-btn" onclick="applyWeights()">Recalcular</button>
   </div>
 </aside>
 
@@ -168,19 +168,19 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
 <div class="page active" id="page-upload">
   <div class="page-header">
     <h2 class="page-title">Cargar datos del equipo</h2>
-    <p class="page-sub">Procesamiento 100% local · nada sale del navegador</p>
+    <p class="page-sub">Procesamiento 100% local</p>
   </div>
   <div class="upload-grid">
     <div class="upload-zone" id="zone-hist" onclick="document.getElementById('file-hist').click()" ondragover="evDrag(event,'zone-hist')" ondragleave="evLeave('zone-hist')" ondrop="evDrop(event,'hist')">
       <div class="upload-icon">📊</div>
       <div class="upload-title">historico.csv</div>
-      <div class="upload-sub" id="sub-hist">Click o arrastrar · soporta , ; TAB · UTF-8 / ISO-8859-1</div>
+      <div class="upload-sub" id="sub-hist">Click o arrastrar</div>
       <input type="file" class="file-input" id="file-hist" accept=".csv,.txt" onchange="handleFile(this,'hist')">
     </div>
     <div class="upload-zone" id="zone-equipo" onclick="document.getElementById('file-equipo').click()" ondragover="evDrag(event,'zone-equipo')" ondragleave="evLeave('zone-equipo')" ondrop="evDrop(event,'equipo')">
       <div class="upload-icon">👥</div>
       <div class="upload-title">equipo_colaboradores.csv</div>
-      <div class="upload-sub" id="sub-equipo">Click o arrastrar · opcional pero recomendado</div>
+      <div class="upload-sub" id="sub-equipo">Click o arrastrar</div>
       <input type="file" class="file-input" id="file-equipo" accept=".csv,.txt" onchange="handleFile(this,'equipo')">
     </div>
   </div>
@@ -195,7 +195,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
 <div class="page" id="page-historico">
   <div class="page-header">
     <h2 class="page-title">Histórico de puntos</h2>
-    <p class="page-sub">Tareas reales vs puntos ponderados · filtrado dinámico</p>
+    <p class="page-sub">Tareas reales vs puntos ponderados</p>
   </div>
   <div id="hist-empty" class="empty-state">
     <svg width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
@@ -251,7 +251,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
 <div class="page" id="page-ranking">
   <div class="page-header">
     <h2 class="page-title">Ranking del equipo</h2>
-    <p class="page-sub">Puntos ponderados por día activo · filtrado dinámico</p>
+    <p class="page-sub">Puntos ponderados por día activo</p>
   </div>
   <div id="rank-empty" class="empty-state">
     <svg width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
@@ -290,8 +290,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
 <!-- CALCULADORA -->
 <div class="page" id="page-calc">
   <div class="page-header">
-    <h2 class="page-title">Calculadora 1:1</h2>
-    <p class="page-sub">Herramienta para el TL · simulá el mix del día y la banda resultante</p>
+    <h2 class="page-title">Calculadora</h2>
+    <p class="page-sub">Simulá el mix del día y la banda resultante</p>
   </div>
   <div class="calc-grid">
     <div class="calc-box">
@@ -367,7 +367,7 @@ let CALC_FLUJOS = [
   { id:'Enhanced Content', label:'Enhanced Content',  weight:1.0, value:5,  max:150 },
   { id:'Enhancement',      label:'Enhancement',       weight:1.3, value:10, max:150 },
   { id:'Validación',       label:'Validación',        weight:1.1, value:0,  max:150 },
-  { id:'Soporte',          label:'Soporte (resueltas)',weight:2.0, value:0,  max:150 },
+  { id:'Soporte',          label:'Soporte',weight:2.0, value:0,  max:150 },
   { id:'Known Values',     label:'Known Values',      weight:1.0, value:0,  max:150 },
 ];
 let CHARTS  = {};
@@ -908,7 +908,7 @@ function renderCalcSliders(){
   const cont=document.getElementById('calc-sliders');
   if(!cont)return;
   // Core flujos that cannot be removed (first 5)
-  const CORE_IDS=['Demanda','Enhanced Content','Enhancement','Validación','Soporte'];
+  const CORE_IDS=['Demanda','Enhanced Content','Enhancement','Validación','Soporte', 'Known Values'];
   cont.innerHTML=CALC_FLUJOS.map((f,i)=>{
     const canRemove=!CORE_IDS.includes(f.id);
     return`<div class="input-group" id="flujo-row-${i}" style="display:flex;flex-direction:column;gap:0">
