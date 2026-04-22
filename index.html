@@ -156,6 +156,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
     <div class="weight-row"><span class="weight-label">Validación</span><input class="weight-input" id="w-val" type="number" step="0.1" min="0.1" max="5" value="1.1"></div>
     <div class="weight-row"><span class="weight-label">Soporte (DONE)</span><input class="weight-input" id="w-sop" type="number" step="0.1" min="0.1" max="5" value="2.0"></div>
     <div class="weight-row"><span class="weight-label">Fallos</span><input class="weight-input" id="w-fallos" type="number" step="0.1" min="0.1" max="5" value="1.0"></div>
+    <div class="weight-row"><span class="weight-label">Known Values</span><input class="weight-input" id="w-kv" type="number" step="0.1" min="0.1" max="5" value="1.0"></div>
     <button class="apply-btn" onclick="applyWeights()">Recalcular todo →</button>
   </div>
 </aside>
@@ -221,7 +222,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
     <div class="chart-wrap">
       <div class="chart-header">
         <span class="chart-title">Distribución del equipo por banda de performance</span>
-        <div class="filter-bar" id="bands-month-filters"></div>
       </div>
       <div style="height:220px"><canvas id="chart-bands"></canvas></div>
     </div>
@@ -295,44 +295,29 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
   </div>
   <div class="calc-grid">
     <div class="calc-box">
-      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:600;margin-bottom:18px">Mix de tareas del día</div>
-      <div class="input-group">
-        <div class="input-label">Demanda <span id="lbl-dem">70</span></div>
-        <div class="range-wrap"><input type="range" id="r-dem" min="0" max="150" value="70" oninput="updateCalc()"><span class="range-val" id="v-dem">70</span></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:600">Mix de tareas del día</div>
+        <button onclick="openAddFlujo()" style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--accent);background:rgba(91,127,255,.1);border:1px solid rgba(91,127,255,.3);border-radius:7px;padding:5px 10px;cursor:pointer;font-family:'DM Sans',sans-serif">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Agregar flujo
+        </button>
       </div>
-      <div class="input-group">
-        <div class="input-label">Enhanced Content <span id="lbl-ec">5</span></div>
-        <div class="range-wrap"><input type="range" id="r-ec" min="0" max="150" value="5" oninput="updateCalc()"><span class="range-val" id="v-ec">5</span></div>
-      </div>
-      <div class="input-group">
-        <div class="input-label">Enhancement <span id="lbl-enh">10</span></div>
-        <div class="range-wrap"><input type="range" id="r-enh" min="0" max="150" value="10" oninput="updateCalc()"><span class="range-val" id="v-enh">10</span></div>
-      </div>
-      <div class="input-group">
-        <div class="input-label">Validación <span id="lbl-val">0</span></div>
-        <div class="range-wrap"><input type="range" id="r-val" min="0" max="150" value="0" oninput="updateCalc()"><span class="range-val" id="v-val">0</span></div>
-      </div>
-      <div class="input-group">
-        <div class="input-label">Soporte (resueltas) <span id="lbl-sop">0</span></div>
-        <div class="range-wrap"><input type="range" id="r-sop" min="0" max="150" value="0" oninput="updateCalc()"><span class="range-val" id="v-sop">0</span></div>
-      </div>
+      <!-- dynamic sliders -->
+      <div id="calc-sliders"></div>
+      <!-- breakdown -->
       <div class="breakdown">
         <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px">Desglose de puntos</div>
-        <div class="bd-row"><span class="bd-lbl" id="lbl-bd-dem">Demanda ×1.0</span><span class="bd-val" id="bd-dem">70.0 pts</span></div>
-        <div class="bd-row"><span class="bd-lbl" id="lbl-bd-ec">Enhanced Content ×1.0</span><span class="bd-val" id="bd-ec">5.0 pts</span></div>
-        <div class="bd-row"><span class="bd-lbl" id="lbl-bd-enh">Enhancement ×1.3</span><span class="bd-val" id="bd-enh">13.0 pts</span></div>
-        <div class="bd-row"><span class="bd-lbl" id="lbl-bd-val">Validación ×1.1</span><span class="bd-val" id="bd-val">0.0 pts</span></div>
-        <div class="bd-row"><span class="bd-lbl" id="lbl-bd-sop">Soporte ×2.0</span><span class="bd-val" id="bd-sop">0.0 pts</span></div>
-        <div class="total-row"><span>Total tareas</span><span class="mono" id="bd-tasks">85</span></div>
+        <div id="calc-breakdown"></div>
+        <div class="total-row"><span>Total tareas</span><span class="mono" id="bd-tasks">0</span></div>
       </div>
     </div>
     <div class="calc-box">
       <div class="pts-display">
-        <div class="pts-number" id="pts-big">88.0</div>
+        <div class="pts-number" id="pts-big">0.0</div>
         <div class="pts-label">puntos ponderados</div>
         <div class="band-display" id="band-display">
-          <div class="band-name-big" id="band-name">Base ✓</div>
-          <div class="band-desc" id="band-desc">Objetivo mínimo cumplido</div>
+          <div class="band-name-big" id="band-name">—</div>
+          <div class="band-desc" id="band-desc">Cargá datos para ver la banda</div>
         </div>
       </div>
       <div style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
@@ -341,6 +326,26 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
       </div>
     </div>
   </div>
+
+  <!-- Add flujo modal -->
+  <div id="add-flujo-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;align-items:center;justify-content:center">
+    <div style="background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:24px;width:360px;max-width:95vw">
+      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:600;margin-bottom:16px">Agregar flujo personalizado</div>
+      <div style="margin-bottom:12px">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Nombre del flujo</div>
+        <input id="new-flujo-name" type="text" placeholder="Ej: MAO, Merge, SdC..." style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:7px 10px">
+      </div>
+      <div style="margin-bottom:18px">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Peso (multiplicador)</div>
+        <input id="new-flujo-weight" type="number" step="0.1" min="0.1" max="5" value="1.0" style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-family:'DM Mono',monospace;font-size:13px;padding:7px 10px">
+      </div>
+      <div style="display:flex;gap:8px">
+        <button onclick="confirmAddFlujo()" style="flex:1;padding:9px;background:var(--accent2);color:#fff;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;cursor:pointer">Agregar</button>
+        <button onclick="closeAddFlujo()" style="flex:1;padding:9px;background:none;color:var(--text2);border:1px solid var(--border2);border-radius:8px;font-family:'Syne',sans-serif;font-size:13px;cursor:pointer">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
   <div class="sep"></div>
   <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:600;margin-bottom:14px">Escenarios rápidos para el 1:1</div>
   <div id="scenarios-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px"></div>
@@ -354,7 +359,17 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
 // STATE
 // ═══════════════════════════════════════════════════════════════
 let DATA    = { hist: null, equipo: null };
-let WEIGHTS = { Demanda:1.0,'Enhanced Content':1.0,Enhancement:1.3,Validación:1.1,Soporte:2.0,Fallos:1.0 };
+let WEIGHTS = { Demanda:1.0,'Enhanced Content':1.0,Enhancement:1.3,Validación:1.1,Soporte:2.0,Fallos:1.0,'Known Values':1.0 };
+
+// Dynamic flujo list for calculator — can be added/removed by user
+let CALC_FLUJOS = [
+  { id:'Demanda',          label:'Demanda',          weight:1.0, value:70, max:150 },
+  { id:'Enhanced Content', label:'Enhanced Content',  weight:1.0, value:5,  max:150 },
+  { id:'Enhancement',      label:'Enhancement',       weight:1.3, value:10, max:150 },
+  { id:'Validación',       label:'Validación',        weight:1.1, value:0,  max:150 },
+  { id:'Soporte',          label:'Soporte (resueltas)',weight:2.0, value:0,  max:150 },
+  { id:'Known Values',     label:'Known Values',      weight:1.0, value:0,  max:150 },
+];
 let CHARTS  = {};
 let PROC    = null;         // processed data
 let HIST_FILTER = {};       // active filters for historico
@@ -723,74 +738,50 @@ function renderHistStats(persons){
 }
 
 function renderBandsChart(rows){
-  // Group by month, count bands
-  const monthRows={};
+  // Aggregate per-user avg pts from the filtered rows
+  const byUser={};
   rows.forEach(r=>{
-    if(!monthRows[r.monthKey])monthRows[r.monthKey]=[];
-    monthRows[r.monthKey].push(r);
+    if(!byUser[r.user])byUser[r.user]={pts:0,days:new Set()};
+    byUser[r.user].pts+=r.w;
+    byUser[r.user].days.add(r.dateStr);
   });
-  const months=Object.keys(monthRows).sort();
-  if(!months.length)return;
-
-  // For each month, build per-user avg pts then classify
-  const bandCounts=months.map(mk=>{
-    const byUser={};
-    monthRows[mk].forEach(r=>{
-      if(!byUser[r.user])byUser[r.user]={pts:0,days:new Set()};
-      byUser[r.user].pts+=r.w;
-      byUser[r.user].days.add(r.dateStr);
-    });
-    const counts=new Array(BANDS.length).fill(0);
-    Object.values(byUser).forEach(u=>{
-      const avg=u.pts/u.days.size;
-      const bi=BANDS.findIndex(b=>avg>=b.min&&avg<b.max);
-      if(bi>=0)counts[bi]++;
-    });
-    return counts;
+  // Classify each user into a band
+  const counts=new Array(BANDS.length).fill(0);
+  Object.values(byUser).forEach(u=>{
+    const avg=u.pts/u.days.size;
+    const bi=BANDS.findIndex(b=>avg>=b.min&&avg<b.max);
+    if(bi>=0)counts[bi]++;
   });
-
-  // month filter buttons
-  const mfEl=document.getElementById('bands-month-filters');
-  if(mfEl&&months.length>0){
-    mfEl.innerHTML=months.map((mk,i)=>{
-      const [y,m]=mk.split('-');
-      return `<button class="filter-btn" onclick="highlightBandMonth(${i})" id="bmf-${i}">${MONTH_NAMES[+m-1]} ${y}</button>`;
-    }).join('');
-  }
 
   const ctx=document.getElementById('chart-bands').getContext('2d');
   if(CHARTS.bands)CHARTS.bands.destroy();
   CHARTS.bands=new Chart(ctx,{
     type:'bar',
     data:{
-      labels:months.map(mk=>{const[y,m]=mk.split('-');return MONTH_NAMES[+m-1]+' '+y;}),
-      datasets:BANDS.map((b,bi)=>({
-        label:b.label,
-        data:bandCounts.map(c=>c[bi]),
-        backgroundColor:b.color+'88',
-        borderColor:b.color,
+      labels:BANDS.map(b=>b.label),
+      datasets:[{
+        data:counts,
+        backgroundColor:BANDS.map(b=>b.color+'88'),
+        borderColor:BANDS.map(b=>b.color),
         borderWidth:1.5,
-        borderRadius:4,
-      }))
+        borderRadius:6,
+      }]
     },
     options:{
+      indexAxis:'y',
       responsive:true,maintainAspectRatio:false,
       plugins:{
-        legend:{labels:{color:'#8b91a8',font:{size:11},boxWidth:12,padding:10}},
-        tooltip:{backgroundColor:'#1c2030',titleColor:'#e8eaf2',bodyColor:'#8b91a8',borderColor:'#252a3a',borderWidth:1,
-          callbacks:{label:c=>`${c.dataset.label}: ${c.raw} analistas`}}
+        legend:{display:false},
+        tooltip:{backgroundColor:'#1c2030',titleColor:'#e8eaf2',bodyColor:'#8b91a8',
+          borderColor:'#252a3a',borderWidth:1,
+          callbacks:{label:c=>`${c.raw} analistas`}}
       },
       scales:{
-        x:{stacked:true,grid:{color:'#252a3a'},ticks:{color:'#8b91a8'}},
-        y:{stacked:true,grid:{color:'#252a3a'},ticks:{color:'#8b91a8',precision:0}}
+        x:{grid:{color:'#252a3a'},ticks:{color:'#8b91a8',precision:0},beginAtZero:true},
+        y:{grid:{display:false},ticks:{color:'#8b91a8',font:{size:12}}}
       }
     }
   });
-}
-
-function highlightBandMonth(i){
-  document.querySelectorAll('[id^="bmf-"]').forEach(b=>b.classList.remove('active'));
-  document.getElementById(`bmf-${i}`)?.classList.add('active');
 }
 
 function renderHistTable(){
@@ -903,56 +894,111 @@ function renderRankingChart(persons){
 }
 
 // ═══════════════════════════════════════════════════════════════
-// CALCULATOR
+// CALCULATOR — dynamic flujo list
 // ═══════════════════════════════════════════════════════════════
-function updateCalc(){
-  const vals={
-    dem:+document.getElementById('r-dem').value,
-    ec: +document.getElementById('r-ec').value,
-    enh:+document.getElementById('r-enh').value,
-    val:+document.getElementById('r-val').value,
-    sop:+document.getElementById('r-sop').value,
-  };
-  ['dem','ec','enh','val','sop'].forEach(k=>{
-    document.getElementById(`v-${k}`).textContent=vals[k];
-    document.getElementById(`lbl-${k}`).textContent=vals[k];
+
+// Sync CALC_FLUJOS weights from WEIGHTS global (called after applyWeights)
+function syncCalcWeights(){
+  CALC_FLUJOS.forEach(f=>{
+    if(WEIGHTS[f.id]!==undefined) f.weight=WEIGHTS[f.id];
   });
-  const w=WEIGHTS;
-  // Dynamic labels
-  document.getElementById('lbl-bd-dem').textContent=`Demanda ×${w['Demanda'].toFixed(1)}`;
-  document.getElementById('lbl-bd-ec').textContent =`Enhanced Content ×${w['Enhanced Content'].toFixed(1)}`;
-  document.getElementById('lbl-bd-enh').textContent=`Enhancement ×${w['Enhancement'].toFixed(1)}`;
-  document.getElementById('lbl-bd-val').textContent=`Validación ×${w['Validación'].toFixed(1)}`;
-  document.getElementById('lbl-bd-sop').textContent=`Soporte ×${w['Soporte'].toFixed(1)}`;
+}
 
-  const pts={
-    dem:vals.dem*w['Demanda'],
-    ec: vals.ec *w['Enhanced Content'],
-    enh:vals.enh*w['Enhancement'],
-    val:vals.val*w['Validación'],
-    sop:vals.sop*w['Soporte'],
-  };
-  const total=Object.values(pts).reduce((a,b)=>a+b,0);
-  const tasks=vals.dem+vals.ec+vals.enh+vals.val+vals.sop;
+function renderCalcSliders(){
+  const cont=document.getElementById('calc-sliders');
+  if(!cont)return;
+  // Core flujos that cannot be removed (first 5)
+  const CORE_IDS=['Demanda','Enhanced Content','Enhancement','Validación','Soporte'];
+  cont.innerHTML=CALC_FLUJOS.map((f,i)=>{
+    const canRemove=!CORE_IDS.includes(f.id);
+    return`<div class="input-group" id="flujo-row-${i}" style="display:flex;flex-direction:column;gap:0">
+      <div class="input-label" style="display:flex;justify-content:space-between;align-items:center">
+        <span>${f.label} <span style="color:var(--text3);font-size:10px">×${f.weight.toFixed(1)}</span></span>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="color:var(--accent);font-family:'DM Mono',monospace;font-size:11px" id="lbl-f${i}">${f.value}</span>
+          ${canRemove?`<button onclick="removeFlujo(${i})" title="Eliminar flujo" style="background:none;border:none;cursor:pointer;color:var(--red);opacity:.6;padding:0;line-height:1;font-size:14px">✕</button>`:''}
+        </div>
+      </div>
+      <div class="range-wrap">
+        <input type="range" id="r-f${i}" min="0" max="${f.max}" value="${f.value}" oninput="onSlide(${i},this.value)">
+        <span class="range-val" id="v-f${i}">${f.value}</span>
+      </div>
+    </div>`;
+  }).join('');
+  updateCalc();
+}
 
-  document.getElementById('bd-dem').textContent=pts.dem.toFixed(1)+' pts';
-  document.getElementById('bd-ec').textContent =pts.ec.toFixed(1)+' pts';
-  document.getElementById('bd-enh').textContent=pts.enh.toFixed(1)+' pts';
-  document.getElementById('bd-val').textContent=pts.val.toFixed(1)+' pts';
-  document.getElementById('bd-sop').textContent=pts.sop.toFixed(1)+' pts';
-  document.getElementById('bd-tasks').textContent=tasks;
+function onSlide(idx, val){
+  CALC_FLUJOS[idx].value=+val;
+  const lbl=document.getElementById(`lbl-f${idx}`);
+  const disp=document.getElementById(`v-f${idx}`);
+  if(lbl)lbl.textContent=val;
+  if(disp)disp.textContent=val;
+  updateCalc();
+}
+
+function updateCalc(){
+  let total=0, tasks=0;
+  const breakdownEl=document.getElementById('calc-breakdown');
+  const rows=[];
+  CALC_FLUJOS.forEach((f,i)=>{
+    const pts=f.value*f.weight;
+    total+=pts; tasks+=f.value;
+    rows.push(`<div class="bd-row"><span class="bd-lbl">${f.label} ×${f.weight.toFixed(1)}</span><span class="bd-val">${pts.toFixed(1)} pts</span></div>`);
+    // keep slider label in sync if DOM exists (e.g. after weight update without re-render)
+    const lbl=document.getElementById(`lbl-f${i}`);
+    const inp=document.getElementById(`r-f${i}`);
+    if(lbl)lbl.textContent=f.value;
+    if(inp)inp.value=f.value;
+  });
+  if(breakdownEl)breakdownEl.innerHTML=rows.join('');
+  const tasksEl=document.getElementById('bd-tasks');
+  if(tasksEl)tasksEl.textContent=tasks;
 
   const band=getBand(total);
-  document.getElementById('pts-big').textContent=total.toFixed(1);
-  document.getElementById('pts-big').style.color=band.color;
-  document.getElementById('band-name').textContent=band.label;
-  document.getElementById('band-desc').textContent=band.desc;
+  const bigEl=document.getElementById('pts-big');
+  if(bigEl){bigEl.textContent=total.toFixed(1);bigEl.style.color=band.color;}
+  const nameEl=document.getElementById('band-name');
+  const descEl=document.getElementById('band-desc');
+  if(nameEl)nameEl.textContent=band.label;
+  if(descEl)descEl.textContent=band.desc;
   const bd=document.getElementById('band-display');
-  bd.style.background=band.color+'22';
-  bd.style.border=`1px solid ${band.color}44`;
-  bd.style.borderRadius='10px';
-  bd.style.marginTop='12px';
+  if(bd){bd.style.background=band.color+'22';bd.style.border=`1px solid ${band.color}44`;bd.style.borderRadius='10px';bd.style.marginTop='12px';}
 }
+
+// Add flujo modal
+function openAddFlujo(){
+  document.getElementById('new-flujo-name').value='';
+  document.getElementById('new-flujo-weight').value='1.0';
+  const ov=document.getElementById('add-flujo-overlay');
+  ov.style.display='flex';
+  document.getElementById('new-flujo-name').focus();
+}
+function closeAddFlujo(){
+  document.getElementById('add-flujo-overlay').style.display='none';
+}
+function confirmAddFlujo(){
+  const name=document.getElementById('new-flujo-name').value.trim();
+  const weight=+(document.getElementById('new-flujo-weight').value)||1.0;
+  if(!name){alert('Ingresá un nombre para el flujo.');return;}
+  if(CALC_FLUJOS.find(f=>f.id===name)){alert(`Ya existe un flujo llamado "${name}".`);return;}
+  CALC_FLUJOS.push({id:name,label:name,weight,value:0,max:150});
+  WEIGHTS[name]=weight;
+  closeAddFlujo();
+  renderCalcSliders();
+}
+function removeFlujo(idx){
+  const f=CALC_FLUJOS[idx];
+  CALC_FLUJOS.splice(idx,1);
+  delete WEIGHTS[f.id];
+  renderCalcSliders();
+}
+
+// Close modal on overlay click
+document.addEventListener('click',e=>{
+  const ov=document.getElementById('add-flujo-overlay');
+  if(ov&&e.target===ov)closeAddFlujo();
+});
 
 function renderBandsRef(){
   document.getElementById('bands-ref').innerHTML=BANDS.map(b=>`
@@ -994,12 +1040,11 @@ function renderScenarios(){
 }
 
 function applyScenario(dem,ec,enh,val,sop){
-  document.getElementById('r-dem').value=Math.min(dem,150);
-  document.getElementById('r-ec').value =Math.min(ec,150);
-  document.getElementById('r-enh').value=Math.min(enh,150);
-  document.getElementById('r-val').value=Math.min(val,150);
-  document.getElementById('r-sop').value=Math.min(sop,150);
-  updateCalc();
+  const map={'Demanda':dem,'Enhanced Content':ec,'Enhancement':enh,'Validación':val,'Soporte':sop};
+  CALC_FLUJOS.forEach(f=>{
+    if(map[f.id]!==undefined) f.value=Math.min(map[f.id],f.max);
+  });
+  renderCalcSliders();
   showPage('calc');
 }
 
@@ -1013,9 +1058,11 @@ function applyWeights(){
   WEIGHTS['Validación']       =+(document.getElementById('w-val').value)   ||1.1;
   WEIGHTS['Soporte']          =+(document.getElementById('w-sop').value)   ||2.0;
   WEIGHTS['Fallos']           =+(document.getElementById('w-fallos').value)||1.0;
+  WEIGHTS['Known Values']     =+(document.getElementById('w-kv').value)    ||1.0;
   if(DATA.hist){ computeAll(); }
+  syncCalcWeights();
+  renderCalcSliders();
   renderScenarios();
-  updateCalc();
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1027,13 +1074,13 @@ function showPage(id){
   document.getElementById(`page-${id}`).classList.add('active');
   const map={upload:0,historico:1,ranking:2,calc:3};
   document.querySelectorAll('.nav-item')[map[id]]?.classList.add('active');
-  if(id==='calc') updateCalc();
+  if(id==='calc') renderCalcSliders();
 }
 
 // ═══════════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════════
-updateCalc();
+renderCalcSliders();
 renderBandsRef();
 renderScenarios();
 </script>
