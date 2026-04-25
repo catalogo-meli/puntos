@@ -111,10 +111,10 @@ La iteración actual ya no exige `metricas_incentivos.csv` para calcular el resu
 El score integral actual usa:
 
 - Productividad ponderada: `35%`
-- Calidad auditada: `30%`
+- Calidad auditada: `35%`
 - HOLD / fricción: `15%`
 - Incidencias / gestión operativa: `10%`
-- Consistencia / días activos: `10%`
+- Consistencia / días activos: `5%`
 
 Por ahora no entran al score principal:
 
@@ -123,6 +123,25 @@ Por ahora no entran al score principal:
 - evaluación mensual
 
 Esas dimensiones quedan preparadas como evolución futura o complemento.
+
+### Bandas iniciales
+
+- `0 a 59`: `No elegible`
+- `60 a 69`: `Cumple objetivo base`
+- `70 a 84`: `Elegible destacado`
+- `85 a 100`: `Elegible sobresaliente`
+- `Revisión manual`: cuando faltan datos críticos o hay alertas fuertes
+- `No evaluable`: cuando no hay productividad o no hay datos mínimos
+
+### Reglas de seguridad iniciales
+
+- sin productividad: `No evaluable`
+- sin calidad auditada: `Revisión manual`
+- calidad crítica: `No elegible`
+- productividad alta con calidad baja: alerta anti-gaming
+- HOLD alto: detractor y alerta visible
+- cero incidencias en flujo sensible: alerta de posible subregistro
+- los faltantes no se convierten en cero
 
 ### Robustez del score
 
@@ -151,14 +170,11 @@ Lenguaje visible en UI:
 Se persiste en `localStorage` dentro de la configuración del módulo:
 
 - `budget`
-- `currency`
 - `pools.base`
 - `pools.performance`
 - `pools.excellence`
-- `includeBaseBand`
-- `includeManualReview`
 - `maxIndividualBudgetShare`
-- `baseMinimumAmount`
+- `currency`
 - `roundingStep`
 
 ### Modelo de reparto implementado
@@ -172,20 +188,21 @@ Se persiste en `localStorage` dentro de la configuración del módulo:
 
 2. Pools
 
-- `base`
-- `performance`
-- `excellence`
+- `base = 50%`
+- `performance = 35%`
+- `excellence = 15%`
 
 3. Reparto
 
-- `base`: distribución base entre perfiles elegibles configurados para ese pool
-- `performance`: reparto proporcional según score ajustado sobre el umbral base
-- `excellence`: reparto para la banda superior configurada
+- `base`: reparto igualitario entre `Cumple objetivo base`, `Elegible destacado` y `Elegible sobresaliente`
+- `performance`: reparto proporcional sólo entre `Elegible destacado` y `Elegible sobresaliente`, usando score por encima de `70`
+- `excellence`: reparto proporcional sólo entre `Elegible sobresaliente`, usando score por encima de `85`
 
 4. Tope individual
 
 - se aplica un máximo configurable como `% del presupuesto`
-- si alguien supera ese techo, el excedente no se asigna y queda explícito como remanente
+- por defecto el tope es `10%`
+- si alguien supera ese techo, el excedente hoy puede quedar como remanente explícito; la redistribución completa todavía no está automatizada
 
 5. Redondeo
 
@@ -213,6 +230,7 @@ La simulación económica:
 - no asigna dinero a revisión manual por defecto
 - no inventa datos faltantes
 - puede dejar presupuesto sin asignar si no hay universo elegible suficiente
+- no debe interpretarse como pago confirmado
 
 ## Fórmula recomendada implementada
 

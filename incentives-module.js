@@ -364,11 +364,11 @@
     };
 
     const metricModels = {
-      productivity_ratio: { label: METRIC_LABELS.productivity_ratio, direction: 'higher', weight: 0.35, floor: 0.75, target: 1.0, required: true },
-      quality_pct: { label: METRIC_LABELS.quality_pct, direction: 'higher', weight: 0.30, floor: 90, target: 97, required: true },
-      hold_pct: { label: METRIC_LABELS.hold_pct, direction: 'lower', weight: 0.15, target: 4, ceiling: 18, required: false },
-      incidence_rate: { label: METRIC_LABELS.incidence_rate, direction: 'lower', weight: 0.10, target: 2, ceiling: 15, required: false },
-      weekly_consistency_pct: { label: METRIC_LABELS.weekly_consistency_pct, direction: 'higher', weight: 0.10, floor: 45, target: 90, required: false },
+      productivity_ratio: { label: METRIC_LABELS.productivity_ratio, direction: 'higher', weight: 0.35, floor: 0.70, target: 1.0, required: true },
+      quality_pct: { label: METRIC_LABELS.quality_pct, direction: 'higher', weight: 0.35, floor: 60, target: 95, required: true },
+      hold_pct: { label: METRIC_LABELS.hold_pct, direction: 'lower', weight: 0.15, target: 5, ceiling: 20, required: false },
+      incidence_rate: { label: METRIC_LABELS.incidence_rate, direction: 'lower', weight: 0.10, target: 3, ceiling: 20, required: false },
+      weekly_consistency_pct: { label: METRIC_LABELS.weekly_consistency_pct, direction: 'higher', weight: 0.05, floor: 40, target: 85, required: false },
       productive_hours_pct: { label: METRIC_LABELS.productive_hours_pct, direction: 'higher', weight: 0, floor: 75, target: 100, required: false },
       attendance_pct: { label: METRIC_LABELS.attendance_pct, direction: 'higher', weight: 0, floor: 80, target: 97, required: false },
       monthly_evaluation_score: { label: 'Evaluación mensual', direction: 'higher', weight: 0, floor: 60, target: 90, required: false },
@@ -394,11 +394,12 @@
           requiresAdditionalData: false,
           baseWeights: {
             productivity_ratio: 35,
-            quality_pct: 30,
-            hold_pct: 10,
+            quality_pct: 35,
+            hold_pct: 15,
             incidence_rate: 10,
-            productive_hours_pct: 10,
-            monthly_evaluation_score: 5,
+            weekly_consistency_pct: 5,
+            productive_hours_pct: 0,
+            monthly_evaluation_score: 0,
           },
         },
         team_leader: {
@@ -468,17 +469,17 @@
         { id: 'high_points_high_hold', name: 'Alta productividad con HOLD alto', type: 'alert', active: true, severity: 'high', mode: 'alert' },
         { id: 'zero_incidents_expected_context', name: 'Cero incidencias en contexto sensible', type: 'manual_review', active: true, severity: 'medium', mode: 'manual_review' },
         { id: 'high_weight_flow_concentration', name: 'Concentración en flujos de alto puntaje', type: 'alert', active: true, severity: 'medium', mode: 'alert' },
-        { id: 'abrupt_flow_mix_change', name: 'Cambio brusco de mix de flujos', type: 'alert', active: true, severity: 'medium', mode: 'alert' },
+        { id: 'abrupt_flow_mix_change', name: 'Cambio brusco de mix de flujos', type: 'alert', active: false, severity: 'medium', mode: 'alert' },
       ],
       initiatives: {
-        enabled: true,
+        enabled: false,
         maxMonthlyImpact: 5,
         requiresEvidence: true,
         requiresValidator: true,
         impactMode: 'points',
       },
       monthlyEvaluation: {
-        enabled: true,
+        enabled: false,
         maxImpact: 3,
         missingResponsePenalty: -1,
         lowScorePenalty: -2,
@@ -499,7 +500,6 @@
         includeManualReview: false,
         excellenceBand: 'Elegible sobresaliente',
         maxIndividualBudgetShare: 0.10,
-        baseMinimumAmount: 0,
         roundingStep: 100,
       },
       rules: createDefaultRules(),
@@ -512,13 +512,13 @@
       {
         id: uid('rule'),
         name: 'Calidad mínima',
-        description: 'Para ser elegible, la calidad no puede quedar por debajo del guardrail.',
+        description: 'Sin un piso sano de calidad no se habilita elegibilidad automática.',
         metric: 'quality_pct',
         type: 'minimum',
         active: true,
         severity: 'high',
         operator: 'gte',
-        threshold: 95,
+        threshold: 60,
         thresholdMax: null,
         impactMode: 'block',
         impactValue: 0,
@@ -532,14 +532,14 @@
       },
       {
         id: uid('rule'),
-        name: 'Horas productivas mínimas',
-        description: 'Sin tracción operativa real no se habilita el incentivo.',
-        metric: 'productive_hours_pct',
+        name: 'Participación suficiente',
+        description: 'Evita decisiones con muestra muy chica dentro del período.',
+        metric: 'participation_days',
         type: 'minimum',
         active: true,
         severity: 'medium',
         operator: 'gte',
-        threshold: 85,
+        threshold: 4,
         thresholdMax: null,
         impactMode: 'block',
         impactValue: 0,
@@ -553,14 +553,14 @@
       },
       {
         id: uid('rule'),
-        name: 'Participación suficiente',
-        description: 'Evita premiar muestras chicas o períodos sin volumen representativo.',
-        metric: 'participation_days',
-        type: 'minimum',
+        name: 'Calidad crítica',
+        description: 'Si la calidad cae a zona crítica, el resultado no debe usarse para incentivo automático.',
+        metric: 'quality_pct',
+        type: 'exclusion',
         active: true,
-        severity: 'medium',
-        operator: 'gte',
-        threshold: 4,
+        severity: 'critical',
+        operator: 'lt',
+        threshold: 45,
         thresholdMax: null,
         impactMode: 'block',
         impactValue: 0,
@@ -570,171 +570,24 @@
         flowScope: 'all',
         roleScope: 'all',
         periodScope: 'selected',
-        dataMode: 'allow_partial',
+        dataMode: 'require',
       },
       {
         id: uid('rule'),
-        name: 'Exclusión por errores graves',
-        description: 'Los desvíos severos bloquean automáticamente la elegibilidad.',
-        metric: 'severe_errors',
-        type: 'exclusion',
-        active: true,
-        severity: 'critical',
-        operator: 'gt',
-        threshold: 1,
-        thresholdMax: null,
-        impactMode: 'block',
-        impactValue: 0,
-        priority: 120,
-        stackable: false,
-        maxImpact: null,
-        flowScope: 'all',
-        roleScope: 'all',
-        periodScope: 'selected',
-        dataMode: 'allow_partial',
-      },
-      {
-        id: uid('rule'),
-        name: 'Exclusión por HOLD excesivo',
-        description: 'Protege al esquema de hold innecesario o mala gestión del flujo.',
+        name: 'HOLD alto',
+        description: 'Un nivel alto de fricción operativa debe bajar el resultado y dejar alerta visible.',
         metric: 'hold_pct',
-        type: 'exclusion',
-        active: true,
-        severity: 'high',
-        operator: 'gt',
-        threshold: 18,
-        thresholdMax: null,
-        impactMode: 'block',
-        impactValue: 0,
-        priority: 118,
-        stackable: false,
-        maxImpact: null,
-        flowScope: 'all',
-        roleScope: 'all',
-        periodScope: 'selected',
-        dataMode: 'allow_partial',
-      },
-      {
-        id: uid('rule'),
-        name: 'Calidad sobresaliente',
-        description: 'Premia calidad muy por encima del mínimo operativo.',
-        metric: 'quality_pct',
-        type: 'accelerator',
-        active: true,
-        severity: 'low',
-        operator: 'gte',
-        threshold: 98.5,
-        thresholdMax: null,
-        impactMode: 'points',
-        impactValue: 6,
-        priority: 40,
-        stackable: true,
-        maxImpact: 6,
-        flowScope: 'all',
-        roleScope: 'all',
-        periodScope: 'selected',
-        dataMode: 'allow_partial',
-      },
-      {
-        id: uid('rule'),
-        name: 'Productividad por encima del target',
-        description: 'Acelera sólo si la persona ya está en zona sana.',
-        metric: 'productivity_ratio',
-        type: 'accelerator',
-        active: true,
-        severity: 'low',
-        operator: 'gte',
-        threshold: 1.08,
-        thresholdMax: null,
-        impactMode: 'points',
-        impactValue: 5,
-        priority: 35,
-        stackable: true,
-        maxImpact: 5,
-        flowScope: 'all',
-        roleScope: 'all',
-        periodScope: 'selected',
-        dataMode: 'allow_partial',
-      },
-      {
-        id: uid('rule'),
-        name: 'Consistencia sostenida',
-        description: 'Reconoce desempeño sano y repetible en varias semanas.',
-        metric: 'weekly_consistency_pct',
-        type: 'accelerator',
-        active: true,
-        severity: 'low',
-        operator: 'gte',
-        threshold: 80,
-        thresholdMax: null,
-        impactMode: 'points',
-        impactValue: 4,
-        priority: 32,
-        stackable: true,
-        maxImpact: 4,
-        flowScope: 'all',
-        roleScope: 'all',
-        periodScope: 'selected',
-        dataMode: 'allow_partial',
-      },
-      {
-        id: uid('rule'),
-        name: 'Mejora vs período anterior',
-        description: 'Premia mejora real, no sólo foto del período.',
-        metric: 'improvement_vs_previous_pct',
-        type: 'accelerator',
-        active: true,
-        severity: 'low',
-        operator: 'gte',
-        threshold: 4,
-        thresholdMax: null,
-        impactMode: 'points',
-        impactValue: 3,
-        priority: 31,
-        stackable: true,
-        maxImpact: 3,
-        flowScope: 'all',
-        roleScope: 'all',
-        periodScope: 'selected',
-        dataMode: 'allow_partial',
-      },
-      {
-        id: uid('rule'),
-        name: 'Gap volumen/calidad riesgoso',
-        description: 'Penaliza cuando la productividad aparente se despega de la calidad.',
-        metric: 'productivity_quality_gap',
         type: 'penalty',
         active: true,
         severity: 'high',
         operator: 'gt',
-        threshold: 12,
+        threshold: 15,
         thresholdMax: null,
         impactMode: 'points',
         impactValue: 6,
         priority: 80,
-        stackable: false,
-        maxImpact: 6,
-        flowScope: 'all',
-        roleScope: 'all',
-        periodScope: 'selected',
-        dataMode: 'allow_partial',
-      },
-      {
-        id: uid('rule'),
-        name: 'Reincidencia de errores',
-        description: 'Castiga repetir desvíos ya corregidos pedagógicamente.',
-        metric: 'recurrence_count',
-        type: 'penalty',
-        active: true,
-        severity: 'high',
-        operator: 'gt',
-        threshold: 1,
-        thresholdMax: null,
-        impactMode: 'points',
-        impactValue: 5,
-        priority: 82,
         stackable: true,
-        maxImpact: 10,
+        maxImpact: 6,
         flowScope: 'all',
         roleScope: 'all',
         periodScope: 'selected',
@@ -745,10 +598,9 @@
 
   function createDefaultBands() {
     return [
-      { id: uid('band'), label: 'Cumple objetivo base', min: 72, max: 84, payoutPct: 40, color: '#5b7fff' },
-      { id: uid('band'), label: 'Elegible base', min: 84, max: 92, payoutPct: 70, color: '#3ecf8e' },
-      { id: uid('band'), label: 'Elegible destacado', min: 92, max: 97, payoutPct: 100, color: '#a78bfa' },
-      { id: uid('band'), label: 'Elegible sobresaliente', min: 97, max: 101, payoutPct: 125, color: '#f6a623' },
+      { id: uid('band'), label: 'Cumple objetivo base', min: 60, max: 70, payoutPct: 100, color: '#5b7fff' },
+      { id: uid('band'), label: 'Elegible destacado', min: 70, max: 85, payoutPct: 100, color: '#3ecf8e' },
+      { id: uid('band'), label: 'Elegible sobresaliente', min: 85, max: 101, payoutPct: 100, color: '#f6a623' },
     ];
   }
 
@@ -998,9 +850,9 @@
         csv([...row.exclusionReasons, ...row.minimumFailures, ...row.manualReviewReasons].join(' | ')),
         state.evaluation.economic?.budget || 0,
         csv(state.evaluation.economic?.currency || 'ARS'),
-        state.config.economicAllocation?.pools?.base ?? 0,
-        state.config.economicAllocation?.pools?.performance ?? 0,
-        state.config.economicAllocation?.pools?.excellence ?? 0,
+        round((state.config.economicAllocation?.pools?.base ?? 0) * 100, 0),
+        round((state.config.economicAllocation?.pools?.performance ?? 0) * 100, 0),
+        round((state.config.economicAllocation?.pools?.excellence ?? 0) * 100, 0),
         csv(new Date().toISOString()),
         csv(`${state.config.version} r${state.config.revision || 1}`),
       ].join(',')),
@@ -1171,11 +1023,15 @@
     const target = state.config[section];
     if (!target) return;
     if (section === 'economicAllocation' && poolKey) {
-      target.pools[poolKey] = input.type === 'number' ? Number(input.value) : input.value;
+      target.pools[poolKey] = input.type === 'number' ? clamp(Number(input.value) / 100, 0, 1) : input.value;
       persistConfig('edit-economic-pool', { note: `${poolKey}` });
       return;
     }
-    target[field] = input.type === 'checkbox' ? input.checked : (input.type === 'number' ? Number(input.value) : input.value);
+    if (section === 'economicAllocation' && field === 'maxIndividualBudgetShare' && input.type === 'number') {
+      target[field] = clamp(Number(input.value) / 100, 0, 1);
+    } else {
+      target[field] = input.type === 'checkbox' ? input.checked : (input.type === 'number' ? Number(input.value) : input.value);
+    }
     persistConfig('edit-program-settings', { note: `${section}.${field}` });
   }
 
@@ -1184,14 +1040,18 @@
     const field = input.getAttribute('data-economic-field');
     const poolKey = input.getAttribute('data-economic-pool');
     if (poolKey) {
-      state.config.economicAllocation.pools[poolKey] = Number(input.value);
+      state.config.economicAllocation.pools[poolKey] = clamp(Number(input.value) / 100, 0, 1);
       persistConfig('edit-economic-simulation', { note: `pool.${poolKey}` });
       return;
     }
     if (!field) return;
-    state.config.economicAllocation[field] = input.type === 'checkbox'
-      ? input.checked
-      : (input.type === 'number' ? Number(input.value) : input.value);
+    if (field === 'maxIndividualBudgetShare' && input.type === 'number') {
+      state.config.economicAllocation[field] = clamp(Number(input.value) / 100, 0, 1);
+    } else {
+      state.config.economicAllocation[field] = input.type === 'checkbox'
+        ? input.checked
+        : (input.type === 'number' ? Number(input.value) : input.value);
+    }
     persistConfig('edit-economic-simulation', { note: field });
   }
 
@@ -2553,7 +2413,8 @@
 
     const unclamped = (base.score + pointsDelta) * multiplier;
     const finalScore = clamp(unclamped, config.scoring.minScore, config.scoring.maxScore);
-    const baseCompliance = !minimumFailures.length && !exclusionReasons.length && finalScore >= 72;
+    if (status === 'eligible' && finalScore < 60) status = 'not_eligible';
+    const baseCompliance = !minimumFailures.length && !exclusionReasons.length && finalScore >= 60;
     return {
       finalScore: round(finalScore, 1),
       status,
@@ -2753,14 +2614,14 @@
     const alerts = [];
     const capAmount = Number(econ.maxIndividualBudgetShare || 0) > 0 ? budget * Number(econ.maxIndividualBudgetShare) : null;
     const eligible = rows.filter(row => row.status === 'eligible');
-    const baseCandidates = eligible.filter(row => econ.includeBaseBand !== false || row.bandLabel !== 'Cumple objetivo base');
+    const baseCandidates = eligible.filter(row => ['Cumple objetivo base', 'Elegible destacado', 'Elegible sobresaliente'].includes(row.bandLabel));
     const performanceCandidates = eligible.filter(row => ['Elegible destacado', 'Elegible sobresaliente'].includes(row.bandLabel));
-    const excellenceCandidates = eligible.filter(row => row.bandLabel === (econ.excellenceBand || 'Elegible sobresaliente'));
+    const excellenceCandidates = eligible.filter(row => row.bandLabel === 'Elegible sobresaliente');
     const manualReview = rows.filter(row => row.status === 'manual_review');
     const excludedFromBudget = rows.filter(row => row.status !== 'eligible');
 
     if (!econ.enabled) alerts.push({ title: 'Simulación económica desactivada', body: 'La asignación estimada está apagada en configuración.' });
-    if (!budget) alerts.push({ title: 'Presupuesto en cero', body: 'Cargá un presupuesto mensual para simular asignaciones.' });
+    if (!budget) alerts.push({ title: 'Presupuesto en cero', body: 'Ingresá un presupuesto para simular asignación económica.' });
     if (!eligible.length) alerts.push({ title: 'No hay perfiles elegibles', body: 'Con el estado actual no hay personas habilitadas para reparto estimado.' });
     if (manualReview.length > rows.length * 0.25) alerts.push({ title: 'Muchas revisiones manuales', body: `${manualReview.length} perfiles siguen pendientes de validación antes de usar una simulación económica con confianza.` });
     if (rows.filter(row => row.robustness?.level === 'low').length > rows.length * 0.35) alerts.push({ title: 'Robustez baja extendida', body: 'Una parte relevante del equipo tiene evidencia parcial. La asignación estimada debe leerse con cautela.' });
@@ -2769,9 +2630,12 @@
 
     if (!econ.enabled || !budget || !eligible.length) {
       rows.forEach(row => {
-        rowMap[row.user].reason = row.status === 'eligible'
-          ? 'Sin simulación económica activa o sin presupuesto configurado'
-          : rowMap[row.user].reason;
+        if (row.status === 'manual_review') rowMap[row.user].reason = 'Pendiente de validación manual. No recibe monto automático.';
+        else if (row.status === 'not_evaluable') rowMap[row.user].reason = 'No evaluable con datos actuales.';
+        else if (row.status !== 'eligible') rowMap[row.user].reason = `Excluido de la simulación por estado ${statusLabel(row.status)}.`;
+        else rowMap[row.user].reason = !budget
+          ? 'Ingresá un presupuesto para simular asignación económica.'
+          : 'Sin simulación económica activa o sin presupuesto configurado.';
       });
       return {
         enabled: !!econ.enabled,
@@ -2799,32 +2663,17 @@
       excellence: budget * Number(econ.pools?.excellence || 0),
     };
 
-    if (!baseCandidates.length && pools.base > 0) alerts.push({ title: 'Pool base sin beneficiarios', body: 'No hay perfiles elegibles para el pool de cumplimiento base.' });
+    if (!baseCandidates.length && pools.base > 0) alerts.push({ title: 'Pool base sin beneficiarios', body: 'No hay perfiles en Cumple objetivo base, Elegible destacado o Elegible sobresaliente.' });
     if (!performanceCandidates.length && pools.performance > 0) alerts.push({ title: 'Pool performance sin beneficiarios', body: 'No hay perfiles destacados/sobresalientes para el pool de performance.' });
     if (!excellenceCandidates.length && pools.excellence > 0) alerts.push({ title: 'Pool excellence sin beneficiarios', body: 'No hay perfiles en la banda de excelencia para ese pool.' });
 
-    const baseMinimum = Math.max(0, Number(econ.baseMinimumAmount || 0));
-    if (baseMinimum > 0 && baseCandidates.length * baseMinimum > pools.base) {
-      alerts.push({ title: 'Presupuesto insuficiente para piso base', body: 'El presupuesto del pool base no alcanza para aplicar el piso configurado; se ignora el piso en esta simulación.' });
-    } else if (baseMinimum > 0 && baseCandidates.length) {
-      baseCandidates.forEach(row => {
-        const record = rowMap[row.user];
-        const headroom = capAmount === null ? Infinity : Math.max(0, capAmount - record.totalEstimated);
-        const granted = Math.min(baseMinimum, headroom);
-        record.baseAmount += granted;
-        record.totalEstimated += granted;
-      });
-      pools.base -= baseCandidates.length * baseMinimum;
-    }
-
     distributePool(pools.base, baseCandidates, () => 1, 'baseAmount', capAmount, rowMap);
-    const performanceThreshold = state.config.bands.find(band => band.label === 'Elegible base')?.min || 84;
-    distributePool(pools.performance, performanceCandidates, row => Math.max(0, row.finalScore - performanceThreshold), 'performanceAmount', capAmount, rowMap);
-    const excellenceThreshold = state.config.bands.find(band => band.label === (econ.excellenceBand || 'Elegible sobresaliente'))?.min || 97;
-    distributePool(pools.excellence, excellenceCandidates, row => Math.max(1, row.finalScore - excellenceThreshold), 'excellenceAmount', capAmount, rowMap);
+    distributePool(pools.performance, performanceCandidates, row => Math.max(0, row.finalScore - 70), 'performanceAmount', capAmount, rowMap);
+    distributePool(pools.excellence, excellenceCandidates, row => Math.max(0, row.finalScore - 85), 'excellenceAmount', capAmount, rowMap);
 
     const roundingStep = Math.max(1, Number(econ.roundingStep || 1));
-    const unassignedAfterRounding = applyRounding(rowMap, budget, roundingStep, capAmount);
+    const allocatedBeforeRounding = Object.values(rowMap).reduce((sum, row) => sum + row.baseAmount + row.performanceAmount + row.excellenceAmount, 0);
+    const unassignedAfterRounding = applyRounding(rowMap, allocatedBeforeRounding, roundingStep, capAmount);
 
     Object.values(rowMap).forEach(record => {
       const total = record.baseAmount + record.performanceAmount + record.excellenceAmount;
@@ -2838,12 +2687,14 @@
           record.excellenceAmount > 0 ? 'excellence' : null,
         ].filter(Boolean);
         record.reason = `Participa en ${record.pools.join(' + ')} con asignación estimada sujeta a validación.`;
-      } else if (row?.status === 'manual_review' && econ.includeManualReview !== true) {
-        record.reason = 'Pendiente de validación: no entra al reparto automático por revisión manual.';
+      } else if (row?.status === 'manual_review') {
+        record.reason = 'Pendiente de validación manual. No recibe monto automático.';
+      } else if (row?.status === 'not_evaluable') {
+        record.reason = 'No evaluable con datos actuales.';
       } else if (row?.status !== 'eligible') {
         record.reason = `Excluido de la simulación por estado ${row?.statusLabel || row?.status || 'no elegible'}.`;
       } else {
-        record.reason = 'Elegible sin asignación en esta corrida por pools, topes o presupuesto.';
+        record.reason = 'Elegible, pero sin asignación estimada por tope, redondeo o falta de pool aplicable.';
       }
       if (row?.robustness?.level === 'low') record.alerts.push('Score con robustez baja');
       if (row?.fairnessAlerts?.length) record.alerts.push('Riesgo de inequidad por flujo');
@@ -2858,6 +2709,9 @@
     const avgAssigned = assignedRows.length ? assigned / assignedRows.length : 0;
     if (assignedRows.some(row => budget && (row.totalEstimated / budget) > Math.max(Number(econ.maxIndividualBudgetShare || 0), 0.10) + 0.0001)) {
       alerts.push({ title: 'Concentración alta', body: 'Una persona supera la concentración máxima esperada del presupuesto.' });
+    }
+    if (capAmount !== null && assignedRows.some(row => row.totalEstimated >= capAmount - Math.max(1, roundingStep)) && (budget - assigned) > 0) {
+      alerts.push({ title: 'Tope individual con remanente', body: 'Parte del presupuesto quedó sin asignar porque la redistribución total del excedente por tope individual todavía no está automatizada.' });
     }
     if (unassignedAfterRounding > 0) {
       alerts.push({ title: 'Diferencia por redondeo', body: `Quedan ${formatCurrency(unassignedAfterRounding, currency)} sin asignar por redondeo o topes.` });
@@ -3166,7 +3020,7 @@
       : '<div class="config-empty">Sin outliers relevantes para la combinación actual de reglas.</div>';
   }
 
-  function renderEconomicControls() {
+function renderEconomicControls() {
     const container = document.getElementById('incentive-economic-controls');
     if (!container) return;
     const econ = state.config.economicAllocation;
@@ -3174,29 +3028,25 @@
       <div class="config-stack">
         <div class="config-row">
           <div class="config-field"><label>Presupuesto mensual disponible</label><input data-economic-field="budget" type="number" step="100" min="0" value="${econ.budget || 0}" placeholder="500000"></div>
-          <div class="config-field"><label>Moneda</label><input data-economic-field="currency" type="text" value="${econ.currency || 'ARS'}"></div>
-          <div class="config-field"><label>Tope individual %</label><input data-economic-field="maxIndividualBudgetShare" type="number" step="0.01" min="0" max="1" value="${econ.maxIndividualBudgetShare}"></div>
-          <div class="config-field"><label>Piso base</label><input data-economic-field="baseMinimumAmount" type="number" step="100" min="0" value="${econ.baseMinimumAmount || 0}"></div>
+          <div class="config-field"><label>Pool cumplimiento base %</label><input data-economic-pool="base" type="number" step="1" min="0" max="100" value="${round((econ.pools.base || 0) * 100, 0)}"></div>
+          <div class="config-field"><label>Pool desempeño destacado %</label><input data-economic-pool="performance" type="number" step="1" min="0" max="100" value="${round((econ.pools.performance || 0) * 100, 0)}"></div>
+          <div class="config-field"><label>Pool excelencia %</label><input data-economic-pool="excellence" type="number" step="1" min="0" max="100" value="${round((econ.pools.excellence || 0) * 100, 0)}"></div>
         </div>
         <div class="config-row">
-          <div class="config-field"><label>Pool base %</label><input data-economic-pool="base" type="number" step="0.01" min="0" max="1" value="${econ.pools.base}"></div>
-          <div class="config-field"><label>Pool performance %</label><input data-economic-pool="performance" type="number" step="0.01" min="0" max="1" value="${econ.pools.performance}"></div>
-          <div class="config-field"><label>Pool excellence %</label><input data-economic-pool="excellence" type="number" step="0.01" min="0" max="1" value="${econ.pools.excellence}"></div>
+          <div class="config-field"><label>Tope individual %</label><input data-economic-field="maxIndividualBudgetShare" type="number" step="1" min="0" max="100" value="${round((econ.maxIndividualBudgetShare || 0) * 100, 0)}"></div>
+          <div class="config-field"><label>Moneda</label><input type="text" value="${econ.currency || 'ARS'}" readonly></div>
           <div class="config-field"><label>Redondeo</label><input data-economic-field="roundingStep" type="number" step="100" min="1" value="${econ.roundingStep || 100}"></div>
+          <div class="config-field"><label>Estado</label><input type="text" value="${econ.enabled ? 'Activa' : 'Inactiva'}" readonly></div>
         </div>
-        <div class="config-inline-actions">
-          <label class="pill"><input data-economic-field="includeManualReview" type="checkbox" ${econ.includeManualReview ? 'checked' : ''}> Permitir revisión manual en simulación</label>
-          <label class="pill"><input data-economic-field="includeBaseBand" type="checkbox" ${econ.includeBaseBand !== false ? 'checked' : ''}> Incluir banda base</label>
-        </div>
-        <div class="detail-box"><p>Este presupuesto se usa solo para simulación de asignación económica. No representa liquidación final.</p></div>
+        <div class="detail-box"><p>Esta simulación no representa liquidación final. Es una estimación sujeta a validación.</p></div>
         <div class="config-inline-actions">
           <button class="filter-btn" data-action="economic-recalc">Recalcular simulación</button>
-          <button class="filter-btn" data-action="economic-reset">Resetear configuración económica</button>
+          <button class="filter-btn" data-action="economic-reset">Resetear simulación</button>
         </div>
       </div>`;
   }
 
-  function renderEconomicSummary() {
+function renderEconomicSummary() {
     const container = document.getElementById('incentive-economic-summary');
     if (!container) return;
     const economic = state.evaluation?.economic;
@@ -3207,15 +3057,13 @@
     container.innerHTML = `
       <div class="stat-grid">
         <div class="stat-card acc"><div class="stat-label">Presupuesto total</div><div class="stat-value">${formatCurrency(economic.budget, economic.currency)}</div><div class="stat-sub">simulación económica</div></div>
-        <div class="stat-card grn"><div class="stat-label">Asignado</div><div class="stat-value">${formatCurrency(economic.assigned, economic.currency)}</div><div class="stat-sub">estimado y sujeto a validación</div></div>
-        <div class="stat-card"><div class="stat-label">No asignado</div><div class="stat-value">${formatCurrency(economic.unassigned, economic.currency)}</div><div class="stat-sub">remanente / redondeo / topes</div></div>
-        <div class="stat-card bb"><div class="stat-label">Elegibles base</div><div class="stat-value">${economic.eligibleBaseCount}</div><div class="stat-sub">candidatos al pool base</div></div>
-        <div class="stat-card"><div class="stat-label">Destacados</div><div class="stat-value">${economic.performanceCount}</div><div class="stat-sub">pool performance</div></div>
-        <div class="stat-card"><div class="stat-label">Sobresalientes</div><div class="stat-value">${economic.excellenceCount}</div><div class="stat-sub">pool excellence</div></div>
-        <div class="stat-card"><div class="stat-label">Asignación promedio</div><div class="stat-value">${formatCurrency(economic.avgAssigned, economic.currency)}</div><div class="stat-sub">entre asignados</div></div>
-        <div class="stat-card"><div class="stat-label">Máxima / mínima</div><div class="stat-value">${formatCurrency(economic.maxAssigned, economic.currency)}</div><div class="stat-sub">mín ${formatCurrency(economic.minAssigned, economic.currency)}</div></div>
-        <div class="stat-card redd"><div class="stat-label">Excluidos del reparto</div><div class="stat-value">${economic.excludedCount}</div><div class="stat-sub">no elegibles / no evaluables</div></div>
-        <div class="stat-card amb"><div class="stat-label">Pendientes de validación</div><div class="stat-value">${economic.manualReviewCount}</div><div class="stat-sub">revisión manual</div></div>
+        <div class="stat-card grn"><div class="stat-label">Presupuesto asignado</div><div class="stat-value">${formatCurrency(economic.assigned, economic.currency)}</div><div class="stat-sub">estimado y sujeto a validación</div></div>
+        <div class="stat-card"><div class="stat-label">Presupuesto no asignado</div><div class="stat-value">${formatCurrency(economic.unassigned, economic.currency)}</div><div class="stat-sub">remanente / topes / redondeo</div></div>
+        <div class="stat-card bb"><div class="stat-label">Elegibles base</div><div class="stat-value">${economic.eligibleBaseCount}</div><div class="stat-sub">pool cumplimiento base</div></div>
+        <div class="stat-card"><div class="stat-label">Destacados</div><div class="stat-value">${economic.performanceCount}</div><div class="stat-sub">pool desempeño</div></div>
+        <div class="stat-card"><div class="stat-label">Sobresalientes</div><div class="stat-value">${economic.excellenceCount}</div><div class="stat-sub">pool excelencia</div></div>
+        <div class="stat-card amb"><div class="stat-label">En revisión manual</div><div class="stat-value">${economic.manualReviewCount}</div><div class="stat-sub">sin monto automático</div></div>
+        <div class="stat-card"><div class="stat-label">Monto promedio estimado</div><div class="stat-value">${formatCurrency(economic.avgAssigned, economic.currency)}</div><div class="stat-sub">entre asignados</div></div>
       </div>`;
   }
 
@@ -3234,7 +3082,7 @@
     return `${n > 0 ? '+' : ''}${num(n)}`;
   }
 
-  function renderTable() {
+function renderTable() {
     const thead = document.getElementById('incentive-thead');
     const tbody = document.getElementById('incentive-tbody');
     const meta = document.getElementById('incentive-table-meta');
@@ -3250,43 +3098,33 @@
     meta.textContent = `${rows.length} visibles / ${state.evaluation.allRows.length} evaluados`;
     thead.innerHTML = `<tr>
       <th>Colaborador</th>
-      <th>Rol</th>
       <th>Equipo</th>
-      <th>Resultado preliminar</th>
+      <th>Rol</th>
+      <th>Score</th>
       <th>Robustez</th>
       <th>Banda</th>
-      <th>Estado</th>
-      <th>Prod.</th>
-      <th>Calidad</th>
-      <th>HOLD</th>
-      <th>Incid.</th>
-      <th>Datos</th>
       <th>Base</th>
       <th>Perf.</th>
       <th>Exc.</th>
       <th>Total estimado</th>
       <th>Motivo</th>
+      <th>Alertas</th>
       <th></th>
     </tr>`;
     tbody.innerHTML = rows.map(row => `
       <tr>
         <td class="name-cell">${row.name}<div class="mono-soft">${row.user}</div></td>
-        <td>${row.role}</td>
         <td>${row.team}</td>
+        <td>${row.role}</td>
         <td class="mono-cell" style="color:${row.bandColor};font-weight:600">${num(row.finalScore)}</td>
         <td>${row.robustness?.label || '—'}</td>
         <td><span class="badge" style="background:${row.bandColor}22;color:${row.bandColor};border:1px solid ${row.bandColor}44">${row.bandLabel}</span></td>
-        <td>${row.statusLabel}</td>
-        <td class="mono-cell">${row.metrics.productivity_ratio !== null ? pct(row.metrics.productivity_ratio * 100) : '—'}</td>
-        <td class="mono-cell">${pct(row.metrics.quality_pct)}</td>
-        <td class="mono-cell">${pct(row.metrics.hold_pct)}</td>
-        <td class="mono-cell">${num(row.metrics.incidences, 0)}</td>
-        <td>${renderDataStatusBadge(row.dataStatus)}</td>
         <td class="mono-cell">${formatCurrency(row.economic?.baseAmount || 0, state.evaluation.economic?.currency || 'ARS')}</td>
         <td class="mono-cell">${formatCurrency(row.economic?.performanceAmount || 0, state.evaluation.economic?.currency || 'ARS')}</td>
         <td class="mono-cell">${formatCurrency(row.economic?.excellenceAmount || 0, state.evaluation.economic?.currency || 'ARS')}</td>
         <td class="mono-cell" style="font-weight:600">${formatCurrency(row.economic?.totalEstimated || 0, state.evaluation.economic?.currency || 'ARS')}</td>
         <td>${row.economic?.reason || '—'}</td>
+        <td>${(row.economic?.alerts || []).concat(row.antiGamingAlerts?.filter(item => item.triggered).map(item => item.name) || []).slice(0, 2).join(' · ') || '—'}</td>
         <td><button class="filter-btn" data-user="${row.user}">Ver</button></td>
       </tr>`).join('');
 
@@ -3323,9 +3161,10 @@
       <div class="tag-row">
         <span class="score-badge neutral">Resultado preliminar ${num(row.finalScore)}</span>
         <span class="score-badge ${row.status === 'eligible' ? 'good' : row.status === 'manual_review' ? 'warn' : row.status === 'not_evaluable' ? 'neutral' : 'bad'}">${row.bandLabel}</span>
-        <span class="score-badge neutral">Elegibilidad estimada ${pct(row.estimatedPayoutPct)}</span>
-        <span class="score-badge neutral">${row.robustness?.label || 'Sin robustez'}</span>
+        <span class="score-badge neutral">Robustez ${row.robustness?.label || 'Sin robustez'}</span>
+        ${renderDataStatusBadge(row.dataStatus)}
       </div>
+      <div class="detail-box"><p><strong>Datos usados:</strong> productividad desde histórico, calidad desde auditorías, HOLD e incidencias desde histórico y padrón desde equipo. Los faltantes no se convierten en cero.</p></div>
       <div class="metric-breakdown">
         ${renderMetricChip('Productividad', row.metrics.productivity_ratio !== null ? pct(row.metrics.productivity_ratio * 100) : '—')}
         ${renderMetricChip('Calidad', pct(row.metrics.quality_pct))}
@@ -3353,9 +3192,11 @@
           <div class="detail-section-title">Simulación económica</div>
           <div class="detail-box">
             <p><strong>Asignación estimada total:</strong> ${formatCurrency(row.economic?.totalEstimated || 0, state.evaluation.economic?.currency || 'ARS')}</p>
+            <p><strong>Entra o no entra al reparto:</strong> ${row.economic?.reason || 'Sin simulación económica.'}</p>
+            <p><strong>Pool aplicable:</strong> ${row.economic?.pools?.join(' + ') || 'Ninguno'}</p>
             <p><strong>Pool base:</strong> ${formatCurrency(row.economic?.baseAmount || 0, state.evaluation.economic?.currency || 'ARS')} · <strong>Performance:</strong> ${formatCurrency(row.economic?.performanceAmount || 0, state.evaluation.economic?.currency || 'ARS')} · <strong>Excellence:</strong> ${formatCurrency(row.economic?.excellenceAmount || 0, state.evaluation.economic?.currency || 'ARS')}</p>
-            <p><strong>Motivo de inclusión/exclusión:</strong> ${row.economic?.reason || 'Sin simulación económica.'}</p>
-            <p><strong>Aclaración:</strong> no representa liquidación final y queda sujeto a validación de dirección.</p>
+            <p><strong>Cómo se calculó:</strong> base igualitaria para el pool base, performance proporcional sobre score &gt; 70 y excellence proporcional sobre score &gt; 85, respetando tope individual.</p>
+            <p><strong>Aclaración:</strong> esta simulación no representa liquidación final. Es una estimación sujeta a validación.</p>
           </div>
           <div class="sep" style="margin:14px 0"></div>
           <div class="detail-section-title">Explicación operativa</div>
@@ -3473,7 +3314,7 @@
     container.innerHTML = `
       <div class="config-stack">
         <div class="detail-box">
-          <div class="config-card-title">Iniciativas positivas</div>
+          <div class="config-card-title">Iniciativas positivas (futuro)</div>
           <div class="config-row">
             <div class="config-field"><label>Habilitadas</label><input data-program-section="initiatives" data-field="enabled" type="checkbox" ${state.config.initiatives.enabled ? 'checked' : ''}></div>
             <div class="config-field"><label>Tope mensual</label><input data-program-section="initiatives" data-field="maxMonthlyImpact" type="number" step="0.1" value="${state.config.initiatives.maxMonthlyImpact}"></div>
@@ -3482,7 +3323,7 @@
           </div>
         </div>
         <div class="detail-box">
-          <div class="config-card-title">Evaluación mensual</div>
+          <div class="config-card-title">Evaluación mensual (futuro)</div>
           <div class="config-row">
             <div class="config-field"><label>Habilitada</label><input data-program-section="monthlyEvaluation" data-field="enabled" type="checkbox" ${state.config.monthlyEvaluation.enabled ? 'checked' : ''}></div>
             <div class="config-field"><label>Tope impacto</label><input data-program-section="monthlyEvaluation" data-field="maxImpact" type="number" step="0.1" value="${state.config.monthlyEvaluation.maxImpact}"></div>
@@ -3504,15 +3345,15 @@
           <div class="config-card-title">Simulación económica</div>
           <div class="config-row">
             <div class="config-field"><label>Presupuesto</label><input data-program-section="economicAllocation" data-field="budget" type="number" step="100" value="${state.config.economicAllocation.budget || 0}"></div>
-            <div class="config-field"><label>Moneda</label><input data-program-section="economicAllocation" data-field="currency" type="text" value="${state.config.economicAllocation.currency || 'ARS'}"></div>
-            <div class="config-field"><label>Tope individual %</label><input data-program-section="economicAllocation" data-field="maxIndividualBudgetShare" type="number" step="0.01" value="${state.config.economicAllocation.maxIndividualBudgetShare}"></div>
+            <div class="config-field"><label>Moneda</label><input data-program-section="economicAllocation" data-field="currency" type="text" value="${state.config.economicAllocation.currency || 'ARS'}" readonly></div>
+            <div class="config-field"><label>Tope individual %</label><input data-program-section="economicAllocation" data-field="maxIndividualBudgetShare" type="number" step="1" value="${round((state.config.economicAllocation.maxIndividualBudgetShare || 0) * 100, 0)}"></div>
             <div class="config-field"><label>Redondeo</label><input data-program-section="economicAllocation" data-field="roundingStep" type="number" step="100" value="${state.config.economicAllocation.roundingStep || 100}"></div>
           </div>
           <div class="config-row">
-            <div class="config-field"><label>Pool base</label><input data-program-section="economicAllocation" data-pool-key="base" data-field="pools" type="number" step="0.01" value="${state.config.economicAllocation.pools.base}"></div>
-            <div class="config-field"><label>Pool performance</label><input data-program-section="economicAllocation" data-pool-key="performance" data-field="pools" type="number" step="0.01" value="${state.config.economicAllocation.pools.performance}"></div>
-            <div class="config-field"><label>Pool excellence</label><input data-program-section="economicAllocation" data-pool-key="excellence" data-field="pools" type="number" step="0.01" value="${state.config.economicAllocation.pools.excellence}"></div>
-            <div class="config-field"><label>Piso base</label><input data-program-section="economicAllocation" data-field="baseMinimumAmount" type="number" step="100" value="${state.config.economicAllocation.baseMinimumAmount || 0}"></div>
+            <div class="config-field"><label>Pool base %</label><input data-program-section="economicAllocation" data-pool-key="base" data-field="pools" type="number" step="1" value="${round((state.config.economicAllocation.pools.base || 0) * 100, 0)}"></div>
+            <div class="config-field"><label>Pool performance %</label><input data-program-section="economicAllocation" data-pool-key="performance" data-field="pools" type="number" step="1" value="${round((state.config.economicAllocation.pools.performance || 0) * 100, 0)}"></div>
+            <div class="config-field"><label>Pool excellence %</label><input data-program-section="economicAllocation" data-pool-key="excellence" data-field="pools" type="number" step="1" value="${round((state.config.economicAllocation.pools.excellence || 0) * 100, 0)}"></div>
+            <div class="config-field"><label>Nota</label><input type="text" value="Simulación, no liquidación final" readonly></div>
           </div>
           <div class="config-inline-actions">
             <label class="pill"><input data-program-section="economicAllocation" data-field="includeBaseBand" type="checkbox" ${state.config.economicAllocation.includeBaseBand !== false ? 'checked' : ''}> Incluir base</label>
