@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Catálogo · Dashboard de Puntos Ponderados</title>
+<title>Catálogo · Dashboard de Puntos + Incentivos</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -118,6 +118,46 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
 .filter-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
 .filter-row label{font-size:11px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.06em}
 @media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{position:static;height:auto}.calc-grid{grid-template-columns:1fr}}
+/* ── INCENTIVOS ── */
+.inc-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px}
+.inc-section-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.inc-section-sub{font-size:12px;color:var(--text3);margin-bottom:16px}
+.budget-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 16px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius);margin-bottom:10px}
+.budget-label{font-size:12px;color:var(--text2);white-space:nowrap}
+.budget-input{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'DM Mono',monospace;font-size:13px;padding:6px 10px;width:150px}
+.budget-input:focus{outline:none;border-color:var(--accent)}
+.budget-select{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 9px;cursor:pointer}
+.budget-select:focus{outline:none;border-color:var(--accent)}
+.inc-calc-btn{padding:8px 18px;background:var(--accent2);color:#fff;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;white-space:nowrap}
+.inc-calc-btn:hover{background:var(--accent)}
+.inc-result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.inc-stat{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:13px 16px}
+.inc-stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-weight:500}
+.inc-stat-value{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-top:3px;letter-spacing:-.5px}
+.inc-stat-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.role-tab-bar{display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid var(--border);padding-bottom:0}
+.role-tab{padding:8px 16px;border:none;background:none;color:var(--text3);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.role-tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:500}
+.role-tab:hover{color:var(--text2)}
+.inc-role-panel{display:none}
+.inc-role-panel.active{display:block}
+.pool-config{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px}
+.pool-item{background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 14px}
+.pool-item-label{font-size:11px;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+.pool-item-input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:'DM Mono',monospace;font-size:13px;padding:5px 8px}
+.pool-item-input:focus{outline:none;border-color:var(--accent)}
+.pool-item-desc{font-size:11px;color:var(--text3);margin-top:4px}
+.inc-criteria{background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius);padding:14px;margin-bottom:14px;font-size:12px;color:var(--text2);line-height:1.6}
+.inc-criteria strong{color:var(--text);font-weight:500}
+.crit-row{display:flex;align-items:flex-start;gap:6px;margin-bottom:4px}
+.crit-dot{width:6px;height:6px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.inc-table-wrap{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.inc-notice{font-size:11px;color:var(--text3);background:rgba(91,127,255,.06);border:1px solid rgba(91,127,255,.15);border-radius:8px;padding:9px 12px;margin-top:12px;line-height:1.5}
+.manual-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:5px;background:rgba(246,166,35,.15);color:var(--amber)}
+.eligible-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:5px;background:rgba(62,207,142,.15);color:var(--green)}
+.ineligible-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:5px;background:rgba(255,95,87,.15);color:var(--red)}
+.amount-tag{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--teal)}
+@media(max-width:900px){.pool-config{grid-template-columns:1fr}.inc-result-grid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
@@ -127,7 +167,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
 <aside class="sidebar">
   <div class="sidebar-logo">
     <h1>Catálogo · MELI</h1>
-    <p>Dashboard de Puntos</p>
+    <p>Dashboard · Puntos · Incentivos</p>
   </div>
   <nav class="nav">
     <div class="nav-label">Navegación</div>
@@ -147,16 +187,20 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
       Calculadora 1:1
     </button>
+    <button class="nav-item" onclick="showPage('incentivos')">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/><path d="M16 8l-4 4-2-2"/></svg>
+      Incentivos
+    </button>
   </nav>
   <div class="weights-section">
     <div class="weights-title">⚙ Pesos por flujo</div>
-    <div class="weight-row"><span class="weight-label">Demanda</span><input class="weight-input" id="w-demanda" type="number" step="0.1" min="0.1" max="5" value="1.0"></div>
-    <div class="weight-row"><span class="weight-label">Enh. Content</span><input class="weight-input" id="w-ec" type="number" step="0.1" min="0.1" max="5" value="1.0"></div>
-    <div class="weight-row"><span class="weight-label">Enhancement</span><input class="weight-input" id="w-enh" type="number" step="0.1" min="0.1" max="5" value="1.3"></div>
-    <div class="weight-row"><span class="weight-label">Validación</span><input class="weight-input" id="w-val" type="number" step="0.1" min="0.1" max="5" value="1.1"></div>
-    <div class="weight-row"><span class="weight-label">Soporte (DONE)</span><input class="weight-input" id="w-sop" type="number" step="0.1" min="0.1" max="5" value="2.0"></div>
-    <div class="weight-row"><span class="weight-label">Fallos</span><input class="weight-input" id="w-fallos" type="number" step="0.1" min="0.1" max="5" value="1.0"></div>
-    <div class="weight-row"><span class="weight-label">Known Values</span><input class="weight-input" id="w-kv" type="number" step="0.1" min="0.1" max="5" value="1.0"></div>
+    <div class="weight-row"><span class="weight-label">Demanda</span><input class="weight-input" id="w-demanda" type="number" step="0.05" min="0.1" max="10" value="1.0"></div>
+    <div class="weight-row"><span class="weight-label">Enh. Content</span><input class="weight-input" id="w-ec" type="number" step="0.05" min="0.1" max="10" value="0.95"></div>
+    <div class="weight-row"><span class="weight-label">Enhancement</span><input class="weight-input" id="w-enh" type="number" step="0.05" min="0.1" max="10" value="1.3"></div>
+    <div class="weight-row"><span class="weight-label">Validación</span><input class="weight-input" id="w-val" type="number" step="0.05" min="0.1" max="10" value="0.95"></div>
+    <div class="weight-row"><span class="weight-label">Soporte (DONE)</span><input class="weight-input" id="w-sop" type="number" step="0.05" min="0.1" max="10" value="4.0"></div>
+    <div class="weight-row"><span class="weight-label">Fallos</span><input class="weight-input" id="w-fallos" type="number" step="0.05" min="0.1" max="10" value="1.1"></div>
+    <div class="weight-row"><span class="weight-label">Known Values</span><input class="weight-input" id="w-kv" type="number" step="0.05" min="0.1" max="10" value="1.0"></div>
     <button class="apply-btn" onclick="applyWeights()">Recalcular todo →</button>
   </div>
 </aside>
@@ -351,6 +395,127 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
   <div id="scenarios-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px"></div>
 </div>
 
+
+<!-- INCENTIVOS -->
+<div class="page" id="page-incentivos">
+  <div class="page-header">
+    <h2 class="page-title">Simulador de incentivos</h2>
+    <p class="page-sub">Distribución de presupuesto por banda · mensual o trimestral · 100% basado en historico.csv</p>
+  </div>
+  <div class="inc-section">
+    <div class="inc-section-title">Período y presupuesto</div>
+    <div class="inc-section-sub">Seleccioná el período a evaluar y el presupuesto por pool. El simulador distribuye automáticamente entre elegibles según banda.</div>
+    <div class="budget-row">
+      <span class="budget-label">Tipo de período</span>
+      <select class="budget-select" id="inc-period-type" onchange="onPeriodTypeChange()">
+        <option value="month">Mensual</option>
+        <option value="quarter">Trimestral</option>
+        <option value="custom">Rango personalizado</option>
+      </select>
+      <select class="budget-select" id="inc-month-sel" style="display:none"><option value="">— mes —</option></select>
+      <select class="budget-select" id="inc-quarter-sel" style="display:none">
+        <option value="1">Q1 (Ene–Mar)</option><option value="2">Q2 (Abr–Jun)</option>
+        <option value="3">Q3 (Jul–Sep)</option><option value="4">Q4 (Oct–Dic)</option>
+      </select>
+      <input type="date" class="budget-select" id="inc-from" style="display:none">
+      <span class="budget-label" id="inc-to-label" style="display:none">hasta</span>
+      <input type="date" class="budget-select" id="inc-to" style="display:none">
+      <select class="budget-select" id="inc-year-sel"><option value="">— año —</option></select>
+    </div>
+    <div class="budget-row">
+      <span class="budget-label">Presupuesto analistas</span>
+      <input class="budget-input" type="number" id="inc-budget-analistas" placeholder="ej: 500000" min="0" step="1000">
+      <span class="budget-label">TLs</span>
+      <input class="budget-input" type="number" id="inc-budget-tls" placeholder="ej: 200000" min="0" step="1000">
+      <span class="budget-label">CP</span>
+      <input class="budget-input" type="number" id="inc-budget-cp" placeholder="ej: 80000" min="0" step="1000">
+    </div>
+    <div class="budget-row">
+      <span class="budget-label">Redondeo</span>
+      <select class="budget-select" id="inc-rounding">
+        <option value="1">Sin redondeo</option><option value="100">$100</option>
+        <option value="500" selected>$500</option><option value="1000">$1.000</option>
+      </select>
+      <span class="budget-label">Calidad mínima analistas</span>
+      <input class="budget-input" type="number" id="inc-quality-min" value="93" min="80" max="100" step="0.5" style="width:70px">
+      <span class="budget-label" style="color:var(--text3);font-size:11px">% (base del sistema)</span>
+    </div>
+    <div class="pool-config">
+      <div class="pool-item">
+        <div class="pool-item-label">Pool base (%)</div>
+        <input class="pool-item-input" type="number" id="pool-base" value="50" min="0" max="100">
+        <div class="pool-item-desc">Igualitario entre todos los elegibles (Base ✓ en adelante)</div>
+      </div>
+      <div class="pool-item">
+        <div class="pool-item-label">Pool performance (%)</div>
+        <input class="pool-item-input" type="number" id="pool-perf" value="35" min="0" max="100">
+        <div class="pool-item-desc">Proporcional al score · Sólido ✓✓ y superiores</div>
+      </div>
+      <div class="pool-item">
+        <div class="pool-item-label">Pool excellence (%)</div>
+        <input class="pool-item-input" type="number" id="pool-exc" value="15" min="0" max="100">
+        <div class="pool-item-desc">Proporcional al score · High Performer ✓✓✓ y Elite ⭐</div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-top:4px">
+      <button class="inc-calc-btn" onclick="runIncentivos()">Calcular distribución →</button>
+    </div>
+  </div>
+  <div id="inc-empty" class="empty-state">
+    <svg width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+    <p>Cargá historico.csv, configurá el presupuesto y presioná "Calcular distribución"</p>
+  </div>
+  <div id="inc-content" style="display:none">
+    <div class="inc-section">
+      <div class="inc-section-title">Resumen de la simulación</div>
+      <div class="inc-result-grid" id="inc-summary-grid"></div>
+    </div>
+    <div class="role-tab-bar">
+      <button class="role-tab active" onclick="switchIncTab('analistas')">Analistas</button>
+      <button class="role-tab" onclick="switchIncTab('tls')">Team Leaders</button>
+      <button class="role-tab" onclick="switchIncTab('cp')">Coord. Pedagógica</button>
+    </div>
+    <!-- Panel analistas -->
+    <div class="inc-role-panel active" id="inc-panel-analistas">
+      <div class="inc-section">
+        <div class="inc-section-title">Detalle analistas</div>
+        <div class="inc-criteria">
+          <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong>Elegibilidad:</strong> Promedio puntos ponderados ≥ 88 pts/día en el período + calidad ≥ umbral configurado (default 93%)</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--amber)"></div><strong>Acelerador calidad:</strong> Promedio ≥ 97 pts → +2 pts adicionales al promedio para determinación de banda</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--red)"></div><strong>Soporte:</strong> Solo tareas DONE generan puntos. HOLD = ×0. HOLD injustificado &gt;15% → revisión manual</div>
+        </div>
+        <div id="inc-table-analistas"></div>
+        <div class="inc-notice" id="inc-notice-analistas"></div>
+      </div>
+    </div>
+    <!-- Panel TLs -->
+    <div class="inc-role-panel" id="inc-panel-tls">
+      <div class="inc-section">
+        <div class="inc-section-title">Detalle Team Leaders</div>
+        <div class="inc-criteria">
+          <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong>Métrica:</strong> Promedio ponderado de puntos del equipo a cargo en el período</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong>Elegibilidad:</strong> Promedio equipo ≥ 90 pts/día + ≥ 70% del equipo en banda Base o superior</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--amber)"></div><strong>Bandas TL:</strong> Base (90–95, ≥70%) · Sólido (95–103, ≥80%) · High Performer (&gt;103, ≥85%)</div>
+        </div>
+        <div id="inc-table-tls"></div>
+        <div class="inc-notice" id="inc-notice-tls"></div>
+      </div>
+    </div>
+    <!-- Panel CP -->
+    <div class="inc-role-panel" id="inc-panel-cp">
+      <div class="inc-section">
+        <div class="inc-section-title">Coordinadora pedagógica</div>
+        <div class="inc-criteria">
+          <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong>Métrica:</strong> Calidad promedio del equipo completo en el período (requiere auditados.csv)</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--amber)"></div><strong>Bandas:</strong> Base ≥93% · Sólido ≥95% · High Performer ≥97% · No elegible &lt;93%</div>
+        </div>
+        <div id="inc-table-cp"></div>
+        <div class="inc-notice" id="inc-notice-cp"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </main>
 </div>
 
@@ -359,15 +524,15 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
 // STATE
 // ═══════════════════════════════════════════════════════════════
 let DATA    = { hist: null, equipo: null };
-let WEIGHTS = { Demanda:1.0,'Enhanced Content':1.0,Enhancement:1.3,Validación:1.1,Soporte:2.0,Fallos:1.0,'Known Values':1.0 };
+let WEIGHTS = { Demanda:1.0,'Enhanced Content':0.95,Enhancement:1.3,Validación:0.95,Soporte:4.0,Fallos:1.1,'Known Values':1.0 };
 
 // Dynamic flujo list for calculator — can be added/removed by user
 let CALC_FLUJOS = [
   { id:'Demanda',          label:'Demanda',          weight:1.0, value:70, max:150 },
-  { id:'Enhanced Content', label:'Enhanced Content',  weight:1.0, value:5,  max:150 },
+  { id:'Enhanced Content', label:'Enhanced Content',  weight:0.95, value:5,  max:150 },
   { id:'Enhancement',      label:'Enhancement',       weight:1.3, value:10, max:150 },
-  { id:'Validación',       label:'Validación',        weight:1.1, value:0,  max:150 },
-  { id:'Soporte',          label:'Soporte (resueltas)',weight:2.0, value:0,  max:150 },
+  { id:'Validación',       label:'Validación',        weight:0.95, value:0,  max:150 },
+  { id:'Soporte',          label:'Soporte (DONE)',     weight:4.0, value:0,  max:150 },
   { id:'Known Values',     label:'Known Values',      weight:1.0, value:0,  max:150 },
 ];
 let CHARTS  = {};
@@ -493,6 +658,7 @@ function showPreview(rows){
 function activatePages(){
   ['hist-empty','rank-empty'].forEach(id=>document.getElementById(id).style.display='none');
   ['hist-content','rank-content'].forEach(id=>document.getElementById(id).style.display='block');
+  populateIncPeriodSelects();
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1053,16 +1219,248 @@ function applyScenario(dem,ec,enh,val,sop){
 // ═══════════════════════════════════════════════════════════════
 function applyWeights(){
   WEIGHTS['Demanda']          =+(document.getElementById('w-demanda').value)||1.0;
-  WEIGHTS['Enhanced Content'] =+(document.getElementById('w-ec').value)    ||1.0;
+  WEIGHTS['Enhanced Content'] =+(document.getElementById('w-ec').value)    ||0.95;
   WEIGHTS['Enhancement']      =+(document.getElementById('w-enh').value)   ||1.3;
-  WEIGHTS['Validación']       =+(document.getElementById('w-val').value)   ||1.1;
-  WEIGHTS['Soporte']          =+(document.getElementById('w-sop').value)   ||2.0;
-  WEIGHTS['Fallos']           =+(document.getElementById('w-fallos').value)||1.0;
+  WEIGHTS['Validación']       =+(document.getElementById('w-val').value)   ||0.95;
+  WEIGHTS['Soporte']          =+(document.getElementById('w-sop').value)   ||4.0;
+  WEIGHTS['Fallos']           =+(document.getElementById('w-fallos').value)||1.1;
   WEIGHTS['Known Values']     =+(document.getElementById('w-kv').value)    ||1.0;
   if(DATA.hist){ computeAll(); }
   syncCalcWeights();
   renderCalcSliders();
   renderScenarios();
+}
+
+
+// ═══════════════════════════════════════════════════════════════
+// INCENTIVOS
+// ═══════════════════════════════════════════════════════════════
+function populateIncPeriodSelects(){
+  if(!PROC)return;
+  const ySel=document.getElementById('inc-year-sel');
+  ySel.innerHTML='<option value="">— año —</option>';
+  PROC.years.forEach(y=>ySel.insertAdjacentHTML('beforeend',`<option value="${y}">${y}</option>`));
+  const mSel=document.getElementById('inc-month-sel');
+  mSel.innerHTML='<option value="">— mes —</option>';
+  PROC.months.forEach(mk=>{
+    const[y,m]=mk.split('-');
+    mSel.insertAdjacentHTML('beforeend',`<option value="${mk}">${MONTH_NAMES[+m-1]} ${y}</option>`);
+  });
+  onPeriodTypeChange();
+}
+
+function onPeriodTypeChange(){
+  const type=document.getElementById('inc-period-type').value;
+  document.getElementById('inc-month-sel').style.display=type==='month'?'block':'none';
+  document.getElementById('inc-quarter-sel').style.display=type==='quarter'?'block':'none';
+  document.getElementById('inc-from').style.display=type==='custom'?'block':'none';
+  document.getElementById('inc-to').style.display=type==='custom'?'block':'none';
+  const tl=document.getElementById('inc-to-label');
+  if(tl)tl.style.display=type==='custom'?'block':'none';
+}
+
+function getIncRows(){
+  if(!PROC)return [];
+  const type=document.getElementById('inc-period-type').value;
+  const year=+(document.getElementById('inc-year-sel').value)||0;
+  let rows=PROC.rawRows;
+  if(type==='month'){
+    const mk=document.getElementById('inc-month-sel').value;
+    if(mk)rows=rows.filter(r=>r.monthKey===mk);
+    else if(year)rows=rows.filter(r=>r.year===year);
+  } else if(type==='quarter'){
+    const q=+(document.getElementById('inc-quarter-sel').value)||1;
+    const qM={1:[1,2,3],2:[4,5,6],3:[7,8,9],4:[10,11,12]};
+    const ms=qM[q];
+    if(year)rows=rows.filter(r=>r.year===year&&ms.includes(r.month));
+    else rows=rows.filter(r=>ms.includes(r.month));
+  } else {
+    const from=document.getElementById('inc-from').value;
+    const to=document.getElementById('inc-to').value;
+    if(from)rows=rows.filter(r=>r.date>=new Date(from));
+    if(to)rows=rows.filter(r=>r.date<=new Date(to+' 23:59:59'));
+  }
+  return rows;
+}
+
+function fmt(n){return Math.round(n).toLocaleString('es-AR');}
+function roundTo(n,step){if(!step||step<=1)return Math.round(n);return Math.round(n/step)*step;}
+
+function runIncentivos(){
+  if(!PROC||!PROC.rawRows.length){
+    document.getElementById('inc-empty').style.display='block';
+    document.getElementById('inc-content').style.display='none';
+    return;
+  }
+  const rows=getIncRows();
+  if(!rows.length){alert('No hay datos para el período seleccionado.');return;}
+
+  const budgetA=+(document.getElementById('inc-budget-analistas').value)||0;
+  const budgetT=+(document.getElementById('inc-budget-tls').value)||0;
+  const budgetC=+(document.getElementById('inc-budget-cp').value)||0;
+  const rnd=+(document.getElementById('inc-rounding').value)||500;
+  const qMin=+(document.getElementById('inc-quality-min').value)||93;
+  const pBase=+(document.getElementById('pool-base').value)||50;
+  const pPerf=+(document.getElementById('pool-perf').value)||35;
+  const pExc=+(document.getElementById('pool-exc').value)||15;
+
+  const persons=aggregatePersons(rows,PROC.equipoMap);
+
+  // ── ANALISTAS ──
+  const analistas=persons.filter(p=>{
+    const r=(p.rol||'').toLowerCase();
+    return !r.includes('team leader')&&!r.includes('coordinador');
+  });
+  const incA=analistas.map(p=>{
+    let status='no_eligible',reason='';
+    if(p.activeDays<1){status='no_data';reason='Sin días activos';}
+    else if(p.avgPts<88){status='no_eligible';reason=`${p.avgPts.toFixed(1)} pts < 88 requeridos`;}
+    else{status='eligible';}
+    return{...p,incStatus:status,reason,amount:0};
+  });
+
+  const eligible=incA.filter(p=>p.incStatus==='eligible');
+  const solidUp=eligible.filter(p=>p.avgPts>=95);
+  const highUp=eligible.filter(p=>p.avgPts>=103);
+
+  const bBase=budgetA*(pBase/100);
+  const bPerf=budgetA*(pPerf/100);
+  const bExc=budgetA*(pExc/100);
+  const baseShare=eligible.length?bBase/eligible.length:0;
+  const perfTot=solidUp.reduce((s,p)=>s+(p.avgPts-95),0);
+  const excTot=highUp.reduce((s,p)=>s+(p.avgPts-103),0);
+
+  incA.forEach(p=>{
+    if(p.incStatus!=='eligible'){p.amount=0;return;}
+    let amt=baseShare;
+    if(p.avgPts>=95&&perfTot>0)amt+=bPerf*((p.avgPts-95)/perfTot);
+    if(p.avgPts>=103&&excTot>0)amt+=bExc*((p.avgPts-103)/excTot);
+    p.amount=roundTo(amt,rnd);
+  });
+  const totalA=incA.reduce((s,p)=>s+p.amount,0);
+
+  // ── TEAM LEADERS ──
+  const tlNames=[...new Set(persons.map(p=>p.equipo).filter(Boolean))];
+  const incTl=tlNames.map(tlName=>{
+    const team=persons.filter(p=>p.equipo===tlName&&!((p.rol||'').toLowerCase().includes('team leader')));
+    if(!team.length)return null;
+    const avgT=team.reduce((s,p)=>s+p.avgPts,0)/team.length;
+    const pctEl=team.filter(p=>p.avgPts>=88).length/team.length;
+    let status='no_eligible',reason='',tlBand='';
+    if(avgT<90){status='no_eligible';reason=`Promedio ${avgT.toFixed(1)} pts < 90`;}
+    else if(pctEl<0.7){status='no_eligible';reason=`${(pctEl*100).toFixed(0)}% elegible < 70% requerido`;}
+    else{
+      status='eligible';
+      if(avgT>=103&&pctEl>=0.85)tlBand='High Performer';
+      else if(avgT>=95&&pctEl>=0.8)tlBand='Sólido';
+      else tlBand='Base';
+    }
+    return{nombre:tlName,avgTeam:avgT,pctEligible:pctEl,incStatus:status,reason,tlBand,amount:0,teamSize:team.length};
+  }).filter(Boolean);
+
+  const eligibleTl=incTl.filter(p=>p.incStatus==='eligible');
+  if(eligibleTl.length&&budgetT>0){
+    const bMult={'Base':1,'Sólido':1.5,'High Performer':2};
+    const totW=eligibleTl.reduce((s,p)=>s+(bMult[p.tlBand]||1),0);
+    eligibleTl.forEach(p=>{p.amount=roundTo(budgetT*(bMult[p.tlBand]||1)/totW,rnd);});
+  }
+  const totalT=incTl.reduce((s,p)=>s+p.amount,0);
+
+  // ── SUMMARY ──
+  document.getElementById('inc-summary-grid').innerHTML=`
+    <div class="inc-stat"><div class="inc-stat-label">Presupuesto total</div><div class="inc-stat-value" style="color:var(--accent)">$${fmt(budgetA+budgetT+budgetC)}</div><div class="inc-stat-sub">tres pools</div></div>
+    <div class="inc-stat"><div class="inc-stat-label">Analistas elegibles</div><div class="inc-stat-value" style="color:var(--green)">${eligible.length}</div><div class="inc-stat-sub">de ${analistas.length} en el período</div></div>
+    <div class="inc-stat"><div class="inc-stat-label">TLs elegibles</div><div class="inc-stat-value" style="color:var(--purple)">${eligibleTl.length}</div><div class="inc-stat-sub">de ${incTl.length} equipos</div></div>
+    <div class="inc-stat"><div class="inc-stat-label">Asignado analistas</div><div class="inc-stat-value" style="color:var(--teal)">$${fmt(totalA)}</div><div class="inc-stat-sub">remanente $${fmt(Math.max(0,budgetA-totalA))}</div></div>
+    <div class="inc-stat"><div class="inc-stat-label">Asignado TLs</div><div class="inc-stat-value" style="color:var(--teal)">$${fmt(totalT)}</div><div class="inc-stat-sub">remanente $${fmt(Math.max(0,budgetT-totalT))}</div></div>
+    <div class="inc-stat"><div class="inc-stat-label">CP (manual)</div><div class="inc-stat-value" style="color:var(--amber)">$${fmt(budgetC)}</div><div class="inc-stat-sub">requiere calidad auditada</div></div>`;
+
+  // ── TABLE ANALISTAS ──
+  const sortedA=[...incA].sort((a,b)=>b.avgPts-a.avgPts);
+  document.getElementById('inc-table-analistas').innerHTML=`
+    <div class="inc-table-wrap" style="margin-top:12px"><table>
+      <thead><tr>
+        <th>Colaborador</th><th>Equipo TL</th><th>Pts/día prom.</th>
+        <th>Días act.</th><th>Banda</th><th>Estado</th><th>Incentivo estimado</th>
+      </tr></thead>
+      <tbody>${sortedA.map(p=>`<tr>
+        <td class="name-cell">${p.nombre||p.user}</td>
+        <td style="font-size:11px;color:var(--text3)">${p.equipo||'—'}</td>
+        <td class="mono-cell" style="color:${p.band.color}">${p.avgPts.toFixed(1)}</td>
+        <td class="mono-cell" style="color:var(--text3)">${p.activeDays}</td>
+        <td><span class="badge ${p.band.css}">${p.band.label}</span></td>
+        <td>${p.incStatus==='eligible'?'<span class="eligible-tag">Elegible</span>':p.incStatus==='no_data'?'<span class="manual-tag">Sin datos</span>':'<span class="ineligible-tag">No elegible</span>'}</td>
+        <td>${p.incStatus==='eligible'?'<span class="amount-tag">$'+fmt(p.amount)+'</span>':'<span style="color:var(--text3)">—</span>'}</td>
+      </tr>`).join('')}</tbody>
+    </table></div>`;
+  document.getElementById('inc-notice-analistas').innerHTML=`<strong>Simulación estimada · no representa liquidación final.</strong> Calidad auditada requiere validación manual (auditados.csv). Pool: base ${pBase}% · performance ${pPerf}% · excellence ${pExc}%. Redondeo $${rnd}. Remanente por redondeo: $${fmt(Math.max(0,budgetA-totalA))}.`;
+
+  // ── TABLE TLS ──
+  document.getElementById('inc-table-tls').innerHTML=`
+    <div class="inc-table-wrap" style="margin-top:12px"><table>
+      <thead><tr>
+        <th>Team Leader</th><th>Equipo</th><th>Prom. equipo (pts/día)</th>
+        <th>% elegible</th><th>Banda TL</th><th>Estado</th><th>Incentivo estimado</th>
+      </tr></thead>
+      <tbody>${incTl.map(p=>`<tr>
+        <td class="name-cell">${p.nombre}</td>
+        <td class="mono-cell" style="color:var(--text3)">${p.teamSize} personas</td>
+        <td class="mono-cell" style="color:${getBand(p.avgTeam).color}">${p.avgTeam.toFixed(1)}</td>
+        <td class="mono-cell">${(p.pctEligible*100).toFixed(0)}%</td>
+        <td>${p.tlBand?`<span class="badge ${p.tlBand==='High Performer'?'bh':p.tlBand==='Sólido'?'bs':'bb'}">${p.tlBand}</span>`:'—'}</td>
+        <td>${p.incStatus==='eligible'?'<span class="eligible-tag">Elegible</span>':'<span class="ineligible-tag">No elegible</span>'}</td>
+        <td>${p.incStatus==='eligible'?'<span class="amount-tag">$'+fmt(p.amount)+'</span>':'<span style="color:var(--text3)">—</span>'}</td>
+      </tr>`).join('')}</tbody>
+    </table></div>`;
+  document.getElementById('inc-notice-tls').innerHTML=`Distribución proporcional: Base ×1 · Sólido ×1.5 · High Performer ×2. Remanente: $${fmt(Math.max(0,budgetT-totalT))}. Ajuste de calidad grupal requiere datos de auditoría.`;
+
+  // ── CP ──
+  document.getElementById('inc-table-cp').innerHTML=`
+    <div class="inc-criteria" style="margin-top:12px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <span class="manual-tag">Revisión manual requerida</span>
+        <span style="font-size:12px;color:var(--text2)">Victoria Tofalo · Coordinadora Pedagógica</span>
+      </div>
+      <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:14px">La CP responde por la calidad transversal del equipo completo. Para determinar la banda, calculá la calidad promedio del período con los datos de auditoría e ingresala abajo.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">
+        <div class="inc-stat"><div class="inc-stat-label">Base</div><div style="font-size:13px;color:var(--green);margin-top:4px;font-weight:500">≥ 93%</div></div>
+        <div class="inc-stat"><div class="inc-stat-label">Sólido</div><div style="font-size:13px;color:var(--teal);margin-top:4px;font-weight:500">≥ 95%</div></div>
+        <div class="inc-stat"><div class="inc-stat-label">High Performer</div><div style="font-size:13px;color:var(--purple);margin-top:4px;font-weight:500">≥ 97%</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <span class="budget-label">Calidad general del período (%):</span>
+        <input class="budget-input" type="number" id="cp-quality-input" placeholder="ej: 94.2" min="80" max="100" step="0.1" style="width:100px">
+        <button class="inc-calc-btn" onclick="calcCP()">Calcular banda CP</button>
+        <span id="cp-result" style="font-size:13px;color:var(--text2)"></span>
+      </div>
+      <div style="margin-top:12px;font-size:12px;color:var(--text3)">Presupuesto disponible CP: <span class="amount-tag">$${fmt(budgetC)}</span></div>
+    </div>`;
+  document.getElementById('inc-notice-cp').innerHTML=`La CP responde por la calidad transversal del equipo. Si ningún analista tiene calidad &lt; 90% por 2 períodos consecutivos sin intervención, la condición se considera cumplida. Validación manual requerida antes de cualquier pago.`;
+
+  document.getElementById('inc-empty').style.display='none';
+  document.getElementById('inc-content').style.display='block';
+}
+
+function calcCP(){
+  const q=+(document.getElementById('cp-quality-input')?.value)||0;
+  const budgetC=+(document.getElementById('inc-budget-cp')?.value)||0;
+  const rnd=+(document.getElementById('inc-rounding')?.value)||500;
+  const el=document.getElementById('cp-result');
+  if(!q){el.textContent='Ingresá un valor de calidad.';return;}
+  if(q<93){el.innerHTML='<span class="ineligible-tag">No elegible</span> Calidad &lt; 93%';}
+  else{
+    let band=q>=97?'High Performer':q>=95?'Sólido':'Base';
+    const bMult={'Base':0.8,'Sólido':1.0,'High Performer':1.2};
+    const amt=roundTo(budgetC*(bMult[band]||1),rnd);
+    el.innerHTML=`<span class="eligible-tag">${band}</span> &nbsp; <span class="amount-tag">$${fmt(amt)}</span> <span style="font-size:11px;color:var(--text3)">estimado</span>`;
+  }
+}
+
+function switchIncTab(tab){
+  const tabs=['analistas','tls','cp'];
+  document.querySelectorAll('.role-tab').forEach((t,i)=>t.classList.toggle('active',tabs[i]===tab));
+  document.querySelectorAll('.inc-role-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('inc-panel-'+tab).classList.add('active');
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1072,7 +1470,7 @@ function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById(`page-${id}`).classList.add('active');
-  const map={upload:0,historico:1,ranking:2,calc:3};
+  const map={upload:0,historico:1,ranking:2,calc:3,incentivos:4};
   document.querySelectorAll('.nav-item')[map[id]]?.classList.add('active');
   if(id==='calc') renderCalcSliders();
 }
