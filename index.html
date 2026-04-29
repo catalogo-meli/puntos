@@ -3,11 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Catálogo · Sistema de Puntos</title>
+<title>Catálogo · Dashboard de Puntos Ponderados</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./incentives-module.css">
 <style>
 :root{--bg:#0d0f14;--surface:#141720;--surface2:#1c2030;--border:#252a3a;--border2:#2e3448;--text:#e8eaf2;--text2:#8b91a8;--text3:#555d78;--accent:#5b7fff;--accent2:#3d5bd9;--green:#3ecf8e;--amber:#f6a623;--red:#ff5f57;--purple:#a78bfa;--teal:#2dd4bf;--radius:10px;--radius-lg:16px}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -128,7 +127,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
 <aside class="sidebar">
   <div class="sidebar-logo">
     <h1>Catálogo · MELI</h1>
-    <p>Sistema de Puntos</p>
+    <p>Dashboard de Puntos</p>
   </div>
   <nav class="nav">
     <div class="nav-label">Navegación</div>
@@ -146,27 +145,19 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
     </button>
     <button class="nav-item" onclick="showPage('calc')">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
-      Calculadora
-    </button>
-    <button class="nav-item" onclick="showPage('incentivos')">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-6"/></svg>
-      Desempeño e Incentivos
-    </button>
-    <button class="nav-item" onclick="showPage('config')">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.82-.33 1.7 1.7 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1-1.51 1.7 1.7 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .33-1.82 1.7 1.7 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.7 1.7 0 0 0 1.51-1 1.7 1.7 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.82.33h.01A1.7 1.7 0 0 0 9.91 3H10a2 2 0 1 1 4 0h.09a1.7 1.7 0 0 0 1.51 1 1.7 1.7 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.33 1.82v.01A1.7 1.7 0 0 0 21 9.91V10a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1Z"/></svg>
-      Configuración
+      Calculadora 1:1
     </button>
   </nav>
   <div class="weights-section">
     <div class="weights-title">⚙ Pesos por flujo</div>
     <div class="weight-row"><span class="weight-label">Demanda</span><input class="weight-input" id="w-demanda" type="number" step="0.1" min="0.1" max="5" value="1.0"></div>
-    <div class="weight-row"><span class="weight-label">Enh. Content</span><input class="weight-input" id="w-ec" type="number" step="0.1" min="0.1" max="5" value="0.95"></div>
-    <div class="weight-row"><span class="weight-label">Enhancement</span><input class="weight-input" id="w-enh" type="number" step="0.1" min="0.1" max="5" value="1.4"></div>
-    <div class="weight-row"><span class="weight-label">Validación</span><input class="weight-input" id="w-val" type="number" step="0.1" min="0.1" max="5" value="0.95"></div>
-    <div class="weight-row"><span class="weight-label">Soporte</span><input class="weight-input" id="w-sop" type="number" step="0.1" min="0.1" max="5" value="4.5"></div>
-    <div class="weight-row"><span class="weight-label">Fallos</span><input class="weight-input" id="w-fallos" type="number" step="0.1" min="0.1" max="5" value="1.2"></div>
+    <div class="weight-row"><span class="weight-label">Enh. Content</span><input class="weight-input" id="w-ec" type="number" step="0.1" min="0.1" max="5" value="1.0"></div>
+    <div class="weight-row"><span class="weight-label">Enhancement</span><input class="weight-input" id="w-enh" type="number" step="0.1" min="0.1" max="5" value="1.3"></div>
+    <div class="weight-row"><span class="weight-label">Validación</span><input class="weight-input" id="w-val" type="number" step="0.1" min="0.1" max="5" value="1.1"></div>
+    <div class="weight-row"><span class="weight-label">Soporte (DONE)</span><input class="weight-input" id="w-sop" type="number" step="0.1" min="0.1" max="5" value="2.0"></div>
+    <div class="weight-row"><span class="weight-label">Fallos</span><input class="weight-input" id="w-fallos" type="number" step="0.1" min="0.1" max="5" value="1.0"></div>
     <div class="weight-row"><span class="weight-label">Known Values</span><input class="weight-input" id="w-kv" type="number" step="0.1" min="0.1" max="5" value="1.0"></div>
-    <button class="apply-btn" onclick="applyWeights()">Recalcular</button>
+    <button class="apply-btn" onclick="applyWeights()">Recalcular todo →</button>
   </div>
 </aside>
 
@@ -177,43 +168,23 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
 <div class="page active" id="page-upload">
   <div class="page-header">
     <h2 class="page-title">Cargar datos del equipo</h2>
-    <p class="page-sub">Procesamiento 100% local</p>
+    <p class="page-sub">Procesamiento 100% local · nada sale del navegador</p>
   </div>
   <div class="upload-grid">
     <div class="upload-zone" id="zone-hist" onclick="document.getElementById('file-hist').click()" ondragover="evDrag(event,'zone-hist')" ondragleave="evLeave('zone-hist')" ondrop="evDrop(event,'hist')">
       <div class="upload-icon">📊</div>
       <div class="upload-title">historico.csv</div>
-      <div class="upload-sub" id="sub-hist">Click o arrastrar</div>
+      <div class="upload-sub" id="sub-hist">Click o arrastrar · soporta , ; TAB · UTF-8 / ISO-8859-1</div>
       <input type="file" class="file-input" id="file-hist" accept=".csv,.txt" onchange="handleFile(this,'hist')">
     </div>
     <div class="upload-zone" id="zone-equipo" onclick="document.getElementById('file-equipo').click()" ondragover="evDrag(event,'zone-equipo')" ondragleave="evLeave('zone-equipo')" ondrop="evDrop(event,'equipo')">
       <div class="upload-icon">👥</div>
       <div class="upload-title">equipo_colaboradores.csv</div>
-      <div class="upload-sub" id="sub-equipo">Click o arrastrar</div>
+      <div class="upload-sub" id="sub-equipo">Click o arrastrar · opcional pero recomendado</div>
       <input type="file" class="file-input" id="file-equipo" accept=".csv,.txt" onchange="handleFile(this,'equipo')">
-    </div>
-    <div class="upload-zone" id="zone-auditados" onclick="document.getElementById('file-auditados').click()" ondragover="evDrag(event,'zone-auditados')" ondragleave="evLeave('zone-auditados')" ondrop="evDrop(event,'auditados')">
-      <div class="upload-icon">✅</div>
-      <div class="upload-title">auditados.csv</div>
-      <div class="upload-sub" id="sub-auditados">Opcional · calidad auditada SdC</div>
-      <input type="file" class="file-input" id="file-auditados" accept=".csv,.txt" onchange="handleFile(this,'auditados')">
-    </div>
-    <div class="upload-zone" id="zone-auditados-mao" onclick="document.getElementById('file-auditados-mao').click()" ondragover="evDrag(event,'zone-auditados-mao')" ondragleave="evLeave('zone-auditados-mao')" ondrop="evDrop(event,'auditados_mao')">
-      <div class="upload-icon">🧷</div>
-      <div class="upload-title">auditados_mao.csv</div>
-      <div class="upload-sub" id="sub-auditados-mao">Opcional · calidad auditada MAO</div>
-      <input type="file" class="file-input" id="file-auditados-mao" accept=".csv,.txt" onchange="handleFile(this,'auditados_mao')">
-    </div>
-    <div class="upload-zone" id="zone-metricas" onclick="document.getElementById('file-metricas').click()" ondragover="evDrag(event,'zone-metricas')" ondragleave="evLeave('zone-metricas')" ondrop="evDrop(event,'metricas')">
-      <div class="upload-icon">🧮</div>
-      <div class="upload-title">metricas_incentivos.csv</div>
-      <div class="upload-sub" id="sub-metricas">Opcional futuro · enriquecer otras métricas complementarias</div>
-      <input type="file" class="file-input" id="file-metricas" accept=".csv,.txt" onchange="handleFile(this,'metricas')">
     </div>
   </div>
   <div class="alert-box" id="alert-partial" style="display:none">⚠ Solo historico.csv cargado. Sin equipo_colaboradores.csv los nombres aparecerán como IDs.</div>
-  <div class="alert-box" id="alert-audits" style="display:none">ℹ Sin <span class="mono">auditados.csv</span> o <span class="mono">auditados_mao.csv</span>, la calidad auditada queda incompleta y el resultado pasa a revisión manual.</div>
-  <div class="alert-box" id="alert-metricas" style="display:none">ℹ <span class="mono">metricas_incentivos.csv</span> ya no es obligatorio para calidad, HOLD e incidencias. Hoy queda como input complementario para futuras métricas.</div>
   <div class="table-wrap" id="preview-section" style="display:none">
     <div class="table-header"><span class="table-title">Vista previa — últimas 8 filas</span><span class="mono" style="font-size:11px;color:var(--text3)" id="preview-count"></span></div>
     <div style="overflow-x:auto;max-height:260px;overflow-y:auto"><table id="preview-table"></table></div>
@@ -224,7 +195,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
 <div class="page" id="page-historico">
   <div class="page-header">
     <h2 class="page-title">Histórico de puntos</h2>
-    <p class="page-sub">Tareas reales vs puntos ponderados</p>
+    <p class="page-sub">Tareas reales vs puntos ponderados · filtrado dinámico</p>
   </div>
   <div id="hist-empty" class="empty-state">
     <svg width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
@@ -280,7 +251,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
 <div class="page" id="page-ranking">
   <div class="page-header">
     <h2 class="page-title">Ranking del equipo</h2>
-    <p class="page-sub">Puntos ponderados por día activo</p>
+    <p class="page-sub">Puntos ponderados por día activo · filtrado dinámico</p>
   </div>
   <div id="rank-empty" class="empty-state">
     <svg width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
@@ -319,8 +290,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
 <!-- CALCULADORA -->
 <div class="page" id="page-calc">
   <div class="page-header">
-    <h2 class="page-title">Calculadora</h2>
-    <p class="page-sub">Simulá el mix del día y la banda resultante</p>
+    <h2 class="page-title">Calculadora 1:1</h2>
+    <p class="page-sub">Herramienta para el TL · simulá el mix del día y la banda resultante</p>
   </div>
   <div class="calc-grid">
     <div class="calc-box">
@@ -342,7 +313,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
     </div>
     <div class="calc-box">
       <div class="pts-display">
-        <div class="pts-number" id="pts-big">0.00</div>
+        <div class="pts-number" id="pts-big">0.0</div>
         <div class="pts-label">puntos ponderados</div>
         <div class="band-display" id="band-display">
           <div class="band-name-big" id="band-name">—</div>
@@ -380,178 +351,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
   <div id="scenarios-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px"></div>
 </div>
 
-<!-- INCENTIVOS -->
-<div class="page" id="page-incentivos">
-  <div class="page-header">
-    <h2 class="page-title">Desempeño e Incentivos</h2>
-    <p class="page-sub">Resultado preliminar, elegibilidad estimada y alertas operativas. No implica liquidación final automática.</p>
-  </div>
-  <div id="incentive-empty" class="empty-state">
-    <svg width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-6"/></svg>
-    <p>Cargá <span class="mono">historico.csv</span> para calcular elegibilidad e incentivos.</p>
-  </div>
-  <div id="incentive-content" style="display:none">
-    <div class="filter-row incentive-toolbar">
-      <label>Vista</label>
-      <select class="sel" id="inc-period-type"></select>
-      <label>Período</label>
-      <select class="sel" id="inc-period-key"></select>
-      <label>Equipo</label>
-      <select class="sel" id="inc-team-filter"></select>
-      <label>Banda</label>
-      <select class="sel" id="inc-band-filter"></select>
-      <input class="search-bar" id="inc-search" type="text" placeholder="Buscar colaborador...">
-      <button class="filter-btn" id="inc-export-csv">Exportar CSV</button>
-      <button class="filter-btn" id="inc-export-json">Exportar JSON</button>
-    </div>
-    <div class="alert-box" id="incentive-data-alert" style="display:none"></div>
-    <div class="stat-grid" id="incentive-summary"></div>
-    <div class="incentive-two-col">
-      <div class="chart-wrap">
-        <div class="chart-header"><span class="chart-title">Distribución por banda de incentivo</span></div>
-        <div style="height:260px"><canvas id="chart-incentive-bands"></canvas></div>
-      </div>
-      <div class="chart-wrap">
-        <div class="chart-header"><span class="chart-title">Alertas y hotspots del esquema</span></div>
-        <div id="incentive-risk-cards"></div>
-        <div class="sep" style="margin:14px 0"></div>
-        <div id="incentive-rule-hotspots"></div>
-      </div>
-    </div>
-    <div class="incentive-two-col">
-      <div class="calc-box">
-        <div class="config-card-title">Alertas anti-gaming</div>
-        <p class="config-card-sub">Heurísticas preliminares para detectar especulación o lectura engañosa de los datos.</p>
-        <div id="incentive-antigaming"></div>
-      </div>
-      <div class="calc-box">
-        <div class="config-card-title">Riesgo de inequidad por flujo</div>
-        <p class="config-card-sub">Alertas por pesos altos en flujos con acceso restringido, asignado o pendiente de calibración.</p>
-        <div id="incentive-fairness"></div>
-      </div>
-    </div>
-    <div class="incentive-two-col">
-      <div class="calc-box">
-        <div class="config-card-title">Simulación económica</div>
-        <p class="config-card-sub">Asignación estimada sobre presupuesto mensual. No representa liquidación final y queda sujeta a validación de dirección.</p>
-        <div id="incentive-economic-controls"></div>
-        <div class="sep" style="margin:14px 0"></div>
-        <div id="incentive-economic-summary"></div>
-        <div class="sep" style="margin:14px 0"></div>
-        <div id="incentive-economic-alerts"></div>
-      </div>
-      <div class="calc-box">
-        <div class="config-card-title">Outliers operativos</div>
-        <p class="config-card-sub">Desbalances entre volumen, calidad y fricción para detectar incentivos no sanos.</p>
-        <div id="incentive-outliers"></div>
-      </div>
-    </div>
-    <div class="table-wrap">
-      <div class="table-header">
-        <span class="table-title">Detalle por colaborador y simulación estimada</span>
-        <span class="mono" style="font-size:11px;color:var(--text3)" id="incentive-table-meta"></span>
-      </div>
-      <div style="overflow-x:auto;max-height:520px;overflow-y:auto">
-        <table>
-          <thead id="incentive-thead"></thead>
-          <tbody id="incentive-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-    <div class="calc-box" id="incentive-detail-panel">
-      <div class="config-card-title">Vista por colaborador</div>
-      <p class="config-card-sub">Seleccioná un colaborador para ver score, robustez, explicación, alertas y asignación estimada.</p>
-      <div id="incentive-detail-body"></div>
-    </div>
-  </div>
-</div>
-
-<!-- CONFIG -->
-<div class="page" id="page-config">
-  <div class="page-header">
-    <h2 class="page-title">Configuración de Desempeño e Incentivos</h2>
-    <p class="page-sub">Administrá elegibilidad preliminar, reglas por rol, fairness por flujo y alertas sin tocar código.</p>
-  </div>
-  <div class="calc-box" style="margin-bottom:18px">
-    <div class="config-toolbar">
-      <div class="config-toolbar-group">
-        <label class="config-label" for="config-actor">Usuario / editor</label>
-        <input class="search-bar" id="config-actor" type="text" placeholder="Ej: PM, TL, Ops Analyst">
-      </div>
-      <div class="config-toolbar-actions">
-        <button class="filter-btn" id="config-save-baseline">Guardar baseline</button>
-        <button class="filter-btn" id="config-restore-baseline">Restaurar baseline</button>
-        <button class="filter-btn" id="config-reset-defaults">Reset defaults</button>
-      </div>
-    </div>
-    <div id="config-summary-cards" class="stat-grid" style="margin-top:16px"></div>
-  </div>
-  <div class="config-grid">
-    <div class="calc-box">
-      <div class="config-card-title">Modelo base y validaciones</div>
-      <p class="config-card-sub">Pesos y thresholds del resultado preliminar. Si el total de pesos no suma 100%, el sistema lo marca.</p>
-      <div id="config-metric-models"></div>
-    </div>
-    <div class="calc-box">
-      <div class="config-card-title">Períodos y guardrails</div>
-      <p class="config-card-sub">Define granularidad, mínimos de participación y tratamiento de datos incompletos.</p>
-      <div id="config-general-settings"></div>
-    </div>
-  </div>
-  <div class="config-grid" style="margin-top:18px">
-    <div class="calc-box">
-      <div class="config-card-title">Reglas por rol</div>
-      <p class="config-card-sub">Analistas evaluables con datos actuales; TLs y QA/CP quedan preparados para datos agregados futuros.</p>
-      <div id="config-role-settings"></div>
-    </div>
-    <div class="calc-box">
-      <div class="config-card-title">Anti-gaming, complementos y simulación económica</div>
-      <p class="config-card-sub">Señales anti-especulación, complementos de contribución y parámetros de asignación estimada.</p>
-      <div id="config-program-settings"></div>
-    </div>
-  </div>
-  <div class="table-wrap" style="margin-top:18px">
-    <div class="table-header">
-      <span class="table-title">Objetivos, pesos y fairness por flujo</span>
-      <button class="filter-btn" id="config-add-flow">Agregar flujo</button>
-    </div>
-    <div style="overflow-x:auto">
-      <table>
-        <thead id="config-flow-thead"></thead>
-        <tbody id="config-flow-tbody"></tbody>
-      </table>
-    </div>
-  </div>
-  <div class="table-wrap" style="margin-top:18px">
-    <div class="table-header">
-      <span class="table-title">Reglas configurables</span>
-      <button class="filter-btn" id="config-new-rule">Nuevo criterio</button>
-    </div>
-    <div style="overflow-x:auto">
-      <table>
-        <thead id="config-rules-thead"></thead>
-        <tbody id="config-rules-tbody"></tbody>
-      </table>
-    </div>
-  </div>
-  <div class="config-grid" style="margin-top:18px">
-    <div class="calc-box">
-      <div class="config-card-title">Editor de regla</div>
-      <p class="config-card-sub">Aceleradores, penalizadores, mínimos y exclusiones con scope por flujo o rol.</p>
-      <div id="config-rule-editor"></div>
-    </div>
-    <div class="calc-box">
-      <div class="config-card-title">Bandas e incentivo estimado</div>
-      <p class="config-card-sub">Clasificación final y payout estimado por banda.</p>
-      <div id="config-bands-editor"></div>
-    </div>
-  </div>
-  <div class="table-wrap" style="margin-top:18px">
-    <div class="table-header"><span class="table-title">Auditoría y trazabilidad</span></div>
-    <div id="config-audit-log" class="config-audit-list"></div>
-  </div>
-</div>
-
 </main>
 </div>
 
@@ -559,16 +358,16 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
 // ═══════════════════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════════════════
-let DATA    = { hist: null, equipo: null, auditados: null, auditados_mao: null, metricas: null };
-let WEIGHTS = { Demanda:1.0,'Enhanced Content':0.95,Enhancement:1.3,Validación:0.95,Soporte:4.0,Fallos:1.2,'Known Values':1.0 };
+let DATA    = { hist: null, equipo: null };
+let WEIGHTS = { Demanda:1.0,'Enhanced Content':1.0,Enhancement:1.3,Validación:1.1,Soporte:2.0,Fallos:1.0,'Known Values':1.0 };
 
 // Dynamic flujo list for calculator — can be added/removed by user
 let CALC_FLUJOS = [
-  { id:'Demanda',          label:'Demanda',          weight:1.0, value:80, max:150 },
-  { id:'Enhanced Content', label:'Enhanced Content',  weight:1.0, value:10,  max:150 },
+  { id:'Demanda',          label:'Demanda',          weight:1.0, value:70, max:150 },
+  { id:'Enhanced Content', label:'Enhanced Content',  weight:1.0, value:5,  max:150 },
   { id:'Enhancement',      label:'Enhancement',       weight:1.3, value:10, max:150 },
   { id:'Validación',       label:'Validación',        weight:1.1, value:0,  max:150 },
-  { id:'Soporte',          label:'Soporte',weight:2.0, value:0,  max:150 },
+  { id:'Soporte',          label:'Soporte (resueltas)',weight:2.0, value:0,  max:150 },
   { id:'Known Values',     label:'Known Values',      weight:1.0, value:0,  max:150 },
 ];
 let CHARTS  = {};
@@ -578,11 +377,11 @@ let RANK_FILTER = {};       // active filters for ranking
 let HIST_SORT   = { col:'avgPts', dir:-1 };
 
 const BANDS = [
-  { min:0,   max:88,  css:'bp', label:'En progreso',        color:'#ff5f57', desc:'Trabajar con TL · Plan específico' },
+  { min:0,   max:88,  css:'bp', label:'En progreso',        color:'#ff5f57', desc:'Trabajar con TL · plan específico' },
   { min:88,  max:95,  css:'bb', label:'Base ✓',             color:'#5b7fff', desc:'Objetivo mínimo cumplido' },
   { min:95,  max:103, css:'bs', label:'Sólido ✓✓',          color:'#3ecf8e', desc:'Por encima del techo histórico' },
-  { min:103, max:110, css:'bh', label:'High Performer ✓✓✓', color:'#a78bfa', desc:'Rumbo al objetivo' },
-  { min:110, max:1e9, css:'be', label:'Elite ⭐',       color:'#f6a623', desc:'Objetivo alcanzado' },
+  { min:103, max:110, css:'bh', label:'High Performer ✓✓✓', color:'#a78bfa', desc:'Rumbo al objetivo MELI' },
+  { min:110, max:1e9, css:'be', label:'Elite ⭐ MELI',       color:'#f6a623', desc:'Objetivo MELI alcanzado' },
 ];
 function getBand(pts){ return BANDS.find(b=>pts>=b.min&&pts<b.max)||BANDS[0]; }
 
@@ -662,14 +461,7 @@ function evDrag(e,id){e.preventDefault();document.getElementById(id).classList.a
 function evLeave(id){document.getElementById(id).classList.remove('drag');}
 function evDrop(e,type){
   e.preventDefault();
-  const zoneMap={
-    hist:'zone-hist',
-    equipo:'zone-equipo',
-    auditados:'zone-auditados',
-    auditados_mao:'zone-auditados-mao',
-    metricas:'zone-metricas'
-  };
-  const id=zoneMap[type]||'zone-hist';
+  const id=type==='hist'?'zone-hist':'zone-equipo';
   document.getElementById(id).classList.remove('drag');
   const file=e.dataTransfer.files[0]; if(!file)return;
   readWithFallback(file,txt=>processFile(txt,type,file.name));
@@ -679,21 +471,12 @@ function processFile(txt,type,name){
   const rows=parseCSV(txt);
   if(!rows.length){alert(`No se pudo parsear "${name}". Ver consola.`);return;}
   DATA[type]=rows;
-  const map={
-    hist:{zone:'zone-hist',sub:'sub-hist'},
-    equipo:{zone:'zone-equipo',sub:'sub-equipo'},
-    auditados:{zone:'zone-auditados',sub:'sub-auditados'},
-    auditados_mao:{zone:'zone-auditados-mao',sub:'sub-auditados-mao'},
-    metricas:{zone:'zone-metricas',sub:'sub-metricas'}
-  };
-  const zId=map[type].zone;
-  const sId=map[type].sub;
+  const zId=type==='hist'?'zone-hist':'zone-equipo';
+  const sId=type==='hist'?'sub-hist':'sub-equipo';
   document.getElementById(zId).classList.add('done');
   document.getElementById(sId).textContent=`✓ ${name} · ${rows.length.toLocaleString()} filas`;
   if(type==='hist') showPreview(rows);
   document.getElementById('alert-partial').style.display=(DATA.hist&&!DATA.equipo)?'flex':'none';
-  document.getElementById('alert-audits').style.display=(DATA.hist&&!DATA.auditados&&!DATA.auditados_mao)?'flex':'none';
-  document.getElementById('alert-metricas').style.display=(DATA.hist&&!DATA.metricas)?'flex':'none';
   if(DATA.hist){ computeAll(); activatePages(); }
 }
 
@@ -827,15 +610,6 @@ function computeAll(){
   applyRankFilter();
   renderBandsRef();
   renderScenarios();
-  document.dispatchEvent(new CustomEvent('catalogo:data-updated',{
-    detail:{
-        hasHist:!!DATA.hist,
-        hasEquipo:!!DATA.equipo,
-        hasAuditados:!!DATA.auditados,
-        hasAuditadosMao:!!DATA.auditados_mao,
-        hasMetricas:!!DATA.metricas,
-      }
-    }));
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -959,7 +733,7 @@ function renderHistStats(persons){
   document.getElementById('hist-stats').innerHTML=`
     <div class="stat-card acc"><div class="stat-label">Promedio equipo (pts)</div><div class="stat-value">${avg.toFixed(1)}</div><div class="stat-sub">período seleccionado</div></div>
     <div class="stat-card grn"><div class="stat-label">En banda Base o sup.</div><div class="stat-value">${aboveBase}</div><div class="stat-sub">de ${active.length} analistas</div></div>
-    <div class="stat-card amb"><div class="stat-label">Banda Elite</div><div class="stat-value">${elite}</div><div class="stat-sub">objetivo alcanzado</div></div>
+    <div class="stat-card amb"><div class="stat-label">Banda Elite</div><div class="stat-value">${elite}</div><div class="stat-sub">objetivo MELI alcanzado</div></div>
     <div class="stat-card redd"><div class="stat-label">Bajo Base (&lt;88 pts)</div><div class="stat-value">${risk}</div><div class="stat-sub">requieren atención TL</div></div>`;
 }
 
@@ -1134,7 +908,7 @@ function renderCalcSliders(){
   const cont=document.getElementById('calc-sliders');
   if(!cont)return;
   // Core flujos that cannot be removed (first 5)
-  const CORE_IDS=['Demanda','Enhanced Content','Enhancement','Validación','Soporte', 'Known Values'];
+  const CORE_IDS=['Demanda','Enhanced Content','Enhancement','Validación','Soporte'];
   cont.innerHTML=CALC_FLUJOS.map((f,i)=>{
     const canRemove=!CORE_IDS.includes(f.id);
     return`<div class="input-group" id="flujo-row-${i}" style="display:flex;flex-direction:column;gap:0">
@@ -1298,29 +1072,17 @@ function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById(`page-${id}`).classList.add('active');
-  const map={upload:0,historico:1,ranking:2,calc:3,incentivos:4,config:5};
+  const map={upload:0,historico:1,ranking:2,calc:3};
   document.querySelectorAll('.nav-item')[map[id]]?.classList.add('active');
   if(id==='calc') renderCalcSliders();
-  document.dispatchEvent(new CustomEvent('catalogo:page-change',{detail:{id}}));
 }
 
 // ═══════════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════════
-window.CATALOGO_CTX = {
-  get DATA(){ return DATA; },
-  get WEIGHTS(){ return WEIGHTS; },
-  get PROC(){ return PROC; },
-  get BANDS(){ return BANDS; },
-  MONTH_NAMES,
-  findCol,
-  parseDate,
-  getBand,
-};
 renderCalcSliders();
 renderBandsRef();
 renderScenarios();
 </script>
-<script src="./incentives-module.js"></script>
 </body>
 </html>
