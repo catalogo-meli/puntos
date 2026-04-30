@@ -428,7 +428,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <input class="budget-input" type="number" id="inc-headcount" value="45" min="1" max="200" step="1" style="width:70px">
       <span class="budget-label">Piso mínimo (pts/día)</span>
       <input class="budget-input" type="number" id="inc-piso" value="75" min="50" max="100" step="1" style="width:70px">
-      <span class="budget-label" style="color:var(--text3);font-size:11px">aplica a analistas (curva) y TLs (elegibilidad)</span>
+      <span class="budget-label">Peso productividad (%)</span>
+      <input class="budget-input" type="number" id="inc-wprod" value="70" min="10" max="90" step="5" style="width:60px">
+      <span class="budget-label">Peso calidad (%)</span>
+      <input class="budget-input" type="number" id="inc-wcal" value="30" min="10" max="90" step="5" style="width:60px">
+      <span class="budget-label" style="color:var(--text3);font-size:11px">piso y pesos afectan analistas</span>
     </div>
     <div id="inc-topes-preview" style="display:none;background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius);padding:10px 14px;margin-bottom:9px">
       <div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px">Topes por banda · piso ${piso} pts · curva regresiva (√)</div>
@@ -461,9 +465,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <div class="inc-section">
         <div class="inc-section-title">Detalle analistas</div>
         <div class="inc-criteria">
-          <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Elegibilidad:</strong> Productividad ≥ 88 pts/día Y calidad ≥ 90% (Modelo A: SdC + MAO pool unificado, correcto=1.0 / leve=0.5 / grave=0.0)</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--amber)"></div><strong style="color:var(--text)">Sin datos calidad (< 5 registros):</strong> Revisión manual si productividad es elegible</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Curva regresiva (√):</strong> desde el piso mínimo configurable hasta 110 pts. El monto crece rápido al principio y se aplana al acercarse al tope de banda. Piso configurable junto al presupuesto.</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--red)"></div><strong style="color:var(--text)">Corte duro:</strong> Calidad &lt; 90% → $0 total, sin excepción</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--amber)"></div><strong style="color:var(--text)">Sin datos de auditoría:</strong> Revisión manual (sin datos, o muestra &lt; 5 registros)</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Modelo sumatorio:</strong> pts/tarea = peso_flujo + bonus_iniciativa + pts_incidencia</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Monto 70/30:</strong> (curva_prod × peso_prod) + (curva_cal × peso_cal). Curva cal arranca en 30% con 90% de calidad. Pesos configurables.</div>
         </div>
         <div id="inc-table-analistas"></div>
         <div class="inc-notice" id="inc-notice-analistas"></div>
@@ -909,13 +914,13 @@ function getQualityForPeriod(user,fromDate,toDate){
 // ═══════════════════════════════════════════════════════════
 function calcRowPts(flujoId,status,iniRaw,incRaw){
   if(status!=='DONE')return 0;
-  if(flujoId==='Soporte'){}// Soporte DONE = normal
   const pesoFlujo=(FLUJOS.find(f=>f.id===flujoId)||{weight:1.0}).weight;
   const iniKey=(iniRaw||'').trim().toLowerCase();
   const iniBonus=iniKey&&INICIATIVAS[iniKey]?INICIATIVAS[iniKey].bonus:0;
   const incKey=(incRaw||'').trim().toLowerCase();
   const incPts=incKey&&INCIDENCIAS[incKey]?INCIDENCIAS[incKey].pts:0;
-  return pesoFlujo*(1+iniBonus)+incPts;
+  // Modelo sumatorio: flujo + bonus_iniciativa + pts_incidencia
+  return pesoFlujo+iniBonus+incPts;
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1237,17 +1242,21 @@ function updateCalc(){
   const iniBonus=iniObj?.bonus||0;
   const incPts=incObj?.pts||0;
   const lbI=document.getElementById('lbl-ini-bonus'),lbC=document.getElementById('lbl-inc-bonus');
-  if(lbI)lbI.textContent=`${iniBonus>=0?'+':''}${(iniBonus*100).toFixed(0)}%`;
-  if(lbC)lbC.textContent=`+${incPts.toFixed(1)} pts`;
+  if(lbI)lbI.textContent=`${iniBonus>=0?'+':''}${iniBonus.toFixed(2)} pts`;
+  if(lbC)lbC.textContent=`+${incPts.toFixed(2)} pts`;
   let total=0,tasks=0;
   const rows=[];
   FLUJOS.forEach(f=>{
     const v=CALC_VALS[f.id]||0;if(!v)return;
-    const pts=v*f.weight*(1+iniBonus);
+    // Sumatorio: (peso_flujo + bonus_ini + pts_inc) por tarea
+    const ptsPerTask=f.weight+iniBonus+incPts;
+    const pts=v*ptsPerTask;
     total+=pts;tasks+=v;
-    rows.push(`<div class="bd-row"><span class="bd-lbl">${f.label} ×${f.weight.toFixed(2)}${iniBonus?` ×${(1+iniBonus).toFixed(2)}`:''}:</span><span class="bd-val">${pts.toFixed(1)}</span></div>`);
+    let lbl=`${f.label} ×${f.weight.toFixed(2)}`;
+    if(iniBonus)lbl+=` +${iniBonus.toFixed(2)} ini`;
+    if(incPts)lbl+=` +${incPts.toFixed(2)} inc`;
+    rows.push(`<div class="bd-row"><span class="bd-lbl">${lbl}:</span><span class="bd-val">${pts.toFixed(1)}</span></div>`);
   });
-  if(incPts>0&&tasks>0){total+=incPts;rows.push(`<div class="bd-row"><span class="bd-lbl">Incidencia (${incObj.label}):</span><span class="bd-val">+${incPts.toFixed(1)}</span></div>`);}
   const be=document.getElementById('calc-breakdown');if(be)be.innerHTML=rows.join('');
   const te=document.getElementById('bd-tasks');if(te)te.textContent=tasks;
   const band=getBand(total);
@@ -1313,7 +1322,7 @@ function populateIncPeriodSelects(){
   PROC.months.forEach(mk=>{const[y,m]=mk.split('-');ms.insertAdjacentHTML('beforeend',`<option value="${mk}">${MONTH_NAMES[+m-1]} ${y}</option>`);});
   onPeriodTypeChange();
   // Update topes preview on input
-  ['inc-budget-total','inc-headcount','inc-piso'].forEach(id=>{
+  ['inc-budget-total','inc-headcount','inc-piso','inc-wprod','inc-wcal'].forEach(id=>{
     document.getElementById(id).addEventListener('input',updateTopesPreview);
   });
 }
@@ -1328,19 +1337,23 @@ function updateTopesPreview(){
   const budget=+(document.getElementById('inc-budget-total').value)||0;
   const hc=+(document.getElementById('inc-headcount').value)||45;
   const piso=+(document.getElementById('inc-piso').value)||75;
+  const wprod=+(document.getElementById('inc-wprod').value)/100||0.7;
+  const wcal=+(document.getElementById('inc-wcal').value)/100||0.3;
   if(!budget){document.getElementById('inc-topes-preview').style.display='none';return;}
   const base=budget/hc;
   const fmtARS=n=>'$'+Math.round(n).toLocaleString('es-AR');
   document.getElementById('inc-topes-preview').style.display='block';
+  const topeMaxA=(m)=>roundK(base*m);
+  const topeMaxTL=(m)=>roundK(base*2*m);
   document.getElementById('topes-content').innerHTML=`
-    <div style="color:var(--text2)">Analista Base: <span class="mono-cell" style="color:var(--accent)">${fmtARS(roundK(base))}</span></div>
-    <div style="color:var(--text2)">TL/CP Base: <span class="mono-cell" style="color:var(--accent)">${fmtARS(roundK(base*2))}</span></div>
-    <div style="color:var(--text2)">Analista Sólido: <span class="mono-cell" style="color:var(--green)">${fmtARS(roundK(base*1.4))}</span></div>
-    <div style="color:var(--text2)">TL/CP Sólido: <span class="mono-cell" style="color:var(--green)">${fmtARS(roundK(base*2.8))}</span></div>
-    <div style="color:var(--text2)">Analista HP: <span class="mono-cell" style="color:var(--purple)">${fmtARS(roundK(base*1.8))}</span></div>
-    <div style="color:var(--text2)">TL/CP HP: <span class="mono-cell" style="color:var(--purple)">${fmtARS(roundK(base*3.6))}</span></div>
-    <div style="color:var(--text2)">Analista Elite: <span class="mono-cell" style="color:var(--amber)">${fmtARS(roundK(base*2.4))}</span></div>
-    <div style="color:var(--text3);font-size:11px">Tope Elite TL/CP: <span class="mono-cell">${fmtARS(roundK(base*4.8))}</span></div>`;
+    <div style="color:var(--text2)">Analista Base: <span class="mono-cell" style="color:var(--accent)">${fmtARS(topeMaxA(1.0))}</span></div>
+    <div style="color:var(--text2)">TL/CP Base: <span class="mono-cell" style="color:var(--accent)">${fmtARS(topeMaxTL(1.0))}</span></div>
+    <div style="color:var(--text2)">Analista Sólido: <span class="mono-cell" style="color:var(--green)">${fmtARS(topeMaxA(1.4))}</span></div>
+    <div style="color:var(--text2)">TL/CP Sólido: <span class="mono-cell" style="color:var(--green)">${fmtARS(topeMaxTL(1.4))}</span></div>
+    <div style="color:var(--text2)">Analista HP: <span class="mono-cell" style="color:var(--purple)">${fmtARS(topeMaxA(1.8))}</span></div>
+    <div style="color:var(--text2)">TL/CP HP: <span class="mono-cell" style="color:var(--purple)">${fmtARS(topeMaxTL(1.8))}</span></div>
+    <div style="color:var(--text2)">Analista Elite: <span class="mono-cell" style="color:var(--amber)">${fmtARS(topeMaxA(2.4))}</span></div>
+    <div style="color:var(--text3);font-size:11px">Pesos: prod ${Math.round(wprod*100)}% / cal ${Math.round(wcal*100)}%</div>`;
 }
 function getIncRows(){
   if(!PROC)return{rows:[],fromDate:null,toDate:null};
@@ -1379,11 +1392,31 @@ function runIncentivos(){
   if(!budget){alert('Ingresá un presupuesto total.');return;}
   const hc=+(document.getElementById('inc-headcount').value)||45;
   const piso=+(document.getElementById('inc-piso').value)||75;
-  const pisoTL=piso; // mismo piso para TLs
+  const pisoTL=piso;
+  const wprod=+(document.getElementById('inc-wprod').value)/100||0.7;
+  const wcal=+(document.getElementById('inc-wcal').value)/100||0.3;
 
   const topeBase=budget/hc;
-  const topes={a:{0:null,1:topeBase,2:topeBase*1.4,3:topeBase*1.8,4:topeBase*2.4}};
-  const topesTL={1:topeBase*2,2:topeBase*2.8,3:topeBase*3.6};
+  const BAND_MULT_A={1:1.0,2:1.4,3:1.8,4:2.4};
+  const BAND_MULT_TL={1:2.0,2:2.8,3:3.6};
+  const MAX_PTS=110, RANGO_PROD=MAX_PTS-piso;
+  const MAX_CAL=100, PISO_CAL=90, RANGO_CAL=MAX_CAL-PISO_CAL;
+
+  function factorProd(avgPts){
+    return Math.min(1,Math.sqrt(Math.max(0,(avgPts-piso)/RANGO_PROD)));
+  }
+  function factorCal(calPct){
+    if(calPct<PISO_CAL)return 0;
+    // Piso de curva en 30%: arranca en 30% a 90% y llega a 100% en 100%
+    return 0.3+0.7*Math.min(1,Math.sqrt(Math.max(0,(calPct-PISO_CAL)/RANGO_CAL)));
+  }
+  function calcMonto(avgPts,calPct,bi){
+    if(calPct<PISO_CAL)return{total:0,compProd:0,compCal:0,blocked:true};
+    const tBanda=topeBase*(BAND_MULT_A[bi]||1.0);
+    const compProd=tBanda*factorProd(avgPts)*wprod;
+    const compCal=tBanda*factorCal(calPct)*wcal;
+    return{total:compProd+compCal,compProd,compCal,blocked:false};
+  }
 
   const persons=aggregatePersons(rows,PROC.equipoMap,PROC.equipoFilter);
 
@@ -1397,34 +1430,37 @@ function runIncentivos(){
 
   // ── ANALISTAS ──
   const incA=analistas.map(p=>{
-    if(p.activeDays===0)return{...p,incStatus:'inactive',reason:'Sin actividad en el período',amount:0,calidad:null,bandIdx:-1};
+    if(p.activeDays===0)return{...p,incStatus:'inactive',reason:'Sin actividad en el período',amount:0,amountFinal:0,compProd:0,compCal:0,compProdFinal:0,compCalFinal:0,calidad:null,calTotal:0,bandIdx:-1};
     const bi=getBandIdx(p.avgPts);
-    if(bi<=0)return{...p,incStatus:'no_eligible',reason:`${p.avgPts.toFixed(1)} pts < 88`,amount:0,calidad:null,bandIdx:bi};
-    // Check calidad
+    const prodBajoPiso=p.avgPts<piso;
+
     let calidad=null,calTotal=0,calStatus='no_data';
     if(hasCalidad){
       const cq=getQualityForPeriod(p.user,fromDate,toDate);
       calidad=cq.pct;calTotal=cq.total;
-      if(cq.total<5)calStatus='insufficient';
-      else if(cq.pct===null)calStatus='no_data';
-      else calStatus=cq.pct>=90?'ok':'fail';
+      if(cq.total===0)calStatus='no_data';
+      else if(cq.total<5)calStatus='insufficient';
+      else calStatus='data_ok';
     }
-    let status='eligible',reason='';
-    if(!hasCalidad){status='manual';reason='Sin datos de calidad';}
-    else if(calStatus==='no_data'){status='manual';reason='Sin registros de auditoría';}
-    else if(calStatus==='insufficient'){status='manual';reason=`Solo ${calTotal} registros (mín. 5)`;}
-    else if(calStatus==='fail'){status='no_eligible';reason=`Calidad ${calidad.toFixed(1)}% < 90%`;}
-    // Curva regresiva: monto proporcional a pts independientemente de la banda
-    // Solo aplica si productividad >= piso Y calidad OK
-    let amount=0;
-    if(status==='eligible'){
-      const MAX_PTS=110;
-      const factor=Math.sqrt(Math.max(0,(p.avgPts-piso)/(MAX_PTS-piso)));
-      const topeMax=topes.a[bi]||topeBase; // tope de su banda actual
-      amount=roundK(topeMax*Math.min(1,factor));
+
+    // Corte duro: calidad < 90% bloquea TODO
+    if(calStatus==='data_ok'&&calidad!==null&&calidad<90){
+      return{...p,incStatus:'no_eligible',reason:`Calidad ${calidad.toFixed(1)}% < 90% (corte duro)`,amount:0,amountFinal:0,compProd:0,compCal:0,compProdFinal:0,compCalFinal:0,calidad,calTotal,bandIdx:bi};
     }
-    return{...p,incStatus:status,reason,amount,calidad,calTotal,bandIdx:bi};
-  });
+
+    // Sin datos → revisión manual (no bloquea pero no paga automáticamente)
+    if(!hasCalidad||calStatus==='no_data'||calStatus==='insufficient'){
+      const manualReason=!hasCalidad?'Sin datos de calidad':calStatus==='no_data'?'Sin registros de auditoría':`Muestra insuficiente (${calTotal} reg., mín. 5)`;
+      return{...p,incStatus:'manual',reason:manualReason,amount:0,amountFinal:0,compProd:0,compCal:0,compProdFinal:0,compCalFinal:0,calidad,calTotal,bandIdx:bi};
+    }
+
+    // Elegible: modelo 70/30 sumatorio
+    const tBanda=topeBase*(BAND_MULT_A[bi]||1.0);
+    const cp=prodBajoPiso?0:tBanda*factorProd(p.avgPts)*wprod;
+    const cc=tBanda*factorCal(calidad)*wcal;
+    const montoTotal=cp+cc;
+    return{...p,incStatus:'eligible',reason:'',amount:montoTotal,amountFinal:montoTotal,compProd:cp,compCal:cc,compProdFinal:cp,compCalFinal:cc,calidad,calTotal,bandIdx:bi,prodBajoPiso};
+  });;
 
   // ── TLs — bandas relativas al promedio general del periodo ──
   // Promedio general: todos los analistas con al menos 1 dia activo
@@ -1492,11 +1528,17 @@ function runIncentivos(){
     +incTl.filter(p=>p.incStatus==='eligible').reduce((s,p)=>s+p.amount,0)
     +(cpEntry?.incStatus==='eligible'?cpEntry.amount:0);
   let scaleFactor=1;
-  if(totalTopes>budget){scaleFactor=budget/totalTopes;}
+  if(totalTopes>budget)scaleFactor=budget/totalTopes;
   const scaleApplied=scaleFactor<1;
 
-  // Apply scale and rounding
-  incA.forEach(p=>{if(p.incStatus==='eligible')p.amountFinal=roundK(p.amount*scaleFactor);else p.amountFinal=0;});
+  // Aplicar escala y redondeo
+  incA.forEach(p=>{
+    if(p.incStatus==='eligible'){
+      p.amountFinal=roundK(p.amount*scaleFactor);
+      p.compProdFinal=roundK(p.compProd*scaleFactor);
+      p.compCalFinal=roundK(p.compCal*scaleFactor);
+    }else{p.amountFinal=0;p.compProdFinal=0;p.compCalFinal=0;}
+  });
   incTl.forEach(p=>{if(p.incStatus==='eligible')p.amountFinal=roundK(p.amount*scaleFactor);else p.amountFinal=0;});
   if(cpEntry&&cpEntry.incStatus==='eligible'){cpEntry.amountFinal=roundK(cpEntry.amount*scaleFactor);}
 
@@ -1509,7 +1551,7 @@ function runIncentivos(){
   const eligA=incA.filter(p=>p.incStatus==='eligible').length;
   const manualA=incA.filter(p=>p.incStatus==='manual').length;
   document.getElementById('inc-summary-grid').innerHTML=`
-    <div class="inc-stat"><div class="inc-stat-label">Presupuesto total</div><div class="inc-stat-value" style="color:var(--accent)">${fmtARS(budget)}</div><div class="inc-stat-sub">tope base ${fmtARS(roundK(topeBase))}/analista</div></div>
+    <div class="inc-stat"><div class="inc-stat-label">Presupuesto total</div><div class="inc-stat-value" style="color:var(--accent)">${fmtARS(budget)}</div><div class="inc-stat-sub">prod ${Math.round(wprod*100)}% / cal ${Math.round(wcal*100)}% · tope base ${fmtARS(roundK(topeBase))}</div></div>
     <div class="inc-stat"><div class="inc-stat-label">Analistas elegibles</div><div class="inc-stat-value" style="color:var(--green)">${eligA}</div><div class="inc-stat-sub">${manualA>0?`${manualA} en revisión manual · `:''}${analistas.length} total</div></div>
     <div class="inc-stat"><div class="inc-stat-label">TLs elegibles</div><div class="inc-stat-value" style="color:var(--purple)">${incTl.filter(p=>p.incStatus==='eligible').length}</div><div class="inc-stat-sub">de ${incTl.length} equipos</div></div>
     <div class="inc-stat"><div class="inc-stat-label">Total asignado</div><div class="inc-stat-value" style="color:var(--teal)">${fmtARS(totalAssigned)}</div><div class="inc-stat-sub">remanente ${fmtARS(Math.max(0,budget-totalAssigned))}</div></div>
@@ -1524,7 +1566,7 @@ function runIncentivos(){
   const sortedA=[...incA].sort((a,b)=>b.avgPts-a.avgPts);
   document.getElementById('inc-table-analistas').innerHTML=`
     <div class="inc-table-wrap" style="margin-top:10px"><table>
-      <thead><tr><th>Colaborador</th><th>Equipo</th><th>Pts/día</th><th>IDs/día</th><th>Días</th><th>Calidad</th><th>Banda</th><th>Estado</th><th>Incentivo</th></tr></thead>
+      <thead><tr><th>Colaborador</th><th>Equipo</th><th>Pts/día</th><th>IDs/día</th><th>Días</th><th>Calidad</th><th>Banda</th><th>Estado</th><th>Comp. prod.</th><th>Comp. cal.</th><th>Total</th></tr></thead>
       <tbody>${sortedA.map(p=>`<tr${p.activeDays===0?' style="opacity:.5"':''}>
         <td class="name-cell">${p.nombre||p.user}</td>
         <td style="font-size:11px;color:var(--text3)">${p.equipo||'—'}</td>
@@ -1534,10 +1576,12 @@ function runIncentivos(){
         <td class="mono-cell">${p.calidad!==null?`<span style="color:${p.calidad>=90?'var(--green)':'var(--red)'}">${p.calidad.toFixed(1)}%</span> <span style="color:var(--text3);font-size:10px">(${p.calTotal})</span>`:'<span style="color:var(--text3)">—</span>'}</td>
         <td>${p.activeDays>0?`<span class="badge ${p.band.css}">${p.band.label}</span>`:'—'}</td>
         <td>${p.incStatus==='eligible'?'<span class="eligible-tag">Elegible</span>':p.incStatus==='manual'?'<span class="manual-tag">Revisión manual</span>':p.incStatus==='inactive'?'<span style="font-size:10px;color:var(--text3)">Sin actividad</span>':'<span class="ineligible-tag">No elegible</span>'}</td>
-        <td>${p.incStatus==='eligible'?`<span class="amount-tag">${fmtARS(p.amountFinal)}</span>${scaleApplied?` <span style="font-size:10px;color:var(--text3)">(tope ${fmtARS(roundK(p.amount))})</span>`:''}`:'<span style="color:var(--text3)">—</span>'}</td>
+        <td>${p.incStatus==='eligible'?`<span class="amount-tag" style="font-size:11px">${fmtARS(p.compProdFinal||0)}</span>`:'<span style="color:var(--text3)">—</span>'}</td>
+        <td>${p.incStatus==='eligible'?`<span class="amount-tag" style="font-size:11px;color:var(--teal)">${fmtARS(p.compCalFinal||0)}</span>`:'<span style="color:var(--text3)">—</span>'}</td>
+        <td>${p.incStatus==='eligible'?`<span class="amount-tag">${fmtARS(p.amountFinal)}</span>${scaleApplied?` <span style="font-size:10px;color:var(--text3)">(×${scaleFactor.toFixed(2)})</span>`:''}`:'<span style="color:var(--text3)">—</span>'}</td>
       </tr>`).join('')}</tbody>
     </table></div>`;
-  document.getElementById('inc-notice-analistas').innerHTML=`<strong>Simulación estimada · no representa liquidación final.</strong> Curva regresiva (√) desde ${pisoTL} pts hasta 110 pts · tope máximo por banda. Piso ${pisoTL} pts — calidad ≥ 90% requerida. Umbral calidad duro: por debajo de 90% = no elegible. Redondeo $1.000.${!hasCalidad?' Calidad no disponible — cargá auditados.csv para elegibilidad completa.':''}`;
+  document.getElementById('inc-notice-analistas').innerHTML=`<strong>Simulación estimada · no representa liquidación final.</strong> Modelo 70/30 sumatorio: comp. productividad (curva √ desde ${piso} pts) × ${Math.round(wprod*100)}% + comp. calidad (curva √ con piso 30% en 90%) × ${Math.round(wcal*100)}%. Corte duro: calidad < 90% = $0 total. Sin datos de auditoría = revisión manual. Redondeo $1.000.${!hasCalidad?' <strong>Cargá auditados.csv para elegibilidad completa.</strong>':''}`;
 
   // ── TABLA TLs ──
   document.getElementById('inc-table-tls').innerHTML=`
