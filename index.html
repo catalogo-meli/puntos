@@ -246,7 +246,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <span class="upload-tag req">Necesario</span>
       <div class="upload-icon">📊</div>
       <div class="upload-title">historico.csv</div>
-      <div class="upload-sub" id="sub-hist">Fuente principal · tareas DONE por colaborador con flujo, iniciativa e incidencias</div>
+      <div class="upload-sub" id="sub-hist">Fuente principal · tareas por colaborador con flujo, iniciativa e incidencias</div>
       <input type="file" class="file-input" id="file-hist" accept=".csv,.txt" onchange="handleFile(this,'hist')">
     </div>
     <div class="upload-zone optional-zone" id="zone-equipo" onclick="document.getElementById('file-equipo').click()" ondragover="evDrag(event,'zone-equipo')" ondragleave="evLeave('zone-equipo')" ondrop="evDrop(event,'equipo')">
@@ -538,7 +538,7 @@ let FLUJOS = [
   { id:'Enhanced Content', label:'Enhanced Content', weight:0.95 },
   { id:'Enhancement',      label:'Enhancement',      weight:1.3  },
   { id:'Validación',       label:'Validación',       weight:0.95 },
-  { id:'Soporte',          label:'Soporte (DONE)',    weight:4.0  },
+  { id:'Soporte',          label:'Soporte',    weight:4.0  },
   { id:'Fallos',           label:'Fallos',           weight:1.1  },
   { id:'Known Values',     label:'Known Values',     weight:1.0  },
 ];
@@ -589,8 +589,8 @@ const BANDS = [
   {min:0,  max:88,  css:'bp',label:'En progreso',       color:'#ff5f57',desc:'Trabajar con TL · plan específico'},
   {min:88, max:95,  css:'bb',label:'Base ✓',            color:'#5b7fff',desc:'Objetivo mínimo cumplido'},
   {min:95, max:103, css:'bs',label:'Sólido ✓✓',         color:'#3ecf8e',desc:'Por encima del techo histórico'},
-  {min:103,max:110, css:'bh',label:'High Performer ✓✓✓',color:'#a78bfa',desc:'Rumbo al objetivo MELI'},
-  {min:110,max:1e9, css:'be',label:'Elite ⭐ MELI',      color:'#f6a623',desc:'Objetivo MELI alcanzado'},
+  {min:103,max:110, css:'bh',label:'High Performer ✓✓✓',color:'#a78bfa',desc:'Rumbo al objetivo'},
+  {min:110,max:1e9, css:'be',label:'Elite ⭐',      color:'#f6a623',desc:'Objetivo alcanzado'},
 ];
 // Band multipliers for incentives (analista)
 const BAND_MULT_A = [null, 1.0, 1.4, 1.8, 2.4]; // index 0 = En progreso (no eligible)
@@ -1146,7 +1146,7 @@ function renderHistStats(persons){
   document.getElementById('hist-stats').innerHTML=`
     <div class="stat-card acc"><div class="stat-label">Promedio equipo (pts)</div><div class="stat-value">${avg.toFixed(1)}</div><div class="stat-sub">período seleccionado</div></div>
     <div class="stat-card grn"><div class="stat-label">Base o superior</div><div class="stat-value">${aboveBase}</div><div class="stat-sub">de ${active.length} activos</div></div>
-    <div class="stat-card amb"><div class="stat-label">Elite MELI</div><div class="stat-value">${elite}</div><div class="stat-sub">objetivo MELI alcanzado</div></div>
+    <div class="stat-card amb"><div class="stat-label">Elite</div><div class="stat-value">${elite}</div><div class="stat-sub">objetivo alcanzado</div></div>
     <div class="stat-card redd"><div class="stat-label">Sin actividad</div><div class="stat-value">${inactive}</div><div class="stat-sub">en el período</div></div>`;
 }
 function renderBandsChart(rows){
@@ -1289,13 +1289,12 @@ function renderScenarios(){
   const w=Object.fromEntries(FLUJOS.map(f=>[f.id,f.weight]));
   const get=id=>w[id]||0;
   const sc=[
-    {name:'90 Demanda puras',mix:{Demanda:90}},
+    {name:'90 Demanda',mix:{Demanda:90}},
     {name:'80 Dem + 7 Enh',mix:{Demanda:80,Enhancement:7}},
     {name:'70 Dem + 10 Enh + 5 EC',mix:{Demanda:70,'Enhanced Content':5,Enhancement:10}},
     {name:'55 Dem + 25 Enh + 8 EC',mix:{Demanda:55,'Enhanced Content':8,Enhancement:25}},
     {name:'50 Dem + 30 Enh + 10 EC',mix:{Demanda:50,'Enhanced Content':10,Enhancement:30}},
-    {name:'80 Validación',mix:{Validación:80}},
-    {name:'20 Soporte DONE + 60 Dem',mix:{Soporte:20,Demanda:60}},
+    {name:'110 Validación',mix:{Validación:110}},
   ];
   document.getElementById('scenarios-grid').innerHTML=sc.map(s=>{
     const pts=Object.entries(s.mix).reduce((sum,[id,v])=>sum+v*(get(id)||1),0);
