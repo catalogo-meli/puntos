@@ -128,10 +128,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 .alert-warn{background:rgba(246,166,35,.08);border:1px solid rgba(246,166,35,.25);color:var(--amber)}
 .alert-info{background:rgba(91,127,255,.08);border:1px solid rgba(91,127,255,.25);color:var(--accent)}
 .tooltip-wrap{position:relative;display:inline-flex;align-items:center;gap:4px}
-.tooltip-icon{width:14px;height:14px;border-radius:50%;background:var(--border2);color:var(--text3);font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;cursor:help;flex-shrink:0;font-family:'DM Mono',monospace;line-height:1}
+.tooltip-icon{width:14px;height:14px;border-radius:50%;background:var(--border2);color:var(--text3);font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;cursor:help;flex-shrink:0;font-family:'DM Mono',monospace;line-height:1;text-transform:none}
 .tooltip-icon:hover{background:var(--accent2);color:#fff}
-.tooltip-box{display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1c2030;border:1px solid var(--border2);border-radius:8px;padding:8px 11px;font-size:11px;color:var(--text2);line-height:1.5;width:240px;z-index:200;pointer-events:none;font-family:'DM Sans',sans-serif}
-.tooltip-box::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#1c2030}
+.tooltip-box{display:none;position:fixed;background:#1c2030;border:1px solid var(--border2);border-radius:8px;padding:9px 12px;font-size:11px;color:var(--text2);line-height:1.6;width:240px;z-index:9999;pointer-events:none;font-family:'DM Sans',sans-serif;text-transform:none;font-weight:400;letter-spacing:normal}
 .tooltip-icon:hover+.tooltip-box,.tooltip-wrap:hover .tooltip-box{display:block}
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:var(--bg)}
@@ -1657,6 +1656,31 @@ requestAnimationFrame(function(){
   renderBandsRef();
   renderScenarios();
 });
+
+// Tooltip positioning con position:fixed — evita recorte en sidebar con overflow
+(function(){
+  document.addEventListener('mouseover',function(e){
+    const icon=e.target.closest('.tooltip-icon');
+    if(!icon)return;
+    const box=icon.nextElementSibling;
+    if(!box||!box.classList.contains('tooltip-box'))return;
+    box.style.display='block';
+    const r=icon.getBoundingClientRect();
+    const bw=240;
+    let left=r.left+r.width/2-bw/2;
+    if(left+bw>window.innerWidth-10)left=window.innerWidth-bw-10;
+    if(left<10)left=10;
+    box.style.left=left+'px';
+    box.style.top=(r.top-8)+'px';
+    box.style.transform='translateY(-100%)';
+  });
+  document.addEventListener('mouseout',function(e){
+    const icon=e.target.closest('.tooltip-icon');
+    if(!icon)return;
+    const box=icon.nextElementSibling;
+    if(box&&box.classList.contains('tooltip-box'))box.style.display='none';
+  });
+})();
 </script>
 </body>
 </html>
