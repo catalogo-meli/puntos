@@ -127,6 +127,12 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 .alert-box{border-radius:9px;padding:10px 13px;font-size:12px;margin-bottom:12px;display:flex;align-items:flex-start;gap:8px;line-height:1.5}
 .alert-warn{background:rgba(246,166,35,.08);border:1px solid rgba(246,166,35,.25);color:var(--amber)}
 .alert-info{background:rgba(91,127,255,.08);border:1px solid rgba(91,127,255,.25);color:var(--accent)}
+.tooltip-wrap{position:relative;display:inline-flex;align-items:center;gap:4px}
+.tooltip-icon{width:14px;height:14px;border-radius:50%;background:var(--border2);color:var(--text3);font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;cursor:help;flex-shrink:0;font-family:'DM Mono',monospace;line-height:1}
+.tooltip-icon:hover{background:var(--accent2);color:#fff}
+.tooltip-box{display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1c2030;border:1px solid var(--border2);border-radius:8px;padding:8px 11px;font-size:11px;color:var(--text2);line-height:1.5;width:240px;z-index:200;pointer-events:none;font-family:'DM Sans',sans-serif}
+.tooltip-box::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#1c2030}
+.tooltip-icon:hover+.tooltip-box,.tooltip-wrap:hover .tooltip-box{display:block}
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
@@ -179,7 +185,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 <aside class="sidebar">
   <div class="sidebar-logo">
     <h1>Catálogo · MELI</h1>
-    <p>Dashboard · Puntos · Incentivos</p>
+    <p>Productividad · Calidad · Incentivos</p>
   </div>
   <nav class="nav">
     <div class="nav-label">Navegación</div>
@@ -207,22 +213,22 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 
   <!-- FLUJOS -->
   <div class="cfg-section">
-    <div class="cfg-title">⚙ Pesos por flujo <button onclick="openModal('flujo')">+ Agregar</button></div>
+    <div class="cfg-title"><span class="tooltip-wrap">⚙ Pesos por flujo<span class="tooltip-icon">?</span><span class="tooltip-box">Cuánto vale cada tipo de tarea. Demanda es la referencia (×1.0). Flujos más complejos tienen mayor peso. Hacé clic en Recalcular para aplicar cambios.</span></span> <button onclick="openModal('flujo')">+ Agregar</button></div>
     <div id="flujos-list"></div>
-    <button class="apply-btn" onclick="applyWeights()">Recalcular todo →</button>
+    <button class="apply-btn" onclick="applyWeights()">Aplicar cambios →</button>
   </div>
 
   <!-- INICIATIVAS -->
   <div class="cfg-section">
-    <div class="cfg-title">◈ Bonus iniciativa <button onclick="openModal('iniciativa')">+ Agregar</button></div>
-    <div class="cfg-hint">Multiplicador adicional sobre el flujo. 0.2 = +20%</div>
+    <div class="cfg-title"><span class="tooltip-wrap">◈ Bonus por iniciativa<span class="tooltip-icon">?</span><span class="tooltip-box">Puntos adicionales que suma cada tarea cuando pertenece a una iniciativa específica. Se suman directamente al peso del flujo — no multiplican.</span></span> <button onclick="openModal('iniciativa')">+ Agregar</button></div>
+    <div class="cfg-hint">Suma puntos fijos por cada tarea que lleva esa iniciativa. Ej: MAO = +0.15 pts/tarea trabajada.</div>
     <div id="iniciativas-list"></div>
   </div>
 
   <!-- INCIDENCIAS -->
   <div class="cfg-section">
-    <div class="cfg-title">⚡ Pts incidencia <button onclick="openModal('incidencia')">+ Agregar</button></div>
-    <div class="cfg-hint">Puntos fijos adicionales por tarea. 0 = sin efecto</div>
+    <div class="cfg-title"><span class="tooltip-wrap">⚡ Puntos por incidencia<span class="tooltip-icon">?</span><span class="tooltip-box">Puntos adicionales por tareas que requirieron un paso extra. Se registran en la columna "Incidencias" del historico.csv. Bloqueantes externos como "Esperando respuesta" valen 0 — no penalizan ni suman.</span></span> <button onclick="openModal('incidencia')">+ Agregar</button></div>
+    <div class="cfg-hint">Suma puntos fijos cuando se registró esa incidencia en la tarea. 0 para bloqueantes externos como "Esperando respuesta".</div>
     <div id="incidencias-list"></div>
   </div>
 </aside>
@@ -234,44 +240,44 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 <div class="page active" id="page-upload">
   <div class="page-header">
     <h2 class="page-title">Cargar datos del equipo</h2>
-    <p class="page-sub">Procesamiento 100% local · nada sale del navegador</p>
+    <p class="page-sub">Cargá los archivos del equipo para activar el análisis. Todo se procesa localmente — ningún dato sale de tu navegador.</p>
   </div>
   <div class="upload-grid">
     <div class="upload-zone" id="zone-hist" onclick="document.getElementById('file-hist').click()" ondragover="evDrag(event,'zone-hist')" ondragleave="evLeave('zone-hist')" ondrop="evDrop(event,'hist')">
-      <span class="upload-tag req">Requerido</span>
+      <span class="upload-tag req">Necesario</span>
       <div class="upload-icon">📊</div>
       <div class="upload-title">historico.csv</div>
-      <div class="upload-sub" id="sub-hist">Productividad · Fecha, Usuario, Flujo, Status, Iniciativa, Incidencias, IDs</div>
+      <div class="upload-sub" id="sub-hist">Fuente principal · tareas DONE por colaborador con flujo, iniciativa e incidencias</div>
       <input type="file" class="file-input" id="file-hist" accept=".csv,.txt" onchange="handleFile(this,'hist')">
     </div>
     <div class="upload-zone optional-zone" id="zone-equipo" onclick="document.getElementById('file-equipo').click()" ondragover="evDrag(event,'zone-equipo')" ondragleave="evLeave('zone-equipo')" ondrop="evDrop(event,'equipo')">
       <span class="upload-tag">Recomendado</span>
       <div class="upload-icon">👥</div>
       <div class="upload-title">equipo_colaboradores.csv</div>
-      <div class="upload-sub" id="sub-equipo">Roles y equipos · habilita filtros, incentivos y filtrado de colaboradores</div>
+      <div class="upload-sub" id="sub-equipo">Quién es quién · habilita filtros por equipo y separa analistas, TLs y CP</div>
       <input type="file" class="file-input" id="file-equipo" accept=".csv,.txt" onchange="handleFile(this,'equipo')">
     </div>
     <div class="upload-zone optional-zone" id="zone-auditados" onclick="document.getElementById('file-auditados').click()" ondragover="evDrag(event,'zone-auditados')" ondragleave="evLeave('zone-auditados')" ondrop="evDrop(event,'auditados')">
       <span class="upload-tag">Opcional</span>
       <div class="upload-icon">✅</div>
       <div class="upload-title">auditados.csv</div>
-      <div class="upload-sub" id="sub-auditados">Calidad SdC · habilita elegibilidad real de incentivos</div>
+      <div class="upload-sub" id="sub-auditados">Auditorías SdC · necesario para calcular calidad por colaborador</div>
       <input type="file" class="file-input" id="file-auditados" accept=".csv,.txt" onchange="handleFile(this,'auditados')">
     </div>
     <div class="upload-zone optional-zone" id="zone-mao" onclick="document.getElementById('file-mao').click()" ondragover="evDrag(event,'zone-mao')" ondragleave="evLeave('zone-mao')" ondrop="evDrop(event,'mao')">
       <span class="upload-tag">Opcional</span>
       <div class="upload-icon">🔍</div>
       <div class="upload-title">auditados_mao.csv</div>
-      <div class="upload-sub" id="sub-mao">Calidad MAO · complementa auditados.csv para calidad completa</div>
+      <div class="upload-sub" id="sub-mao">Auditorías MAO · se combina con SdC para la calidad completa</div>
       <input type="file" class="file-input" id="file-mao" accept=".csv,.txt" onchange="handleFile(this,'mao')">
     </div>
   </div>
   <div class="capabilities-box">
-    <div class="cap-title">Funcionalidades habilitadas según archivos cargados</div>
-    <div class="cap-row"><div class="cap-dot off" id="cap-historico-dot"></div><span id="cap-historico-txt" style="color:var(--text3)">Histórico, ranking y calculadora — requiere historico.csv</span></div>
-    <div class="cap-row"><div class="cap-dot off" id="cap-equipo-dot"></div><span id="cap-equipo-txt" style="color:var(--text3)">Filtro por equipo y separación de roles — requiere equipo_colaboradores.csv</span></div>
-    <div class="cap-row"><div class="cap-dot off" id="cap-calidad-dot"></div><span id="cap-calidad-txt" style="color:var(--text3)">Calidad auditada y elegibilidad completa — requiere auditados.csv (+ MAO opcional)</span></div>
-    <div class="cap-row"><div class="cap-dot off" id="cap-incentivos-dot"></div><span id="cap-incentivos-txt" style="color:var(--text3)">Simulador de incentivos completo — requiere los 4 archivos</span></div>
+    <div class="cap-title">Qué podés hacer según los archivos que cargaste</div>
+    <div class="cap-row"><div class="cap-dot off" id="cap-historico-dot"></div><span id="cap-historico-txt" style="color:var(--text3)">Análisis de productividad, ranking y calculadora 1:1 — requiere historico.csv</span></div>
+    <div class="cap-row"><div class="cap-dot off" id="cap-equipo-dot"></div><span id="cap-equipo-txt" style="color:var(--text3)">Filtrar por equipo, separar roles y mostrar solo tu gente — requiere equipo_colaboradores.csv</span></div>
+    <div class="cap-row"><div class="cap-dot off" id="cap-calidad-dot"></div><span id="cap-calidad-txt" style="color:var(--text3)">Calcular calidad real por colaborador y habilitar elegibilidad completa de incentivos — requiere auditados.csv</span></div>
+    <div class="cap-row"><div class="cap-dot off" id="cap-incentivos-dot"></div><span id="cap-incentivos-txt" style="color:var(--text3)">Simulador de incentivos completo con elegibilidad dual (productividad + calidad auditada) — requiere los 4 archivos</span></div>
   </div>
   <div class="table-wrap" id="preview-section" style="display:none">
     <div class="table-header"><span class="table-title">Vista previa — últimas 8 filas de historico.csv</span><span class="mono" style="font-size:11px;color:var(--text3)" id="preview-count"></span></div>
@@ -283,11 +289,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 <div class="page" id="page-historico">
   <div class="page-header">
     <h2 class="page-title">Histórico de puntos</h2>
-    <p class="page-sub">Puntos ponderados con bonus de iniciativa e incidencia · solo colaboradores en equipo_colaboradores</p>
+    <p class="page-sub">Promedio diario de puntos ponderados por colaborador. Cada tarea vale según su flujo, iniciativa e incidencias. Filtrá por período o equipo para acotar el análisis.</p>
   </div>
   <div id="hist-empty" class="empty-state">
     <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-    <p>Cargá historico.csv para ver el análisis</p>
+    <p>Todavía no hay datos. Cargá historico.csv para empezar.</p>
   </div>
   <div id="hist-content" style="display:none">
     <div class="filter-row">
@@ -318,11 +324,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 <div class="page" id="page-ranking">
   <div class="page-header">
     <h2 class="page-title">Ranking del equipo</h2>
-    <p class="page-sub">Puntos ponderados promedio · solo colaboradores en equipo_colaboradores</p>
+    <p class="page-sub">Comparativa visual del equipo completo. Solo aparecen colaboradores con actividad en el período filtrado. El tooltip de cada barra muestra puntos, días activos e IDs/día.</p>
   </div>
   <div id="rank-empty" class="empty-state">
     <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-    <p>Cargá historico.csv para ver el ranking</p>
+    <p>Cargá historico.csv y vas a ver el ranking del equipo acá.</p>
   </div>
   <div id="rank-content" style="display:none">
     <div class="filter-row">
@@ -345,25 +351,25 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 <div class="page" id="page-calc">
   <div class="page-header">
     <h2 class="page-title">Calculadora 1:1</h2>
-    <p class="page-sub">Simulá el mix del día + iniciativa + incidencia → banda resultante</p>
+    <p class="page-sub">Simulá cualquier combinación de tareas y ve al instante cuántos puntos genera y en qué banda queda. Ideal para el 1:1 con cada analista.</p>
   </div>
   <div class="calc-grid">
     <div class="calc-box">
       <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:600;margin-bottom:12px">Mix de tareas del día</div>
       <div id="calc-sliders"></div>
       <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px">
-        <div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Contexto de la tarea (opcional)</div>
+        <div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">¿Tenía iniciativa o incidencia? (opcional)</div>
         <div class="input-group" style="margin-bottom:7px">
-          <div class="input-label">Iniciativa <span id="lbl-ini-bonus">+0%</span></div>
-          <select class="calc-sel" id="calc-iniciativa" onchange="updateCalc()"><option value="">— sin iniciativa —</option></select>
+          <div class="input-label"><span class="tooltip-wrap">Iniciativa<span class="tooltip-icon">?</span><span class="tooltip-box">Si las tareas del día corresponden a una iniciativa específica, cada tarea suma los puntos de esa iniciativa. El bonus aplica sobre todas las tareas del mix.</span></span> <span id="lbl-ini-bonus" style="color:var(--green)">+0.00 pts/tarea</span></div>
+          <select class="calc-sel" id="calc-iniciativa" onchange="updateCalc()"><option value="">Sin iniciativa especial</option></select>
         </div>
         <div class="input-group">
-          <div class="input-label">Incidencia <span id="lbl-inc-bonus">+0.0 pts</span></div>
-          <select class="calc-sel" id="calc-incidencia" onchange="updateCalc()"><option value="">— sin incidencia —</option></select>
+          <div class="input-label"><span class="tooltip-wrap">Incidencia<span class="tooltip-icon">?</span><span class="tooltip-box">Paso extra necesario para resolver la tarea. Solo suma una incidencia por sesión de cálculo. Los bloqueantes externos (Esperando respuesta, PPMC en espera) valen 0 pts.</span></span> <span id="lbl-inc-bonus" style="color:var(--teal)">+0.00 pts</span></div>
+          <select class="calc-sel" id="calc-incidencia" onchange="updateCalc()"><option value="">Sin incidencia adicional</option></select>
         </div>
       </div>
       <div class="breakdown">
-        <div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px">Desglose</div>
+        <div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px">Cómo se calculan los puntos</div>
         <div id="calc-breakdown"></div>
         <div class="total-row"><span>Total tareas</span><span class="mono" id="bd-tasks">0</span></div>
       </div>
@@ -374,17 +380,17 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
         <div class="pts-label">puntos ponderados</div>
         <div class="band-display" id="band-display">
           <div class="band-name-big" id="band-name">—</div>
-          <div class="band-desc" id="band-desc">Ingresá tareas para ver la banda</div>
+          <div class="band-desc" id="band-desc">Mové los sliders para ver la banda</div>
         </div>
       </div>
       <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px">
-        <div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Referencia de bandas</div>
+        <div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Rangos de cada banda</div>
         <div id="bands-ref"></div>
       </div>
     </div>
   </div>
   <div class="sep"></div>
-  <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:600;margin-bottom:12px">Escenarios rápidos</div>
+  <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:600;margin-bottom:12px">Ejemplos de mix para mostrar en el 1:1</div>
   <div id="scenarios-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px"></div>
 </div>
 
@@ -392,19 +398,19 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 <div class="page" id="page-incentivos">
   <div class="page-header">
     <h2 class="page-title">Simulador de incentivos</h2>
-    <p class="page-sub">Topes fijos por banda · distribución jerárquica ×1 analistas / ×2 TLs y CP · redondeo $1.000</p>
+    <p class="page-sub">Calculá el incentivo de cada persona en el período. El monto combina dos dimensiones — productividad (70%) y calidad (30%) — y se distribuye desde un único presupuesto configurado por vos.</p>
   </div>
 
   <div id="inc-missing-warn" class="alert-box alert-warn" style="display:none">
-    ⚠ Para elegibilidad completa cargá también auditados.csv. Sin datos de calidad los analistas con productividad elegible quedan en revisión manual.
+    💡 Sin datos de calidad, los analistas quedan en revisión manual aunque su productividad sea buena. Cargá auditados.csv para ver la elegibilidad completa.
   </div>
   <div id="inc-no-equipo-warn" class="alert-box alert-warn" style="display:none">
-    ⚠ Sin equipo_colaboradores.csv no es posible separar roles. Cargá ese archivo para habilitar el simulador de incentivos.
+    ⚠ Necesitás cargar equipo_colaboradores.csv para que el simulador pueda separar analistas, TLs y CP correctamente.
   </div>
 
   <div class="inc-section">
-    <div class="inc-section-title">Período, presupuesto y headcount</div>
-    <div class="inc-section-sub">El tope por banda se calcula automáticamente: Presupuesto ÷ Headcount = tope Base analista. TLs y CP reciben ×2. La salvaguarda se aplica si el total supera el presupuesto.</div>
+    <div class="inc-section-title">Configuración del período y presupuesto</div>
+    <div class="inc-section-sub">Definí el período a evaluar y el presupuesto disponible. El sistema calcula automáticamente cuánto puede ganar cada persona según su performance real. Nadie paga de más: si el total supera el presupuesto, todos reciben proporcionalmente menos (salvaguarda automática).</div>
     <div class="budget-row">
       <span class="budget-label">Tipo de período</span>
       <select class="budget-select" id="inc-period-type" onchange="onPeriodTypeChange()">
@@ -422,35 +428,35 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <select class="budget-select" id="inc-year-sel"><option value="">— año —</option></select>
     </div>
     <div class="budget-row">
-      <span class="budget-label">Presupuesto total</span>
-      <input class="budget-input" type="number" id="inc-budget-total" placeholder="ej: 1000000" min="0" step="1000" style="width:140px">
-      <span class="budget-label">Headcount ref.</span>
+      <span class="budget-label tooltip-wrap">Presupuesto total del período<span class="tooltip-icon">?</span><span class="tooltip-box">Monto total disponible para distribuir entre analistas, TLs y CP en este período. El sistema nunca supera este número gracias a la salvaguarda proporcional.</span></span>
+      <input class="budget-input" type="number" id="inc-budget-total" placeholder="ej: 1.000.000" min="0" step="1000" style="width:140px">
+      <span class="budget-label tooltip-wrap">Headcount de referencia<span class="tooltip-icon">?</span><span class="tooltip-box">Número de analistas que se usa como base para calcular el tope Base. Tope Base = Presupuesto ÷ este número. Default 45. Actualizá cuando cambie el tamaño del equipo.</span></span>
       <input class="budget-input" type="number" id="inc-headcount" value="45" min="1" max="200" step="1" style="width:70px">
-      <span class="budget-label">Piso mínimo (pts/día)</span>
+      <span class="budget-label tooltip-wrap">Piso mínimo (pts/día)<span class="tooltip-icon">?</span><span class="tooltip-box">A partir de cuántos puntos diarios promedio un analista entra a la curva de incentivo. Por debajo de este número el componente de productividad es $0, pero la calidad sigue sumando si supera 90%.</span></span>
       <input class="budget-input" type="number" id="inc-piso" value="75" min="50" max="100" step="1" style="width:70px">
-      <span class="budget-label">Peso productividad (%)</span>
+      <span class="budget-label tooltip-wrap">Peso productividad (%)<span class="tooltip-icon">?</span><span class="tooltip-box">Qué porcentaje del monto total viene de la productividad (puntos diarios promedio). El resto viene de calidad. La suma de ambos debe ser 100%.</span></span>
       <input class="budget-input" type="number" id="inc-wprod" value="70" min="10" max="90" step="5" style="width:60px">
-      <span class="budget-label">Peso calidad (%)</span>
+      <span class="budget-label tooltip-wrap">Peso calidad (%)<span class="tooltip-icon">?</span><span class="tooltip-box">Qué porcentaje del monto total viene de la calidad auditada (SdC + MAO). Arranca en 30% del componente cuando la calidad es exactamente 90%, y llega al 100% con 100% de calidad.</span></span>
       <input class="budget-input" type="number" id="inc-wcal" value="30" min="10" max="90" step="5" style="width:60px">
-      <span class="budget-label" style="color:var(--text3);font-size:11px">piso y pesos afectan analistas</span>
+      <span class="budget-label" style="color:var(--text3);font-size:11px">el piso mínimo aplica también al umbral de elegibilidad de TLs</span>
     </div>
     <div id="inc-topes-preview" style="display:none;background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius);padding:10px 14px;margin-bottom:9px">
-      <div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px">Topes por banda · piso ${piso} pts · curva regresiva (√)</div>
+      <div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px">Máximos posibles por banda con este presupuesto</div>
       <div id="topes-content" style="display:grid;grid-template-columns:1fr 1fr;gap:4px 20px;font-size:12px"></div>
     </div>
     <div style="display:flex;justify-content:flex-end">
-      <button class="inc-calc-btn" onclick="runIncentivos()">Calcular distribución →</button>
+      <button class="inc-calc-btn" onclick="runIncentivos()">Ver distribución del período →</button>
     </div>
   </div>
 
   <div id="inc-empty" class="empty-state">
     <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-    <p>Configurá el presupuesto y presioná "Calcular distribución"</p>
+    <p>Cargá los archivos, configurá el presupuesto y presioná "Ver distribución del período"</p>
   </div>
 
   <div id="inc-content" style="display:none">
     <div class="inc-section">
-      <div class="inc-section-title">Resumen de la simulación</div>
+      <div class="inc-section-title">Resumen del período simulado</div>
       <div class="inc-result-grid" id="inc-summary-grid"></div>
       <div id="inc-scale-warn" class="scale-warn" style="display:none"></div>
     </div>
@@ -463,12 +469,12 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
     <!-- analistas -->
     <div class="inc-role-panel active" id="inc-panel-analistas">
       <div class="inc-section">
-        <div class="inc-section-title">Detalle analistas</div>
+        <div class="inc-section-title">Analistas — detalle por colaborador</div>
         <div class="inc-criteria">
-          <div class="crit-row"><div class="crit-dot" style="background:var(--red)"></div><strong style="color:var(--text)">Corte duro:</strong> Calidad &lt; 90% → $0 total, sin excepción</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--amber)"></div><strong style="color:var(--text)">Sin datos de auditoría:</strong> Revisión manual (sin datos, o muestra &lt; 5 registros)</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Modelo sumatorio:</strong> pts/tarea = peso_flujo + bonus_iniciativa + pts_incidencia</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Monto 70/30:</strong> (curva_prod × peso_prod) + (curva_cal × peso_cal). Curva cal arranca en 30% con 90% de calidad. Pesos configurables.</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--red)"></div><strong style="color:var(--text)">Regla de oro:</strong> Calidad auditada menor a 90% → incentivo $0 ese período, sin excepción. La calidad no se negocia.</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--amber)"></div><strong style="color:var(--text)">Sin datos de auditoría:</strong> El colaborador queda en revisión manual. No queda excluido automáticamente — el PM valida el caso.</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Cómo se calculan los puntos:</strong> cada tarea suma peso del flujo + bonus de iniciativa + puntos por incidencia</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Monto = productividad + calidad:</strong> dos curvas independientes que suman. La de productividad arranca desde el piso mínimo. La de calidad arranca en 90% (ya genera algo desde el primer punto). Pesos ajustables.</div>
         </div>
         <div id="inc-table-analistas"></div>
         <div class="inc-notice" id="inc-notice-analistas"></div>
@@ -478,11 +484,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
     <!-- TLs -->
     <div class="inc-role-panel" id="inc-panel-tls">
       <div class="inc-section">
-        <div class="inc-section-title">Detalle Team Leaders</div>
+        <div class="inc-section-title">Team Leaders — evaluados por el rendimiento de su equipo</div>
         <div class="inc-criteria">
-          <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Elegibilidad:</strong> Promedio equipo ≥ piso mínimo configurable (default 75 pts)</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Bandas relativas al promedio general del período:</strong> Base (piso – prom. general) · Sólido (≥ prom. general) · HP (≥ prom. general +10%)</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--purple)"></div><strong style="color:var(--text)">Topes:</strong> Base ×2.0 · Sólido ×2.8 · HP ×3.6 sobre tope Base analista</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Mínimo de entrada:</strong> el promedio de puntos del equipo tiene que superar el piso mínimo (default 75 pts). Si no llega, no hay incentivo ese período.</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Banda según posición relativa:</strong> si el equipo está por encima del promedio general del período → Sólido. Más de 10% por encima → High Performer. Por debajo del promedio pero sobre el piso → Base.</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--purple)"></div><strong style="color:var(--text)">Monto:</strong> siempre el doble del tope de la misma banda para analistas. Si el equipo sube, el TL sube.</div>
         </div>
         <div id="inc-table-tls"></div>
         <div class="inc-notice" id="inc-notice-tls"></div>
@@ -492,11 +498,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
     <!-- CP -->
     <div class="inc-role-panel" id="inc-panel-cp">
       <div class="inc-section">
-        <div class="inc-section-title">Coordinadora Pedagógica</div>
+        <div class="inc-section-title">Coordinadora Pedagógica — evaluada por la calidad transversal del equipo</div>
         <div class="inc-criteria">
-          <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Elegibilidad:</strong> Calidad promedio ponderada (Modelo A) de todos los analistas del equipo ≥ 90%</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Topes:</strong> Mismo rango que analistas × 2. Base ×2.0 · Sólido ×2.8 · HP ×3.6 sobre tope Base analista</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--amber)"></div><strong style="color:var(--text)">Sin datos calidad:</strong> Revisión manual — requiere auditados.csv</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Métrica:</strong> calidad promedio ponderada de todos los analistas en el período. Si supera el 90%, es elegible.</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Bandas de calidad:</strong> Base 90–93% · Sólido 93–97% · High Performer 97%+. Monto: el doble del tope analista de la banda.</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--amber)"></div><strong style="color:var(--text)">Sin datos de auditoría:</strong> el resultado queda en revisión manual. Cargá auditados.csv para calcularlo automáticamente.</div>
         </div>
         <div id="inc-table-cp"></div>
         <div class="inc-notice" id="inc-notice-cp"></div>
@@ -514,8 +520,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
     <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:600;margin-bottom:14px" id="modal-title"></div>
     <div id="modal-body"></div>
     <div style="display:flex;gap:8px;margin-top:14px">
-      <button onclick="confirmModal()" style="flex:1;padding:8px;background:var(--accent2);color:#fff;border:none;border-radius:7px;font-family:'Syne',sans-serif;font-size:12px;font-weight:600;cursor:pointer">Agregar</button>
-      <button onclick="closeModal()" style="flex:1;padding:8px;background:none;color:var(--text2);border:1px solid var(--border2);border-radius:7px;font-family:'Syne',sans-serif;font-size:12px;cursor:pointer">Cancelar</button>
+      <button onclick="confirmModal()" style="flex:1;padding:8px;background:var(--accent2);color:#fff;border:none;border-radius:7px;font-family:'Syne',sans-serif;font-size:12px;font-weight:600;cursor:pointer">Guardar</button>
+      <button onclick="closeModal()" style="flex:1;padding:8px;background:none;color:var(--text2);border:1px solid var(--border2);border-radius:7px;font-family:'Syne',sans-serif;font-size:12px;cursor:pointer">Cerrar</button>
     </div>
   </div>
 </div>
@@ -653,20 +659,20 @@ function deleteIncidencia(k){delete INCIDENCIAS[k];renderIncidenciasList();syncC
 function openModal(mode){
   _modalMode=mode;
   const cfg={
-    flujo:{title:'Agregar flujo',body:`
-      <div style="margin-bottom:10px"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Nombre del flujo</div>
-      <input id="m-name" type="text" placeholder="Ej: MAO, SdC..." style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:6px 9px;font-family:'DM Sans',sans-serif"></div>
-      <div><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Peso (multiplicador)</div>
+    flujo:{title:'Nuevo flujo de trabajo',body:`
+      <div style="margin-bottom:10px"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">¿Cómo se llama este flujo?</div>
+      <input id="m-name" type="text" placeholder="Ej: Enhancement Plus, KV Especial..." style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:6px 9px;font-family:'DM Sans',sans-serif"></div>
+      <div><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Peso por tarea (Demanda = 1.0)</div>
       <input id="m-val" type="number" step="0.05" min="0" max="20" value="1.0" style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:6px 9px;font-family:'DM Mono',monospace"></div>`},
-    iniciativa:{title:'Agregar iniciativa',body:`
-      <div style="margin-bottom:10px"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Nombre</div>
-      <input id="m-name" type="text" placeholder="Ej: Nueva campaña" style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:6px 9px;font-family:'DM Sans',sans-serif"></div>
-      <div><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Bonus (0.2 = +20%)</div>
+    iniciativa:{title:'Nueva iniciativa',body:`
+      <div style="margin-bottom:10px"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">¿Cómo se llama?</div>
+      <input id="m-name" type="text" placeholder="Ej: Campaña Navidad, Proyecto MAO 2..." style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:6px 9px;font-family:'DM Sans',sans-serif"></div>
+      <div><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Puntos extra por tarea (ej: 0.15 = +0.15 pts/tarea)</div>
       <input id="m-val" type="number" step="0.05" min="-1" max="5" value="0.1" style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:6px 9px;font-family:'DM Mono',monospace"></div>`},
-    incidencia:{title:'Agregar incidencia',body:`
+    incidencia:{title:'Nueva incidencia',body:`
       <div style="margin-bottom:10px"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Nombre</div>
-      <input id="m-name" type="text" placeholder="Ej: Revisión especial" style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:6px 9px;font-family:'DM Sans',sans-serif"></div>
-      <div><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Puntos adicionales</div>
+      <input id="m-name" type="text" placeholder="Ej: Esperando respuesta interna, Merge complejo..." style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:6px 9px;font-family:'DM Sans',sans-serif"></div>
+      <div><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Puntos extra que suma esta incidencia</div>
       <input id="m-val" type="number" step="0.1" min="0" max="20" value="0.5" style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:6px 9px;font-family:'DM Mono',monospace"></div>`},
   };
   document.getElementById('modal-title').textContent=cfg[mode].title;
@@ -777,10 +783,10 @@ function updateCapabilities(){
     document.getElementById(id+'-txt').style.color=on?'var(--text2)':'var(--text3)';
     document.getElementById(id+'-txt').textContent=txt;
   };
-  upd('cap-historico',h,h?'✓ Histórico, ranking y calculadora habilitados':'Histórico, ranking y calculadora — requiere historico.csv');
-  upd('cap-equipo',eq,eq?'✓ Filtro por equipo y separación de roles habilitados':'Filtro por equipo y separación de roles — requiere equipo_colaboradores.csv');
+  upd('cap-historico',h,h?'✓ Histórico, ranking y calculadora habilitados':'Análisis de productividad, ranking y calculadora 1:1 — requiere historico.csv');
+  upd('cap-equipo',eq,eq?'✓ Filtro por equipo y separación de roles habilitados':'Filtrar por equipo, separar roles y mostrar solo tu gente — requiere equipo_colaboradores.csv');
   upd('cap-calidad',au,au?`✓ Calidad SdC cargada${DATA.mao?' + MAO':' (MAO no cargado)'}`:'Calidad auditada y elegibilidad completa — requiere auditados.csv');
-  upd('cap-incentivos',all,all?'✓ Simulador de incentivos con elegibilidad completa':'Simulador de incentivos completo — requiere los 4 archivos');
+  upd('cap-incentivos',all,all?'✓ Simulador de incentivos activo con elegibilidad completa (productividad + calidad)':'Simulador de incentivos completo con elegibilidad dual (productividad + calidad auditada) — requiere los 4 archivos');
 }
 function activatePages(){
   ['hist-empty','rank-empty'].forEach(id=>document.getElementById(id).style.display='none');
@@ -1430,7 +1436,7 @@ function runIncentivos(){
 
   // ── ANALISTAS ──
   const incA=analistas.map(p=>{
-    if(p.activeDays===0)return{...p,incStatus:'inactive',reason:'Sin actividad en el período',amount:0,amountFinal:0,compProd:0,compCal:0,compProdFinal:0,compCalFinal:0,calidad:null,calTotal:0,bandIdx:-1};
+    if(p.activeDays===0)return{...p,incStatus:'inactive',reason:'Sin tareas registradas en este período',amount:0,amountFinal:0,compProd:0,compCal:0,compProdFinal:0,compCalFinal:0,calidad:null,calTotal:0,bandIdx:-1};
     const bi=getBandIdx(p.avgPts);
     const prodBajoPiso=p.avgPts<piso;
 
@@ -1445,12 +1451,12 @@ function runIncentivos(){
 
     // Corte duro: calidad < 90% bloquea TODO
     if(calStatus==='data_ok'&&calidad!==null&&calidad<90){
-      return{...p,incStatus:'no_eligible',reason:`Calidad ${calidad.toFixed(1)}% < 90% (corte duro)`,amount:0,amountFinal:0,compProd:0,compCal:0,compProdFinal:0,compCalFinal:0,calidad,calTotal,bandIdx:bi};
+      return{...p,incStatus:'no_eligible',reason:`Calidad ${calidad.toFixed(1)}% — por debajo del mínimo de 90%`,amount:0,amountFinal:0,compProd:0,compCal:0,compProdFinal:0,compCalFinal:0,calidad,calTotal,bandIdx:bi};
     }
 
     // Sin datos → revisión manual (no bloquea pero no paga automáticamente)
     if(!hasCalidad||calStatus==='no_data'||calStatus==='insufficient'){
-      const manualReason=!hasCalidad?'Sin datos de calidad':calStatus==='no_data'?'Sin registros de auditoría':`Muestra insuficiente (${calTotal} reg., mín. 5)`;
+      const manualReason=!hasCalidad?'Sin datos de auditoría cargados':calStatus==='no_data'?'Sin registros de auditoría en este período':`Solo ${calTotal} registro${calTotal===1?'':'s'} auditado${calTotal===1?'':'s'} — se necesitan al menos 5`;
       return{...p,incStatus:'manual',reason:manualReason,amount:0,amountFinal:0,compProd:0,compCal:0,compProdFinal:0,compCalFinal:0,calidad,calTotal,bandIdx:bi};
     }
 
@@ -1559,7 +1565,7 @@ function runIncentivos(){
     <div class="inc-stat"><div class="inc-stat-label">TLs + CP</div><div class="inc-stat-value" style="color:var(--teal)">${fmtARS(totalT+totalC)}</div><div class="inc-stat-sub">${incTl.filter(p=>p.incStatus==='eligible').length+(cpEntry?.incStatus==='eligible'?1:0)} elegibles</div></div>`;
 
   const sw=document.getElementById('inc-scale-warn');
-  if(scaleApplied){sw.style.display='block';sw.textContent=`⚠ El presupuesto no alcanza para pagar todos los topes. Se aplicó factor de escala proporcional: ${(scaleFactor*100).toFixed(1)}%. Todos los elegibles reciben el mismo porcentaje de su tope.`;}
+  if(scaleApplied){sw.style.display='block';sw.textContent=`⚠ El presupuesto no alcanza para cubrir todos los topes. Se aplicó salvaguarda proporcional: cada elegible recibe el ${(scaleFactor*100).toFixed(1)}% de su tope calculado. Nadie queda excluido.`;}
   else sw.style.display='none';
 
   // ── TABLA ANALISTAS ──
@@ -1575,13 +1581,13 @@ function runIncentivos(){
         <td class="mono-cell" style="color:var(--text3)">${p.activeDays}</td>
         <td class="mono-cell">${p.calidad!==null?`<span style="color:${p.calidad>=90?'var(--green)':'var(--red)'}">${p.calidad.toFixed(1)}%</span> <span style="color:var(--text3);font-size:10px">(${p.calTotal})</span>`:'<span style="color:var(--text3)">—</span>'}</td>
         <td>${p.activeDays>0?`<span class="badge ${p.band.css}">${p.band.label}</span>`:'—'}</td>
-        <td>${p.incStatus==='eligible'?'<span class="eligible-tag">Elegible</span>':p.incStatus==='manual'?'<span class="manual-tag">Revisión manual</span>':p.incStatus==='inactive'?'<span style="font-size:10px;color:var(--text3)">Sin actividad</span>':'<span class="ineligible-tag">No elegible</span>'}</td>
+        <td>${p.incStatus==='eligible'?'<span class="eligible-tag">Elegible</span>':p.incStatus==='manual'?'<span class="manual-tag">Revisión manual</span>':p.incStatus==='inactive'?'<span style="font-size:10px;color:var(--text3)">Sin tareas en el período</span>':'<span class="ineligible-tag">No elegible</span>'}</td>
         <td>${p.incStatus==='eligible'?`<span class="amount-tag" style="font-size:11px">${fmtARS(p.compProdFinal||0)}</span>`:'<span style="color:var(--text3)">—</span>'}</td>
         <td>${p.incStatus==='eligible'?`<span class="amount-tag" style="font-size:11px;color:var(--teal)">${fmtARS(p.compCalFinal||0)}</span>`:'<span style="color:var(--text3)">—</span>'}</td>
         <td>${p.incStatus==='eligible'?`<span class="amount-tag">${fmtARS(p.amountFinal)}</span>${scaleApplied?` <span style="font-size:10px;color:var(--text3)">(×${scaleFactor.toFixed(2)})</span>`:''}`:'<span style="color:var(--text3)">—</span>'}</td>
       </tr>`).join('')}</tbody>
     </table></div>`;
-  document.getElementById('inc-notice-analistas').innerHTML=`<strong>Simulación estimada · no representa liquidación final.</strong> Modelo 70/30 sumatorio: comp. productividad (curva √ desde ${piso} pts) × ${Math.round(wprod*100)}% + comp. calidad (curva √ con piso 30% en 90%) × ${Math.round(wcal*100)}%. Corte duro: calidad < 90% = $0 total. Sin datos de auditoría = revisión manual. Redondeo $1.000.${!hasCalidad?' <strong>Cargá auditados.csv para elegibilidad completa.</strong>':''}`;
+  document.getElementById('inc-notice-analistas').innerHTML=`<strong>Estos montos son estimados y no representan liquidación final.</strong> Productividad pesa ${Math.round(wprod*100)}% y calidad pesa ${Math.round(wcal*100)}%. Ambas curvas usan raíz cuadrada: la productividad arranca en ${piso} pts, la calidad arranca en 90% con un mínimo del 30%. Por debajo de 90% de calidad el incentivo es $0. Sin registros de auditoría el colaborador queda en revisión manual. Redondeo a $1.000.${!hasCalidad?' <strong>Tip: cargá auditados.csv para ver la elegibilidad completa.</strong>':''}`;
 
   // ── TABLA TLs ──
   document.getElementById('inc-table-tls').innerHTML=`
@@ -1598,7 +1604,7 @@ function runIncentivos(){
         <td>${p.incStatus==='eligible'?`<span class="amount-tag">${fmtARS(p.amountFinal)}</span>`:'<span style="color:var(--text3)">—</span>'}</td>
       </tr>`).join('')}</tbody>
     </table></div>`;
-  document.getElementById('inc-notice-tls').innerHTML=`Topes TL: Base ${fmtARS(roundK(topeBase*2))} · Sólido ${fmtARS(roundK(topeBase*2.8))} · HP ${fmtARS(roundK(topeBase*3.6))}. Bandas relativas al promedio general del período (${avgGeneral.toFixed(1)} pts): Base = ${pisoTL}–${avgGeneral.toFixed(1)} pts · Sólido = ${avgGeneral.toFixed(1)}–${(avgGeneral*1.1).toFixed(1)} pts · HP > ${(avgGeneral*1.1).toFixed(1)} pts. Piso mínimo: ${pisoTL} pts.`;
+  document.getElementById('inc-notice-tls').innerHTML=`El promedio general del equipo en este período es <strong>${avgGeneral.toFixed(1)} pts/día</strong>. Bandas: Base (${pisoTL}–${avgGeneral.toFixed(1)} pts) → ${fmtARS(roundK(topeBase*2))} · Sólido (≥${avgGeneral.toFixed(1)} pts) → ${fmtARS(roundK(topeBase*2.8))} · High Performer (>${(avgGeneral*1.1).toFixed(1)} pts, +10%) → ${fmtARS(roundK(topeBase*3.6))}. Por debajo de ${pisoTL} pts no hay incentivo.`;
 
   // ── CP ──
   document.getElementById('inc-table-cp').innerHTML=cpEntry?`
@@ -1614,7 +1620,7 @@ function runIncentivos(){
       </tr></tbody>
     </table></div>`
     :'<div style="font-size:12px;color:var(--text3);padding:12px">No se encontró ningún colaborador con rol de Coordinador/a en equipo_colaboradores.csv</div>';
-  document.getElementById('inc-notice-cp').innerHTML=`La CP responde por la calidad promedio ponderada de todos los analistas (Modelo A: SdC + MAO unificados). Topes: Base ${fmtARS(roundK(topeBase*2))} · Sólido ${fmtARS(roundK(topeBase*2.8))} · HP ${fmtARS(roundK(topeBase*3.6))}. Umbral 90%. ${!hasCalidad?'Cargá auditados.csv para calcular automáticamente.':''}`;
+  document.getElementById('inc-notice-cp').innerHTML=`La calidad se calcula combinando todos los registros de auditoría SdC y MAO del equipo. Correcto = 1.0 punto · Desvío leve = 0.5 · Desvío grave = 0. Topes: Base (90–93%) → ${fmtARS(roundK(topeBase*2))} · Sólido (93–97%) → ${fmtARS(roundK(topeBase*2.8))} · High Performer (≥97%) → ${fmtARS(roundK(topeBase*3.6))}. ${!hasCalidad?'<strong>Cargá auditados.csv para calcular esto automáticamente.</strong>':''}`;
 
   document.getElementById('inc-empty').style.display='none';
   document.getElementById('inc-content').style.display='block';
