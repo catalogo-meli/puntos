@@ -13,14 +13,13 @@
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;min-height:100vh}
 h1,h2,h3{font-family:'Syne',sans-serif}
 .mono{font-family:'DM Mono',monospace}
-.app{display:grid;grid-template-columns:264px 1fr;min-height:100vh}
-/* ── SIDEBAR ── */
-.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.app{display:grid;grid-template-columns:268px 1fr;min-height:100vh}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
 .main{overflow:hidden;min-width:0}
-.sidebar-logo{padding:18px 20px 16px;border-bottom:1px solid var(--border)}
+.sidebar-logo{padding:18px 20px 14px;border-bottom:1px solid var(--border)}
 .sidebar-logo h1{font-size:14px;font-weight:800;letter-spacing:-.3px}
 .sidebar-logo p{font-size:10px;color:var(--text3);margin-top:2px;font-family:'DM Mono',monospace}
-.nav{padding:10px 10px;border-bottom:1px solid var(--border)}
+.nav{padding:10px;border-bottom:1px solid var(--border)}
 .nav-label{font-size:9px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;padding:0 8px;margin-bottom:4px;margin-top:10px}
 .nav-label:first-child{margin-top:0}
 .nav-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;cursor:pointer;color:var(--text2);font-size:12px;transition:all .15s;border:none;background:none;width:100%;text-align:left}
@@ -28,161 +27,158 @@ h1,h2,h3{font-family:'Syne',sans-serif}
 .nav-item.active{background:rgba(91,127,255,.12);color:var(--accent);font-weight:500}
 .nav-item svg{opacity:.6;flex-shrink:0}
 .nav-item.active svg{opacity:1}
-/* ── SIDEBAR CONFIG SECTIONS ── */
-.cfg-section{padding:12px 12px;border-bottom:1px solid var(--border)}
-.cfg-section:last-child{border-bottom:none}
-.cfg-title{font-size:9px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.cfg-section{padding:10px 12px;border-bottom:1px solid var(--border)}
+.cfg-section:last-child{border-bottom:none;flex:1}
+.cfg-title{font-size:9px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;margin-bottom:7px;display:flex;align-items:center;justify-content:space-between}
 .cfg-title button{font-size:10px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;padding:0}
-.cfg-title button:hover{color:var(--text)}
-.cfg-row{display:flex;align-items:center;gap:6px;margin-bottom:5px}
+.cfg-hint{font-size:10px;color:var(--text3);margin-bottom:6px;line-height:1.4}
+.cfg-row{display:flex;align-items:center;gap:5px;margin-bottom:4px}
 .cfg-label{font-size:11px;color:var(--text2);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cfg-input{width:52px;background:var(--bg);border:1px solid var(--border2);border-radius:5px;color:var(--text);font-family:'DM Mono',monospace;font-size:11px;padding:3px 6px;text-align:right;flex-shrink:0}
 .cfg-input:focus{outline:none;border-color:var(--accent)}
-.cfg-del{background:none;border:none;cursor:pointer;color:var(--text3);font-size:13px;line-height:1;padding:0 2px;flex-shrink:0;transition:color .15s}
+.cfg-del{background:none;border:none;cursor:pointer;color:var(--text3);font-size:12px;line-height:1;padding:0 2px;flex-shrink:0;transition:color .15s}
 .cfg-del:hover{color:var(--red)}
-.cfg-add-row{display:flex;gap:5px;margin-top:6px}
-.cfg-add-input{flex:1;background:var(--bg);border:1px solid var(--border2);border-radius:5px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 7px}
-.cfg-add-input:focus{outline:none;border-color:var(--accent)}
-.cfg-add-btn{padding:4px 8px;background:rgba(91,127,255,.15);color:var(--accent);border:1px solid rgba(91,127,255,.3);border-radius:5px;font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer;white-space:nowrap}
-.cfg-add-btn:hover{background:rgba(91,127,255,.25)}
-.apply-btn{width:100%;padding:7px;background:var(--accent2);color:#fff;border:none;border-radius:7px;font-family:'Syne',sans-serif;font-size:11px;font-weight:600;cursor:pointer;margin-top:6px;letter-spacing:.3px;transition:background .15s}
+.apply-btn{width:100%;padding:6px;background:var(--accent2);color:#fff;border:none;border-radius:7px;font-family:'Syne',sans-serif;font-size:11px;font-weight:600;cursor:pointer;margin-top:5px;transition:background .15s}
 .apply-btn:hover{background:var(--accent)}
-/* ── PAGES ── */
 .page{display:none;padding:28px 32px}
 .page.active{display:block}
-.page-header{margin-bottom:24px}
+.page-header{margin-bottom:22px}
 .page-title{font-size:22px;font-weight:700;letter-spacing:-.5px}
 .page-sub{font-size:13px;color:var(--text2);margin-top:4px}
-/* ── STAT CARDS ── */
-.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:20px}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px}
-.stat-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-weight:500}
-.stat-value{font-family:'Syne',sans-serif;font-size:26px;font-weight:700;margin-top:4px;letter-spacing:-1px}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:10px;margin-bottom:18px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px}
+.stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-weight:500}
+.stat-value{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;margin-top:3px;letter-spacing:-1px}
 .stat-sub{font-size:11px;color:var(--text3);margin-top:2px}
 .stat-card.acc{border-color:rgba(91,127,255,.3);background:rgba(91,127,255,.06)}
 .stat-card.grn{border-color:rgba(62,207,142,.3);background:rgba(62,207,142,.06)}
 .stat-card.amb{border-color:rgba(246,166,35,.3);background:rgba(246,166,35,.06)}
 .stat-card.redd{border-color:rgba(255,95,87,.3);background:rgba(255,95,87,.06)}
-/* ── UPLOAD ── */
-.upload-zone{background:var(--surface);border:2px dashed var(--border2);border-radius:var(--radius-lg);padding:36px;text-align:center;cursor:pointer;transition:all .2s}
+/* upload */
+.upload-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+.upload-zone{background:var(--surface);border:2px dashed var(--border2);border-radius:var(--radius-lg);padding:22px 18px;text-align:center;cursor:pointer;transition:all .2s;position:relative}
 .upload-zone:hover,.upload-zone.drag{border-color:var(--accent);background:rgba(91,127,255,.05)}
 .upload-zone.done{border-color:var(--green);border-style:solid;background:rgba(62,207,142,.05)}
-.upload-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
-.upload-icon{font-size:28px;margin-bottom:10px}
-.upload-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:600}
-.upload-sub{font-size:12px;color:var(--text3);margin-top:4px}
+.upload-zone.optional-zone{border-color:var(--border);opacity:.85}
+.upload-zone.optional-zone.done{opacity:1}
+.upload-icon{font-size:22px;margin-bottom:6px}
+.upload-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:600}
+.upload-sub{font-size:11px;color:var(--text3);margin-top:3px;line-height:1.4}
+.upload-tag{position:absolute;top:8px;right:8px;font-size:9px;font-weight:600;padding:2px 6px;border-radius:4px;background:rgba(85,93,120,.2);color:var(--text3);text-transform:uppercase;letter-spacing:.06em}
+.upload-tag.req{background:rgba(91,127,255,.15);color:var(--accent)}
 .file-input{display:none}
-/* ── TABLES ── */
+.capabilities-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 18px;margin-bottom:16px}
+.cap-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:600;margin-bottom:10px;color:var(--text2)}
+.cap-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px}
+.cap-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.cap-dot.on{background:var(--green)}
+.cap-dot.off{background:var(--border2)}
+.cap-dot.partial{background:var(--amber)}
 .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
-.table-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.table-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
 .table-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:600}
-table{width:100%;border-collapse:collapse;font-size:12.5px}
-th{text-align:left;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;padding:9px 14px;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;padding:8px 13px;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none}
 th:hover{color:var(--text2)}
-td{padding:9px 14px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:middle}
+td{padding:8px 13px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:var(--surface2)}
 .name-cell{color:var(--text);font-weight:500}
-.mono-cell{font-family:'DM Mono',monospace;font-size:12px}
-/* ── BADGES ── */
-.badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;padding:3px 8px;border-radius:6px;white-space:nowrap}
+.mono-cell{font-family:'DM Mono',monospace;font-size:11px}
+.badge{display:inline-flex;align-items:center;font-size:10px;font-weight:600;padding:2px 7px;border-radius:5px;white-space:nowrap}
 .bp{background:rgba(255,95,87,.15);color:var(--red)}
 .bb{background:rgba(91,127,255,.15);color:var(--accent)}
 .bs{background:rgba(62,207,142,.15);color:var(--green)}
 .bh{background:rgba(167,139,250,.15);color:var(--purple)}
 .be{background:rgba(246,166,35,.15);color:var(--amber)}
-/* ── CHARTS ── */
-.chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;margin-bottom:18px}
-.chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:16px}
+.chart-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .chart-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:600}
-/* ── CALCULATOR ── */
-.calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.calc-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;display:flex;flex-direction:column}
-.input-group{margin-bottom:12px}
-.input-label{font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;display:flex;justify-content:space-between}
+.calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.calc-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;display:flex;flex-direction:column}
+.input-group{margin-bottom:10px}
+.input-label{font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;display:flex;justify-content:space-between}
 .input-label span{color:var(--accent);font-family:'DM Mono',monospace}
 .range-wrap{display:flex;gap:10px;align-items:center}
-input[type=range]{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--border2);outline:none}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer}
+input[type=range]{flex:1;-webkit-appearance:none;height:3px;border-radius:2px;background:var(--border2);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--accent);cursor:pointer}
 .range-val{font-family:'DM Mono',monospace;font-size:12px;color:var(--text);min-width:28px;text-align:right}
-.pts-display{text-align:center;padding:20px 0;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.pts-number{font-family:'Syne',sans-serif;font-size:64px;font-weight:800;letter-spacing:-3px;line-height:1;transition:color .3s}
-.pts-label{font-size:11px;color:var(--text3);margin-top:4px;font-family:'DM Mono',monospace}
-.band-display{margin-top:12px;padding:10px 18px;border-radius:10px;text-align:center;transition:all .3s}
-.band-name-big{font-family:'Syne',sans-serif;font-size:15px;font-weight:700}
+.pts-display{text-align:center;padding:16px 0;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.pts-number{font-family:'Syne',sans-serif;font-size:60px;font-weight:800;letter-spacing:-3px;line-height:1;transition:color .3s}
+.pts-label{font-size:11px;color:var(--text3);margin-top:3px;font-family:'DM Mono',monospace}
+.band-display{margin-top:10px;padding:9px 16px;border-radius:10px;text-align:center;transition:all .3s}
+.band-name-big{font-family:'Syne',sans-serif;font-size:14px;font-weight:700}
 .band-desc{font-size:11px;margin-top:2px;opacity:.7}
-.breakdown{margin-top:12px;border-top:1px solid var(--border);padding-top:12px}
+.breakdown{margin-top:10px;border-top:1px solid var(--border);padding-top:10px}
 .bd-row{display:flex;justify-content:space-between;padding:3px 0;font-size:11px}
 .bd-lbl{color:var(--text3)}
 .bd-val{color:var(--text);font-family:'DM Mono',monospace}
-.total-row{display:flex;justify-content:space-between;padding:6px 0 0;margin-top:4px;border-top:1px solid var(--border);font-size:12px;font-weight:500}
-/* ── MISC ── */
-.sep{margin:20px 0;height:1px;background:var(--border)}
-.search-bar{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 11px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;width:180px}
+.total-row{display:flex;justify-content:space-between;padding:6px 0 0;margin-top:3px;border-top:1px solid var(--border);font-size:12px;font-weight:500}
+.sep{margin:18px 0;height:1px;background:var(--border)}
+.search-bar{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:5px 10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;width:170px}
 .search-bar::placeholder{color:var(--text3)}
 .search-bar:focus{outline:none;border-color:var(--accent)}
-.sel{background:var(--surface2);border:1px solid var(--border2);border-radius:7px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:12px;padding:5px 8px;cursor:pointer}
+.sel{background:var(--surface2);border:1px solid var(--border2);border-radius:6px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:12px;padding:4px 7px;cursor:pointer}
 .sel:focus{outline:none;border-color:var(--accent)}
-.empty-state{text-align:center;padding:60px 20px;color:var(--text3)}
-.empty-state p{font-size:13px;margin-top:10px}
-.alert-box{background:rgba(246,166,35,.08);border:1px solid rgba(246,166,35,.25);border-radius:10px;padding:11px 14px;font-size:12px;color:var(--amber);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.empty-state{text-align:center;padding:50px 20px;color:var(--text3)}
+.empty-state p{font-size:13px;margin-top:8px}
+.alert-box{border-radius:9px;padding:10px 13px;font-size:12px;margin-bottom:12px;display:flex;align-items:flex-start;gap:8px;line-height:1.5}
+.alert-warn{background:rgba(246,166,35,.08);border:1px solid rgba(246,166,35,.25);color:var(--amber)}
+.alert-info{background:rgba(91,127,255,.08);border:1px solid rgba(91,127,255,.25);color:var(--accent)}
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-.filter-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
+.filter-row{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:14px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
 .filter-row label{font-size:10px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.06em}
-.filter-btn{padding:4px 11px;border-radius:20px;border:1px solid var(--border2);background:none;color:var(--text2);font-size:11px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif}
+.filter-btn{padding:4px 10px;border-radius:18px;border:1px solid var(--border2);background:none;color:var(--text2);font-size:11px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif}
 .filter-btn:hover{background:var(--surface2)}
-/* ── CALC SELECTOR ── */
-.calc-sel{background:var(--surface2);border:1px solid var(--border2);border-radius:7px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 8px;cursor:pointer;width:100%}
+.calc-sel{background:var(--surface2);border:1px solid var(--border2);border-radius:6px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 7px;cursor:pointer;width:100%}
 .calc-sel:focus{outline:none;border-color:var(--accent)}
-/* ── INCENTIVOS ── */
-.inc-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px}
-.inc-section-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:600;margin-bottom:4px}
-.inc-section-sub{font-size:12px;color:var(--text3);margin-bottom:16px}
-.budget-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 16px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius);margin-bottom:10px}
+/* incentivos */
+.inc-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;margin-bottom:14px}
+.inc-section-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:600;margin-bottom:3px}
+.inc-section-sub{font-size:11px;color:var(--text3);margin-bottom:14px;line-height:1.5}
+.budget-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:11px 14px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius);margin-bottom:9px}
 .budget-label{font-size:12px;color:var(--text2);white-space:nowrap}
-.budget-input{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'DM Mono',monospace;font-size:13px;padding:6px 10px;width:160px}
+.budget-input{background:var(--surface2);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-family:'DM Mono',monospace;font-size:13px;padding:5px 9px}
 .budget-input:focus{outline:none;border-color:var(--accent)}
-.budget-select{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 9px;cursor:pointer}
+.budget-select{background:var(--surface2);border:1px solid var(--border2);border-radius:7px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:12px;padding:5px 8px;cursor:pointer}
 .budget-select:focus{outline:none;border-color:var(--accent)}
-.inc-calc-btn{padding:8px 20px;background:var(--accent2);color:#fff;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+.inc-calc-btn{padding:7px 18px;background:var(--accent2);color:#fff;border:none;border-radius:7px;font-family:'Syne',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:background .15s}
 .inc-calc-btn:hover{background:var(--accent)}
-.inc-result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
-.inc-stat{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:13px 16px}
+.inc-result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:9px;margin-bottom:14px}
+.inc-stat{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px}
 .inc-stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-weight:500}
-.inc-stat-value{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-top:3px;letter-spacing:-.5px}
-.inc-stat-sub{font-size:11px;color:var(--text3);margin-top:2px}
-.role-tab-bar{display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid var(--border)}
-.role-tab{padding:8px 16px;border:none;background:none;color:var(--text3);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.inc-stat-value{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-top:3px;letter-spacing:-.5px}
+.inc-stat-sub{font-size:10px;color:var(--text3);margin-top:2px}
+.role-tab-bar{display:flex;gap:4px;margin-bottom:14px;border-bottom:1px solid var(--border)}
+.role-tab{padding:7px 15px;border:none;background:none;color:var(--text3);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
 .role-tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:500}
 .role-tab:hover{color:var(--text2)}
 .inc-role-panel{display:none}
 .inc-role-panel.active{display:block}
-.inc-criteria{background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius);padding:14px;margin-bottom:14px;font-size:12px;color:var(--text2);line-height:1.6}
-.crit-row{display:flex;align-items:flex-start;gap:6px;margin-bottom:4px}
-.crit-dot{width:6px;height:6px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.inc-criteria{background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius);padding:12px;margin-bottom:12px;font-size:11px;color:var(--text2);line-height:1.6}
+.crit-row{display:flex;align-items:flex-start;gap:6px;margin-bottom:3px}
+.crit-dot{width:6px;height:6px;border-radius:50%;margin-top:3px;flex-shrink:0}
 .inc-table-wrap{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
-.inc-notice{font-size:11px;color:var(--text3);background:rgba(91,127,255,.06);border:1px solid rgba(91,127,255,.15);border-radius:8px;padding:9px 12px;margin-top:12px;line-height:1.5}
-.manual-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:5px;background:rgba(246,166,35,.15);color:var(--amber)}
-.eligible-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:5px;background:rgba(62,207,142,.15);color:var(--green)}
-.ineligible-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:5px;background:rgba(255,95,87,.15);color:var(--red)}
+.inc-notice{font-size:11px;color:var(--text3);background:rgba(91,127,255,.06);border:1px solid rgba(91,127,255,.15);border-radius:7px;padding:8px 11px;margin-top:10px;line-height:1.5}
+.manual-tag{font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;background:rgba(246,166,35,.15);color:var(--amber)}
+.eligible-tag{font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;background:rgba(62,207,142,.15);color:var(--green)}
+.ineligible-tag{font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;background:rgba(255,95,87,.15);color:var(--red)}
 .amount-tag{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--teal)}
-@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{position:static;height:auto}.calc-grid{grid-template-columns:1fr}}
+.scale-warn{font-size:10px;background:rgba(246,166,35,.1);border:1px solid rgba(246,166,35,.3);border-radius:6px;padding:6px 10px;color:var(--amber);margin-top:8px}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{position:static;height:auto}.calc-grid{grid-template-columns:1fr}.upload-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="app">
 
-<!-- ══════════════════════════════════════════
-     SIDEBAR
-══════════════════════════════════════════ -->
+<!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="sidebar-logo">
     <h1>Catálogo · MELI</h1>
     <p>Dashboard · Puntos · Incentivos</p>
   </div>
-
   <nav class="nav">
     <div class="nav-label">Navegación</div>
     <button class="nav-item active" onclick="showPage('upload')">
@@ -209,38 +205,27 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 
   <!-- FLUJOS -->
   <div class="cfg-section">
-    <div class="cfg-title">
-      ⚙ Pesos por flujo
-      <button onclick="openAddFlujo()">+ Agregar</button>
-    </div>
+    <div class="cfg-title">⚙ Pesos por flujo <button onclick="openModal('flujo')">+ Agregar</button></div>
     <div id="flujos-list"></div>
     <button class="apply-btn" onclick="applyWeights()">Recalcular todo →</button>
   </div>
 
   <!-- INICIATIVAS -->
   <div class="cfg-section">
-    <div class="cfg-title">
-      ◈ Bonus de iniciativa
-      <button onclick="openAddIniciativa()">+ Agregar</button>
-    </div>
-    <div style="font-size:10px;color:var(--text3);margin-bottom:7px;line-height:1.4">Bonus multiplicativo sobre el flujo. Ej: 0.2 = +20% de puntos. 0 = sin efecto.</div>
+    <div class="cfg-title">◈ Bonus iniciativa <button onclick="openModal('iniciativa')">+ Agregar</button></div>
+    <div class="cfg-hint">Multiplicador adicional sobre el flujo. 0.2 = +20%</div>
     <div id="iniciativas-list"></div>
   </div>
 
   <!-- INCIDENCIAS -->
   <div class="cfg-section">
-    <div class="cfg-title">
-      ⚡ Puntos por incidencia
-      <button onclick="openAddIncidencia()">+ Agregar</button>
-    </div>
-    <div style="font-size:10px;color:var(--text3);margin-bottom:7px;line-height:1.4">Puntos fijos adicionales por incidencia en la tarea. 0 = sin efecto.</div>
+    <div class="cfg-title">⚡ Pts incidencia <button onclick="openModal('incidencia')">+ Agregar</button></div>
+    <div class="cfg-hint">Puntos fijos adicionales por tarea. 0 = sin efecto</div>
     <div id="incidencias-list"></div>
   </div>
 </aside>
 
-<!-- ══════════════════════════════════════════
-     MAIN
-══════════════════════════════════════════ -->
+<!-- MAIN -->
 <main class="main">
 
 <!-- UPLOAD -->
@@ -251,22 +236,44 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
   </div>
   <div class="upload-grid">
     <div class="upload-zone" id="zone-hist" onclick="document.getElementById('file-hist').click()" ondragover="evDrag(event,'zone-hist')" ondragleave="evLeave('zone-hist')" ondrop="evDrop(event,'hist')">
+      <span class="upload-tag req">Requerido</span>
       <div class="upload-icon">📊</div>
       <div class="upload-title">historico.csv</div>
-      <div class="upload-sub" id="sub-hist">Click o arrastrar · Fecha, Usuario, Flujo, Status, Iniciativa, Incidencias…</div>
+      <div class="upload-sub" id="sub-hist">Productividad · Fecha, Usuario, Flujo, Status, Iniciativa, Incidencias, IDs</div>
       <input type="file" class="file-input" id="file-hist" accept=".csv,.txt" onchange="handleFile(this,'hist')">
     </div>
-    <div class="upload-zone" id="zone-equipo" onclick="document.getElementById('file-equipo').click()" ondragover="evDrag(event,'zone-equipo')" ondragleave="evLeave('zone-equipo')" ondrop="evDrop(event,'equipo')">
+    <div class="upload-zone optional-zone" id="zone-equipo" onclick="document.getElementById('file-equipo').click()" ondragover="evDrag(event,'zone-equipo')" ondragleave="evLeave('zone-equipo')" ondrop="evDrop(event,'equipo')">
+      <span class="upload-tag">Recomendado</span>
       <div class="upload-icon">👥</div>
       <div class="upload-title">equipo_colaboradores.csv</div>
-      <div class="upload-sub" id="sub-equipo">Click o arrastrar · recomendado para roles e incentivos</div>
+      <div class="upload-sub" id="sub-equipo">Roles y equipos · habilita filtros, incentivos y filtrado de colaboradores</div>
       <input type="file" class="file-input" id="file-equipo" accept=".csv,.txt" onchange="handleFile(this,'equipo')">
     </div>
+    <div class="upload-zone optional-zone" id="zone-auditados" onclick="document.getElementById('file-auditados').click()" ondragover="evDrag(event,'zone-auditados')" ondragleave="evLeave('zone-auditados')" ondrop="evDrop(event,'auditados')">
+      <span class="upload-tag">Opcional</span>
+      <div class="upload-icon">✅</div>
+      <div class="upload-title">auditados.csv</div>
+      <div class="upload-sub" id="sub-auditados">Calidad SdC · habilita elegibilidad real de incentivos</div>
+      <input type="file" class="file-input" id="file-auditados" accept=".csv,.txt" onchange="handleFile(this,'auditados')">
+    </div>
+    <div class="upload-zone optional-zone" id="zone-mao" onclick="document.getElementById('file-mao').click()" ondragover="evDrag(event,'zone-mao')" ondragleave="evLeave('zone-mao')" ondrop="evDrop(event,'mao')">
+      <span class="upload-tag">Opcional</span>
+      <div class="upload-icon">🔍</div>
+      <div class="upload-title">auditados_mao.csv</div>
+      <div class="upload-sub" id="sub-mao">Calidad MAO · complementa auditados.csv para calidad completa</div>
+      <input type="file" class="file-input" id="file-mao" accept=".csv,.txt" onchange="handleFile(this,'mao')">
+    </div>
   </div>
-  <div class="alert-box" id="alert-partial" style="display:none">⚠ Solo historico.csv cargado. Sin equipo_colaboradores.csv los nombres aparecerán como IDs y el módulo de incentivos no podrá distinguir roles.</div>
+  <div class="capabilities-box">
+    <div class="cap-title">Funcionalidades habilitadas según archivos cargados</div>
+    <div class="cap-row"><div class="cap-dot off" id="cap-historico-dot"></div><span id="cap-historico-txt" style="color:var(--text3)">Histórico, ranking y calculadora — requiere historico.csv</span></div>
+    <div class="cap-row"><div class="cap-dot off" id="cap-equipo-dot"></div><span id="cap-equipo-txt" style="color:var(--text3)">Filtro por equipo y separación de roles — requiere equipo_colaboradores.csv</span></div>
+    <div class="cap-row"><div class="cap-dot off" id="cap-calidad-dot"></div><span id="cap-calidad-txt" style="color:var(--text3)">Calidad auditada y elegibilidad completa — requiere auditados.csv (+ MAO opcional)</span></div>
+    <div class="cap-row"><div class="cap-dot off" id="cap-incentivos-dot"></div><span id="cap-incentivos-txt" style="color:var(--text3)">Simulador de incentivos completo — requiere los 4 archivos</span></div>
+  </div>
   <div class="table-wrap" id="preview-section" style="display:none">
-    <div class="table-header"><span class="table-title">Vista previa — últimas 8 filas</span><span class="mono" style="font-size:11px;color:var(--text3)" id="preview-count"></span></div>
-    <div style="overflow-x:auto;max-height:260px;overflow-y:auto"><table id="preview-table"></table></div>
+    <div class="table-header"><span class="table-title">Vista previa — últimas 8 filas de historico.csv</span><span class="mono" style="font-size:11px;color:var(--text3)" id="preview-count"></span></div>
+    <div style="overflow-x:auto;max-height:240px;overflow-y:auto"><table id="preview-table"></table></div>
   </div>
 </div>
 
@@ -274,39 +281,31 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 <div class="page" id="page-historico">
   <div class="page-header">
     <h2 class="page-title">Histórico de puntos</h2>
-    <p class="page-sub">Tareas reales vs puntos ponderados · con bonus de iniciativa e incidencia</p>
+    <p class="page-sub">Puntos ponderados con bonus de iniciativa e incidencia · solo colaboradores en equipo_colaboradores</p>
   </div>
   <div id="hist-empty" class="empty-state">
-    <svg width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
     <p>Cargá historico.csv para ver el análisis</p>
   </div>
   <div id="hist-content" style="display:none">
     <div class="filter-row">
-      <label>Año</label>
-      <select class="sel" id="h-year" onchange="applyHistFilter()"><option value="">Todos</option></select>
-      <label>Mes</label>
-      <select class="sel" id="h-month" onchange="applyHistFilter()"><option value="">Todos</option></select>
-      <label>Semana</label>
-      <select class="sel" id="h-week" onchange="applyHistFilter()"><option value="">Todas</option></select>
-      <label>Desde</label>
-      <input type="date" class="sel" id="h-from" onchange="applyHistFilter()">
-      <label>Hasta</label>
-      <input type="date" class="sel" id="h-to" onchange="applyHistFilter()">
-      <label>Equipo</label>
-      <select class="sel" id="h-equipo-filter" onchange="applyHistFilter()">
-        <option value="">Todos</option>
-      </select>
+      <label>Año</label><select class="sel" id="h-year" onchange="applyHistFilter()"><option value="">Todos</option></select>
+      <label>Mes</label><select class="sel" id="h-month" onchange="applyHistFilter()"><option value="">Todos</option></select>
+      <label>Sem.</label><select class="sel" id="h-week" onchange="applyHistFilter()"><option value="">Todas</option></select>
+      <label>Desde</label><input type="date" class="sel" id="h-from" onchange="applyHistFilter()">
+      <label>Hasta</label><input type="date" class="sel" id="h-to" onchange="applyHistFilter()">
+      <label>Equipo</label><select class="sel" id="h-equipo-filter" onchange="applyHistFilter()"><option value="">Todos</option></select>
       <input class="search-bar" id="search-hist" placeholder="Buscar colaborador…" oninput="renderHistTable()">
       <button class="filter-btn" onclick="clearHistFilter()">✕ Limpiar</button>
     </div>
     <div class="stat-grid" id="hist-stats"></div>
     <div class="chart-wrap">
-      <div class="chart-header"><span class="chart-title">Distribución del equipo por banda de performance</span></div>
-      <div style="height:200px"><canvas id="chart-bands"></canvas></div>
+      <div class="chart-title-row"><span class="chart-title">Distribución por banda de performance</span></div>
+      <div style="height:190px"><canvas id="chart-bands"></canvas></div>
     </div>
     <div class="table-wrap">
       <div class="table-header"><span class="table-title">Detalle por colaborador</span></div>
-      <div style="overflow-x:auto;max-height:480px;overflow-y:auto">
+      <div style="overflow-x:auto;max-height:460px;overflow-y:auto">
         <table><thead id="hist-thead"></thead><tbody id="hist-tbody"></tbody></table>
       </div>
     </div>
@@ -317,30 +316,24 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 <div class="page" id="page-ranking">
   <div class="page-header">
     <h2 class="page-title">Ranking del equipo</h2>
-    <p class="page-sub">Puntos ponderados promedio · ordenado de mayor a menor</p>
+    <p class="page-sub">Puntos ponderados promedio · solo colaboradores en equipo_colaboradores</p>
   </div>
   <div id="rank-empty" class="empty-state">
-    <svg width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
     <p>Cargá historico.csv para ver el ranking</p>
   </div>
   <div id="rank-content" style="display:none">
     <div class="filter-row">
-      <label>Año</label>
-      <select class="sel" id="r-year" onchange="applyRankFilter()"><option value="">Todos</option></select>
-      <label>Mes</label>
-      <select class="sel" id="r-month" onchange="applyRankFilter()"><option value="">Todos</option></select>
-      <label>Semana</label>
-      <select class="sel" id="r-week" onchange="applyRankFilter()"><option value="">Todas</option></select>
-      <label>Desde</label>
-      <input type="date" class="sel" id="r-from" onchange="applyRankFilter()">
-      <label>Hasta</label>
-      <input type="date" class="sel" id="r-to" onchange="applyRankFilter()">
-      <label>TL</label>
-      <select class="sel" id="r-equipo" onchange="applyRankFilter()"><option value="">Todos</option></select>
+      <label>Año</label><select class="sel" id="r-year" onchange="applyRankFilter()"><option value="">Todos</option></select>
+      <label>Mes</label><select class="sel" id="r-month" onchange="applyRankFilter()"><option value="">Todos</option></select>
+      <label>Sem.</label><select class="sel" id="r-week" onchange="applyRankFilter()"><option value="">Todas</option></select>
+      <label>Desde</label><input type="date" class="sel" id="r-from" onchange="applyRankFilter()">
+      <label>Hasta</label><input type="date" class="sel" id="r-to" onchange="applyRankFilter()">
+      <label>TL</label><select class="sel" id="r-equipo" onchange="applyRankFilter()"><option value="">Todos</option></select>
       <button class="filter-btn" onclick="clearRankFilter()">✕ Limpiar</button>
     </div>
     <div class="chart-wrap">
-      <div class="chart-header"><span class="chart-title">Puntos ponderados promedio por colaborador</span></div>
+      <div class="chart-title-row"><span class="chart-title">Puntos ponderados promedio por colaborador</span></div>
       <div style="height:420px;overflow-y:auto"><canvas id="chart-ranking"></canvas></div>
     </div>
   </div>
@@ -354,26 +347,21 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
   </div>
   <div class="calc-grid">
     <div class="calc-box">
-      <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:600;margin-bottom:14px">Mix de tareas del día</div>
+      <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:600;margin-bottom:12px">Mix de tareas del día</div>
       <div id="calc-sliders"></div>
-      <!-- Iniciativa e Incidencia -->
-      <div style="border-top:1px solid var(--border);padding-top:12px;margin-top:4px">
+      <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px">
         <div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Contexto de la tarea (opcional)</div>
-        <div class="input-group" style="margin-bottom:8px">
-          <div class="input-label">Iniciativa <span id="lbl-ini-bonus">+0.0%</span></div>
-          <select class="calc-sel" id="calc-iniciativa" onchange="updateCalc()">
-            <option value="">— sin iniciativa —</option>
-          </select>
+        <div class="input-group" style="margin-bottom:7px">
+          <div class="input-label">Iniciativa <span id="lbl-ini-bonus">+0%</span></div>
+          <select class="calc-sel" id="calc-iniciativa" onchange="updateCalc()"><option value="">— sin iniciativa —</option></select>
         </div>
         <div class="input-group">
           <div class="input-label">Incidencia <span id="lbl-inc-bonus">+0.0 pts</span></div>
-          <select class="calc-sel" id="calc-incidencia" onchange="updateCalc()">
-            <option value="">— sin incidencia —</option>
-          </select>
+          <select class="calc-sel" id="calc-incidencia" onchange="updateCalc()"><option value="">— sin incidencia —</option></select>
         </div>
       </div>
       <div class="breakdown">
-        <div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Desglose de puntos</div>
+        <div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px">Desglose</div>
         <div id="calc-breakdown"></div>
         <div class="total-row"><span>Total tareas</span><span class="mono" id="bd-tasks">0</span></div>
       </div>
@@ -387,26 +375,34 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
           <div class="band-desc" id="band-desc">Ingresá tareas para ver la banda</div>
         </div>
       </div>
-      <div style="border-top:1px solid var(--border);padding-top:12px;margin-top:4px">
-        <div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px">Referencia de bandas</div>
+      <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px">
+        <div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Referencia de bandas</div>
         <div id="bands-ref"></div>
       </div>
     </div>
   </div>
   <div class="sep"></div>
-  <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:600;margin-bottom:14px">Escenarios rápidos</div>
-  <div id="scenarios-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px"></div>
+  <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:600;margin-bottom:12px">Escenarios rápidos</div>
+  <div id="scenarios-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px"></div>
 </div>
 
 <!-- INCENTIVOS -->
 <div class="page" id="page-incentivos">
   <div class="page-header">
     <h2 class="page-title">Simulador de incentivos</h2>
-    <p class="page-sub">Distribución automática por banda · distribución jerárquica por rol · redondeo $1.000</p>
+    <p class="page-sub">Topes fijos por banda · distribución jerárquica ×1 analistas / ×2 TLs y CP · redondeo $1.000</p>
   </div>
+
+  <div id="inc-missing-warn" class="alert-box alert-warn" style="display:none">
+    ⚠ Para elegibilidad completa cargá también auditados.csv. Sin datos de calidad los analistas con productividad elegible quedan en revisión manual.
+  </div>
+  <div id="inc-no-equipo-warn" class="alert-box alert-warn" style="display:none">
+    ⚠ Sin equipo_colaboradores.csv no es posible separar roles. Cargá ese archivo para habilitar el simulador de incentivos.
+  </div>
+
   <div class="inc-section">
-    <div class="inc-section-title">Período y presupuesto</div>
-    <div class="inc-section-sub">Seleccioná el período a evaluar e ingresá el presupuesto total. El sistema distribuye automáticamente: analistas (×1 por persona), TLs (×3), CP (×4), ajustado por banda de performance.</div>
+    <div class="inc-section-title">Período, presupuesto y headcount</div>
+    <div class="inc-section-sub">El tope por banda se calcula automáticamente: Presupuesto ÷ Headcount = tope Base analista. TLs y CP reciben ×2. La salvaguarda se aplica si el total supera el presupuesto.</div>
     <div class="budget-row">
       <span class="budget-label">Tipo de período</span>
       <select class="budget-select" id="inc-period-type" onchange="onPeriodTypeChange()">
@@ -425,8 +421,14 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
     </div>
     <div class="budget-row">
       <span class="budget-label">Presupuesto total</span>
-      <input class="budget-input" type="number" id="inc-budget-total" placeholder="ej: 800000" min="0" step="1000">
-      <span class="budget-label" style="color:var(--text3);font-size:11px">Se distribuye automáticamente entre roles según pesos jerárquicos</span>
+      <input class="budget-input" type="number" id="inc-budget-total" placeholder="ej: 1000000" min="0" step="1000" style="width:140px">
+      <span class="budget-label">Headcount ref.</span>
+      <input class="budget-input" type="number" id="inc-headcount" value="45" min="1" max="200" step="1" style="width:70px">
+      <span class="budget-label" style="color:var(--text3);font-size:11px">analistas de referencia para calcular tope Base</span>
+    </div>
+    <div id="inc-topes-preview" style="display:none;background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius);padding:10px 14px;margin-bottom:9px">
+      <div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px">Topes por banda (calculados automáticamente)</div>
+      <div id="topes-content" style="display:grid;grid-template-columns:1fr 1fr;gap:4px 20px;font-size:12px"></div>
     </div>
     <div style="display:flex;justify-content:flex-end">
       <button class="inc-calc-btn" onclick="runIncentivos()">Calcular distribución →</button>
@@ -434,50 +436,57 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
   </div>
 
   <div id="inc-empty" class="empty-state">
-    <svg width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-    <p>Cargá historico.csv, configurá el presupuesto y presioná "Calcular distribución"</p>
+    <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+    <p>Configurá el presupuesto y presioná "Calcular distribución"</p>
   </div>
 
   <div id="inc-content" style="display:none">
     <div class="inc-section">
       <div class="inc-section-title">Resumen de la simulación</div>
       <div class="inc-result-grid" id="inc-summary-grid"></div>
+      <div id="inc-scale-warn" class="scale-warn" style="display:none"></div>
     </div>
     <div class="role-tab-bar">
       <button class="role-tab active" onclick="switchIncTab('analistas')">Analistas</button>
       <button class="role-tab" onclick="switchIncTab('tls')">Team Leaders</button>
       <button class="role-tab" onclick="switchIncTab('cp')">Coord. Pedagógica</button>
     </div>
+
+    <!-- analistas -->
     <div class="inc-role-panel active" id="inc-panel-analistas">
       <div class="inc-section">
         <div class="inc-section-title">Detalle analistas</div>
         <div class="inc-criteria">
-          <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Elegibilidad:</strong> Promedio puntos ponderados ≥ 88 pts/día + calidad ≥ 93% (requiere auditados.csv)</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--amber)"></div><strong style="color:var(--text)">Pools:</strong> Base (igualitario entre elegibles) + Performance (proporcional ≥95 pts) + Excellence (proporcional ≥103 pts)</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Multiplicadores de banda:</strong> Base ×1.0 · Sólido ×1.4 · HP ×1.8 · Elite ×2.4</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Elegibilidad:</strong> Productividad ≥ 88 pts/día Y calidad ≥ 90% (Modelo A: SdC + MAO pool unificado, correcto=1.0 / leve=0.5 / grave=0.0)</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--amber)"></div><strong style="color:var(--text)">Sin datos calidad (< 5 registros):</strong> Revisión manual si productividad es elegible</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Topes:</strong> Base ×1.0 · Sólido ×1.4 · HP ×1.8 · Elite ×2.4 sobre el tope Base calculado</div>
         </div>
         <div id="inc-table-analistas"></div>
         <div class="inc-notice" id="inc-notice-analistas"></div>
       </div>
     </div>
+
+    <!-- TLs -->
     <div class="inc-role-panel" id="inc-panel-tls">
       <div class="inc-section">
         <div class="inc-section-title">Detalle Team Leaders</div>
         <div class="inc-criteria">
-          <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Métrica:</strong> Promedio ponderado de puntos del equipo a cargo en el período</div>
           <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Elegibilidad:</strong> Promedio equipo ≥ 90 pts/día + ≥ 70% del equipo en banda Base o superior</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Peso jerárquico:</strong> Cada TL equivale a 3 unidades base de analista, ajustado por banda del equipo</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Topes:</strong> Mismo rango que analistas × 2. Base ×2.0 · Sólido ×2.8 · HP ×3.6 sobre tope Base analista</div>
         </div>
         <div id="inc-table-tls"></div>
         <div class="inc-notice" id="inc-notice-tls"></div>
       </div>
     </div>
+
+    <!-- CP -->
     <div class="inc-role-panel" id="inc-panel-cp">
       <div class="inc-section">
         <div class="inc-section-title">Coordinadora Pedagógica</div>
         <div class="inc-criteria">
-          <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Métrica:</strong> Calidad promedio del equipo completo (requiere auditados.csv)</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Peso jerárquico:</strong> Equivale a 4 unidades base de analista, ajustado por banda de calidad</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Elegibilidad:</strong> Calidad promedio ponderada (Modelo A) de todos los analistas del equipo ≥ 90%</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Topes:</strong> Mismo rango que analistas × 2. Base ×2.0 · Sólido ×2.8 · HP ×3.6 sobre tope Base analista</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--amber)"></div><strong style="color:var(--text)">Sin datos calidad:</strong> Revisión manual — requiere auditados.csv</div>
         </div>
         <div id="inc-table-cp"></div>
         <div class="inc-notice" id="inc-notice-cp"></div>
@@ -489,16 +498,14 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 </main>
 </div>
 
-<!-- ══════════════════════════════════════════
-     MODALES
-══════════════════════════════════════════ -->
-<div id="modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;align-items:center;justify-content:center">
-  <div style="background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:24px;width:340px;max-width:95vw">
-    <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:600;margin-bottom:16px" id="modal-title"></div>
+<!-- MODAL -->
+<div id="modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:100;align-items:center;justify-content:center">
+  <div style="background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:22px;width:320px;max-width:95vw">
+    <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:600;margin-bottom:14px" id="modal-title"></div>
     <div id="modal-body"></div>
-    <div style="display:flex;gap:8px;margin-top:16px">
-      <button onclick="confirmModal()" style="flex:1;padding:9px;background:var(--accent2);color:#fff;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;cursor:pointer" id="modal-confirm-btn">Agregar</button>
-      <button onclick="closeModal()" style="flex:1;padding:9px;background:none;color:var(--text2);border:1px solid var(--border2);border-radius:8px;font-family:'Syne',sans-serif;font-size:13px;cursor:pointer">Cancelar</button>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button onclick="confirmModal()" style="flex:1;padding:8px;background:var(--accent2);color:#fff;border:none;border-radius:7px;font-family:'Syne',sans-serif;font-size:12px;font-weight:600;cursor:pointer">Agregar</button>
+      <button onclick="closeModal()" style="flex:1;padding:8px;background:none;color:var(--text2);border:1px solid var(--border2);border-radius:7px;font-family:'Syne',sans-serif;font-size:12px;cursor:pointer">Cancelar</button>
     </div>
   </div>
 </div>
@@ -506,494 +513,498 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 <script>
 'use strict';
 
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
 // STATE
-// ═══════════════════════════════════════════════════════════════
-let DATA = { hist: null, equipo: null };
+// ═══════════════════════════════════════════════════════════
+let DATA = { hist:null, equipo:null, auditados:null, mao:null };
 
-// Flujos: array of {id, label, weight}
 let FLUJOS = [
-  { id:'Demanda',          label:'Demanda',          weight:1.0  },
-  { id:'Enhanced Content', label:'Enhanced Content',  weight:0.95 },
-  { id:'Enhancement',      label:'Enhancement',       weight:1.3  },
-  { id:'Validación',       label:'Validación',        weight:0.95 },
-  { id:'Soporte',          label:'Soporte (DONE)',     weight:4.0  },
-  { id:'Fallos',           label:'Fallos',            weight:1.1  },
-  { id:'Known Values',     label:'Known Values',      weight:1.0  },
+  { id:'Demanda',          label:'Demanda',         weight:1.0  },
+  { id:'Enhanced Content', label:'Enhanced Content', weight:0.95 },
+  { id:'Enhancement',      label:'Enhancement',      weight:1.3  },
+  { id:'Validación',       label:'Validación',       weight:0.95 },
+  { id:'Soporte',          label:'Soporte (DONE)',    weight:4.0  },
+  { id:'Fallos',           label:'Fallos',           weight:1.1  },
+  { id:'Known Values',     label:'Known Values',     weight:1.0  },
 ];
 
-// Iniciativas: {normalizedKey -> {label, bonus}}  bonus = multiplicador adicional (0 = sin efecto)
 let INICIATIVAS = {
-  'mao':                    { label:'MAO',                    bonus:0.15 },
-  'forzado optin':          { label:'Forzado Optin',          bonus:0.10 },
-  'bbflex':                 { label:'BBFlex',                 bonus:0.10 },
-  'unificación de familias':{ label:'Unificación de familias',bonus:0.20 },
-  'merge':                  { label:'Merge',                  bonus:0.15 },
-  'merge_auto_audit':       { label:'MERGE_AUTO_AUDIT',       bonus:0.10 },
-  'denuncias bpp':          { label:'Denuncias BPP',          bonus:0.10 },
-  'sugerencias de corrección':{ label:'Sugerencias de corrección', bonus:0.05 },
-  'sugerencias de creación':{ label:'Sugerencias de Creación',bonus:0.05 },
-  'inf. oportunidad de mejora':{ label:'Inf. Oportunidad de mejora', bonus:0.05 },
-  'separación de familias': { label:'Separación de familias', bonus:0.20 },
-  'merge (cluster)':        { label:'Merge (Cluster)',        bonus:0.15 },
-  'ao':                     { label:'AO',                     bonus:0.05 },
-  'kv':                     { label:'KV',                     bonus:0.05 },
-  'creación prod':          { label:'Creación Prod',          bonus:0.10 },
-  'iniciativa kvs':         { label:'Iniciativa KVS',         bonus:0.05 },
-  'ad hoc':                 { label:'AD HOC',                 bonus:0.05 },
-  'sin gtin (lie) ii':      { label:'Sin GTIN (LIE) II',      bonus:0.10 },
+  'mao':                      {label:'MAO',                     bonus:0.15},
+  'forzado optin':            {label:'Forzado Optin',           bonus:0.10},
+  'bbflex':                   {label:'BBFlex',                  bonus:0.10},
+  'unificación de familias':  {label:'Unificación de familias', bonus:0.20},
+  'merge':                    {label:'Merge',                   bonus:0.15},
+  'merge_auto_audit':         {label:'MERGE_AUTO_AUDIT',        bonus:0.10},
+  'denuncias bpp':            {label:'Denuncias BPP',           bonus:0.10},
+  'sugerencias de corrección':{label:'Sugerencias de corrección',bonus:0.05},
+  'sugerencias de creación':  {label:'Sugerencias de Creación', bonus:0.05},
+  'inf. oportunidad de mejora':{label:'Inf. Oportunidad de mejora',bonus:0.05},
+  'separación de familias':   {label:'Separación de familias',  bonus:0.20},
+  'merge (cluster)':          {label:'Merge (Cluster)',          bonus:0.15},
+  'ao':                       {label:'AO',                      bonus:0.05},
+  'kv':                       {label:'KV',                      bonus:0.05},
+  'creación prod':             {label:'Creación Prod',           bonus:0.10},
+  'iniciativa kvs':            {label:'Iniciativa KVS',          bonus:0.05},
+  'ad hoc':                    {label:'AD HOC',                  bonus:0.05},
+  'sin gtin (lie) ii':         {label:'Sin GTIN (LIE) II',       bonus:0.10},
 };
 
-// Incidencias: {key -> {label, pts}}  pts = puntos fijos adicionales
 let INCIDENCIAS = {
-  'activar':               { label:'Activar',               pts:0.5 },
-  'duplicado':             { label:'Duplicado',             pts:0.3 },
-  'error de siblings':     { label:'Error de Siblings',     pts:0.5 },
-  'esperando respuesta':   { label:'Esperando respuesta',   pts:0.0 },
-  'fallo impacto manual':  { label:'Fallo Impacto Manual',  pts:0.5 },
-  'herramientas':          { label:'Herramientas',          pts:0.3 },
-  'impacto bc/cms':        { label:'Impacto BC/CMS',        pts:0.5 },
-  'impacto cms':           { label:'Impacto CMS',           pts:0.4 },
-  'inactivar':             { label:'Inactivar',             pts:0.5 },
-  'indefinido irrecuperable':{ label:'Indefinido Irrecuperable', pts:0.5 },
-  'indefinido recuperable':{ label:'Indefinido Recuperable', pts:0.3 },
-  'merge':                 { label:'Merge',                 pts:0.5 },
-  'modificacion de producto':{ label:'Modificacion de producto', pts:0.5 },
-  'mutante irrecuperable': { label:'Mutante Irrecuperable', pts:0.5 },
-  'mutante recuperable':   { label:'Mutante Recuperable',   pts:0.3 },
-  'ppmc en espera':        { label:'PPMC en espera',        pts:0.0 },
-  'soporte':               { label:'Soporte',               pts:0.5 },
-  'unificación/separación':{ label:'Unificación/Separación',pts:0.5 },
+  'activar':                {label:'Activar',               pts:0.5},
+  'duplicado':              {label:'Duplicado',             pts:0.3},
+  'error de siblings':      {label:'Error de Siblings',     pts:0.5},
+  'esperando respuesta':    {label:'Esperando respuesta',   pts:0.0},
+  'fallo impacto manual':   {label:'Fallo Impacto Manual',  pts:0.5},
+  'herramientas':           {label:'Herramientas',          pts:0.3},
+  'impacto bc/cms':         {label:'Impacto BC/CMS',        pts:0.5},
+  'impacto cms':            {label:'Impacto CMS',           pts:0.4},
+  'inactivar':              {label:'Inactivar',             pts:0.5},
+  'indefinido irrecuperable':{label:'Indefinido Irrecuperable',pts:0.5},
+  'indefinido recuperable': {label:'Indefinido Recuperable',pts:0.3},
+  'merge':                  {label:'Merge',                 pts:0.5},
+  'modificacion de producto':{label:'Modificacion de producto',pts:0.5},
+  'mutante irrecuperable':  {label:'Mutante Irrecuperable', pts:0.5},
+  'mutante recuperable':    {label:'Mutante Recuperable',   pts:0.3},
+  'ppmc en espera':         {label:'PPMC en espera',        pts:0.0},
+  'soporte':                {label:'Soporte',               pts:0.5},
+  'unificación/separación': {label:'Unificación/Separación',pts:0.5},
 };
 
 const BANDS = [
-  { min:0,   max:88,  css:'bp', label:'En progreso',        color:'#ff5f57', desc:'Trabajar con TL · plan específico' },
-  { min:88,  max:95,  css:'bb', label:'Base ✓',             color:'#5b7fff', desc:'Objetivo mínimo cumplido' },
-  { min:95,  max:103, css:'bs', label:'Sólido ✓✓',          color:'#3ecf8e', desc:'Por encima del techo histórico' },
-  { min:103, max:110, css:'bh', label:'High Performer ✓✓✓', color:'#a78bfa', desc:'Rumbo al objetivo MELI' },
-  { min:110, max:1e9, css:'be', label:'Elite ⭐ MELI',       color:'#f6a623', desc:'Objetivo MELI alcanzado' },
+  {min:0,  max:88,  css:'bp',label:'En progreso',       color:'#ff5f57',desc:'Trabajar con TL · plan específico'},
+  {min:88, max:95,  css:'bb',label:'Base ✓',            color:'#5b7fff',desc:'Objetivo mínimo cumplido'},
+  {min:95, max:103, css:'bs',label:'Sólido ✓✓',         color:'#3ecf8e',desc:'Por encima del techo histórico'},
+  {min:103,max:110, css:'bh',label:'High Performer ✓✓✓',color:'#a78bfa',desc:'Rumbo al objetivo MELI'},
+  {min:110,max:1e9, css:'be',label:'Elite ⭐ MELI',      color:'#f6a623',desc:'Objetivo MELI alcanzado'},
 ];
-function getBand(pts){ return BANDS.find(b=>pts>=b.min&&pts<b.max)||BANDS[0]; }
+// Band multipliers for incentives (analista)
+const BAND_MULT_A = [null, 1.0, 1.4, 1.8, 2.4]; // index 0 = En progreso (no eligible)
 
-// Band multipliers for incentives
-const BAND_MULT = { 0:1.0, 1:1.4, 2:1.8, 3:2.4, 4:3.0 }; // index into BANDS
+function getBand(pts){return BANDS.find(b=>pts>=b.min&&pts<b.max)||BANDS[0];}
+function getBandIdx(pts){return BANDS.findIndex(b=>pts>=b.min&&pts<b.max);}
 
-const MONTH_NAMES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const MONTH_NAMES=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const MESES_ES={ene:1,feb:2,mar:3,abr:4,may:5,jun:6,jul:7,ago:8,sep:9,oct:10,nov:11,dic:12};
 
-let CHARTS = {};
-let PROC = null;
-let HIST_SORT = { col:'avgPts', dir:-1 };
+let CHARTS={};
+let PROC=null;
+let QUALITY=null; // {userId -> {score, total, pct}}
+let HIST_SORT={col:'avgPts',dir:-1};
+let CALC_VALS={};
+let _modalMode='';
 
-// Slider values for calculator
-let CALC_VALS = {};
-
-// ═══════════════════════════════════════════════════════════════
-// SIDEBAR RENDERING
-// ═══════════════════════════════════════════════════════════════
-function renderFlujosList() {
-  const el = document.getElementById('flujos-list');
-  el.innerHTML = FLUJOS.map((f,i) => `
+// ═══════════════════════════════════════════════════════════
+// SIDEBAR RENDER
+// ═══════════════════════════════════════════════════════════
+function renderFlujosList(){
+  document.getElementById('flujos-list').innerHTML=FLUJOS.map((f,i)=>`
     <div class="cfg-row">
       <span class="cfg-label" title="${f.label}">${f.label}</span>
-      <input class="cfg-input" type="number" step="0.05" min="0" max="20"
-        value="${f.weight}" id="fw-${i}" onchange="FLUJOS[${i}].weight=+(this.value)||0">
-      <button class="cfg-del" onclick="deleteFlujo(${i})" title="Eliminar flujo">✕</button>
+      <input class="cfg-input" type="number" step="0.05" min="0" max="20" value="${f.weight}"
+        id="fw-${i}" onchange="FLUJOS[${i}].weight=+(this.value)||0">
+      <button class="cfg-del" onclick="deleteFlujo(${i})" title="Eliminar">✕</button>
     </div>`).join('');
 }
-
-function renderIniciativasList() {
-  const el = document.getElementById('iniciativas-list');
-  const keys = Object.keys(INICIATIVAS);
-  if (!keys.length) { el.innerHTML = '<div style="font-size:11px;color:var(--text3)">Sin iniciativas configuradas</div>'; return; }
-  el.innerHTML = keys.map(k => `
+function renderIniciativasList(){
+  const keys=Object.keys(INICIATIVAS);
+  document.getElementById('iniciativas-list').innerHTML=keys.length?keys.map(k=>`
     <div class="cfg-row">
       <span class="cfg-label" title="${INICIATIVAS[k].label}">${INICIATIVAS[k].label}</span>
-      <input class="cfg-input" type="number" step="0.05" min="-1" max="5"
-        value="${INICIATIVAS[k].bonus}" id="ib-${k.replace(/[^a-z0-9]/g,'_')}"
+      <input class="cfg-input" type="number" step="0.05" min="-1" max="5" value="${INICIATIVAS[k].bonus}"
         onchange="INICIATIVAS['${k}'].bonus=+(this.value)||0;updateCalc()">
-      <button class="cfg-del" onclick="deleteIniciativa('${k}')" title="Eliminar">✕</button>
-    </div>`).join('');
+      <button class="cfg-del" onclick="deleteIniciativa('${k}')">✕</button>
+    </div>`).join('')
+    :'<div style="font-size:11px;color:var(--text3)">Sin iniciativas</div>';
 }
-
-function renderIncidenciasList() {
-  const el = document.getElementById('incidencias-list');
-  const keys = Object.keys(INCIDENCIAS);
-  if (!keys.length) { el.innerHTML = '<div style="font-size:11px;color:var(--text3)">Sin incidencias configuradas</div>'; return; }
-  el.innerHTML = keys.map(k => `
+function renderIncidenciasList(){
+  const keys=Object.keys(INCIDENCIAS);
+  document.getElementById('incidencias-list').innerHTML=keys.length?keys.map(k=>`
     <div class="cfg-row">
       <span class="cfg-label" title="${INCIDENCIAS[k].label}">${INCIDENCIAS[k].label}</span>
-      <input class="cfg-input" type="number" step="0.1" min="0" max="20"
-        value="${INCIDENCIAS[k].pts}" id="ic-${k.replace(/[^a-z0-9]/g,'_')}"
+      <input class="cfg-input" type="number" step="0.1" min="0" max="20" value="${INCIDENCIAS[k].pts}"
         onchange="INCIDENCIAS['${k}'].pts=+(this.value)||0;updateCalc()">
-      <button class="cfg-del" onclick="deleteIncidencia('${k}')" title="Eliminar">✕</button>
-    </div>`).join('');
+      <button class="cfg-del" onclick="deleteIncidencia('${k}')">✕</button>
+    </div>`).join('')
+    :'<div style="font-size:11px;color:var(--text3)">Sin incidencias</div>';
 }
+function renderAllSidebar(){renderFlujosList();renderIniciativasList();renderIncidenciasList();syncCalcSelectors();}
 
-function renderAllSidebar() {
-  renderFlujosList();
-  renderIniciativasList();
-  renderIncidenciasList();
-  syncCalcSelectors();
+function deleteFlujo(i){
+  if(FLUJOS.length<=1){alert('Debe existir al menos un flujo.');return;}
+  if(!confirm(`¿Eliminar "${FLUJOS[i].label}"?`))return;
+  FLUJOS.splice(i,1);renderFlujosList();renderCalcSliders();if(PROC)computeAll();
 }
+function deleteIniciativa(k){delete INICIATIVAS[k];renderIniciativasList();syncCalcSelectors();if(PROC)computeAll();}
+function deleteIncidencia(k){delete INCIDENCIAS[k];renderIncidenciasList();syncCalcSelectors();updateCalc();}
 
-// ═══════════════════════════════════════════════════════════════
-// DELETE HANDLERS
-// ═══════════════════════════════════════════════════════════════
-function deleteFlujo(i) {
-  if (FLUJOS.length <= 1) { alert('Debe existir al menos un flujo.'); return; }
-  const f = FLUJOS[i];
-  if (!confirm(`¿Eliminar el flujo "${f.label}"? Si tiene datos en el CSV esas tareas no se pontuarán.`)) return;
-  FLUJOS.splice(i, 1);
-  renderFlujosList();
-  renderCalcSliders();
-  if (PROC) computeAll();
-}
-
-function deleteIniciativa(k) {
-  delete INICIATIVAS[k];
-  renderIniciativasList();
-  syncCalcSelectors();
-  if (PROC) computeAll();
-}
-
-function deleteIncidencia(k) {
-  delete INCIDENCIAS[k];
-  renderIncidenciasList();
-  syncCalcSelectors();
-  updateCalc();
-}
-
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
 // MODAL
-// ═══════════════════════════════════════════════════════════════
-let _modalMode = '';
-function openModal(title, bodyHtml, confirmLabel) {
-  document.getElementById('modal-title').textContent = title;
-  document.getElementById('modal-body').innerHTML = bodyHtml;
-  document.getElementById('modal-confirm-btn').textContent = confirmLabel || 'Agregar';
-  document.getElementById('modal-overlay').style.display = 'flex';
+// ═══════════════════════════════════════════════════════════
+function openModal(mode){
+  _modalMode=mode;
+  const cfg={
+    flujo:{title:'Agregar flujo',body:`
+      <div style="margin-bottom:10px"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Nombre del flujo</div>
+      <input id="m-name" type="text" placeholder="Ej: MAO, SdC..." style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:6px 9px;font-family:'DM Sans',sans-serif"></div>
+      <div><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Peso (multiplicador)</div>
+      <input id="m-val" type="number" step="0.05" min="0" max="20" value="1.0" style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:6px 9px;font-family:'DM Mono',monospace"></div>`},
+    iniciativa:{title:'Agregar iniciativa',body:`
+      <div style="margin-bottom:10px"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Nombre</div>
+      <input id="m-name" type="text" placeholder="Ej: Nueva campaña" style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:6px 9px;font-family:'DM Sans',sans-serif"></div>
+      <div><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Bonus (0.2 = +20%)</div>
+      <input id="m-val" type="number" step="0.05" min="-1" max="5" value="0.1" style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:6px 9px;font-family:'DM Mono',monospace"></div>`},
+    incidencia:{title:'Agregar incidencia',body:`
+      <div style="margin-bottom:10px"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Nombre</div>
+      <input id="m-name" type="text" placeholder="Ej: Revisión especial" style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:6px 9px;font-family:'DM Sans',sans-serif"></div>
+      <div><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Puntos adicionales</div>
+      <input id="m-val" type="number" step="0.1" min="0" max="20" value="0.5" style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:6px 9px;font-family:'DM Mono',monospace"></div>`},
+  };
+  document.getElementById('modal-title').textContent=cfg[mode].title;
+  document.getElementById('modal-body').innerHTML=cfg[mode].body;
+  document.getElementById('modal-overlay').style.display='flex';
+  document.getElementById('m-name').focus();
 }
-function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
-document.addEventListener('click', e => { if (e.target.id === 'modal-overlay') closeModal(); });
+function closeModal(){document.getElementById('modal-overlay').style.display='none';}
+document.addEventListener('click',e=>{if(e.target.id==='modal-overlay')closeModal();});
 
-function confirmModal() {
-  if (_modalMode === 'flujo') confirmAddFlujo();
-  else if (_modalMode === 'iniciativa') confirmAddIniciativa();
-  else if (_modalMode === 'incidencia') confirmAddIncidencia();
-}
-
-function openAddFlujo() {
-  _modalMode = 'flujo';
-  openModal('Agregar flujo', `
-    <div style="margin-bottom:10px">
-      <div style="font-size:11px;color:var(--text3);margin-bottom:5px">Nombre del flujo</div>
-      <input id="m-flujo-name" type="text" placeholder="Ej: MAO, Merge, SdC..." style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:7px 10px;font-family:'DM Sans',sans-serif">
-    </div>
-    <div>
-      <div style="font-size:11px;color:var(--text3);margin-bottom:5px">Peso (multiplicador)</div>
-      <input id="m-flujo-weight" type="number" step="0.05" min="0" max="20" value="1.0" style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:7px 10px;font-family:'DM Mono',monospace">
-    </div>`);
-}
-function confirmAddFlujo() {
-  const name = document.getElementById('m-flujo-name').value.trim();
-  const weight = +(document.getElementById('m-flujo-weight').value) || 1.0;
-  if (!name) { alert('Ingresá un nombre.'); return; }
-  if (FLUJOS.find(f => f.id.toLowerCase() === name.toLowerCase())) { alert(`Ya existe un flujo llamado "${name}".`); return; }
-  FLUJOS.push({ id:name, label:name, weight });
-  closeModal();
-  renderFlujosList();
-  renderCalcSliders();
-}
-
-function openAddIniciativa() {
-  _modalMode = 'iniciativa';
-  openModal('Agregar iniciativa', `
-    <div style="margin-bottom:10px">
-      <div style="font-size:11px;color:var(--text3);margin-bottom:5px">Nombre de la iniciativa</div>
-      <input id="m-ini-name" type="text" placeholder="Ej: Nueva campaña" style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:7px 10px;font-family:'DM Sans',sans-serif">
-    </div>
-    <div>
-      <div style="font-size:11px;color:var(--text3);margin-bottom:5px">Bonus (ej: 0.2 = +20%)</div>
-      <input id="m-ini-bonus" type="number" step="0.05" min="-1" max="5" value="0.1" style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:7px 10px;font-family:'DM Mono',monospace">
-    </div>`);
-}
-function confirmAddIniciativa() {
-  const name = document.getElementById('m-ini-name').value.trim();
-  const bonus = +(document.getElementById('m-ini-bonus').value) || 0;
-  if (!name) { alert('Ingresá un nombre.'); return; }
-  const k = name.toLowerCase();
-  if (INICIATIVAS[k]) { alert(`Ya existe la iniciativa "${name}".`); return; }
-  INICIATIVAS[k] = { label:name, bonus };
-  closeModal();
-  renderIniciativasList();
-  syncCalcSelectors();
+function confirmModal(){
+  const name=(document.getElementById('m-name')?.value||'').trim();
+  const val=+(document.getElementById('m-val')?.value)||0;
+  if(!name){alert('Ingresá un nombre.');return;}
+  if(_modalMode==='flujo'){
+    if(FLUJOS.find(f=>f.id.toLowerCase()===name.toLowerCase())){alert('Ya existe.');return;}
+    FLUJOS.push({id:name,label:name,weight:val||1});
+    closeModal();renderFlujosList();renderCalcSliders();
+  } else if(_modalMode==='iniciativa'){
+    const k=name.toLowerCase();
+    if(INICIATIVAS[k]){alert('Ya existe.');return;}
+    INICIATIVAS[k]={label:name,bonus:val};
+    closeModal();renderIniciativasList();syncCalcSelectors();
+  } else if(_modalMode==='incidencia'){
+    const k=name.toLowerCase();
+    if(INCIDENCIAS[k]){alert('Ya existe.');return;}
+    INCIDENCIAS[k]={label:name,pts:val};
+    closeModal();renderIncidenciasList();syncCalcSelectors();
+  }
 }
 
-function openAddIncidencia() {
-  _modalMode = 'incidencia';
-  openModal('Agregar incidencia', `
-    <div style="margin-bottom:10px">
-      <div style="font-size:11px;color:var(--text3);margin-bottom:5px">Nombre de la incidencia</div>
-      <input id="m-inc-name" type="text" placeholder="Ej: Revisión especial" style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:7px 10px;font-family:'DM Sans',sans-serif">
-    </div>
-    <div>
-      <div style="font-size:11px;color:var(--text3);margin-bottom:5px">Puntos adicionales</div>
-      <input id="m-inc-pts" type="number" step="0.1" min="0" max="20" value="0.5" style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:7px 10px;font-family:'DM Mono',monospace">
-    </div>`);
-}
-function confirmAddIncidencia() {
-  const name = document.getElementById('m-inc-name').value.trim();
-  const pts = +(document.getElementById('m-inc-pts').value) || 0;
-  if (!name) { alert('Ingresá un nombre.'); return; }
-  const k = name.toLowerCase();
-  if (INCIDENCIAS[k]) { alert(`Ya existe la incidencia "${name}".`); return; }
-  INCIDENCIAS[k] = { label:name, pts };
-  closeModal();
-  renderIncidenciasList();
-  syncCalcSelectors();
-}
-
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
 // CSV PARSER
-// ═══════════════════════════════════════════════════════════════
-function detectSep(line) {
-  const sc=(line.match(/;/g)||[]).length, cc=(line.match(/,/g)||[]).length, tc=(line.match(/\t/g)||[]).length;
-  if(sc>=cc&&sc>=tc) return ';';
-  if(tc>=cc&&tc>sc)  return '\t';
-  return ',';
+// ═══════════════════════════════════════════════════════════
+function detectSep(line){
+  const sc=(line.match(/;/g)||[]).length,cc=(line.match(/,/g)||[]).length,tc=(line.match(/\t/g)||[]).length;
+  return sc>=cc&&sc>=tc?';':tc>=cc&&tc>sc?'\t':',';
 }
-function splitLine(line,sep) {
-  const res=[]; let cur='',inQ=false;
+function splitLine(line,sep){
+  const res=[];let cur='',inQ=false;
   for(let i=0;i<line.length;i++){
     const c=line[i];
     if(c==='"'){if(inQ&&line[i+1]==='"'){cur+='"';i++;}else inQ=!inQ;}
     else if(c===sep&&!inQ){res.push(cur.trim());cur='';}
     else cur+=c;
   }
-  res.push(cur.trim()); return res;
+  res.push(cur.trim());return res;
 }
-function parseCSV(text) {
-  if(text.charCodeAt(0)===0xFEFF) text=text.slice(1);
+function parseCSV(text){
+  if(text.charCodeAt(0)===0xFEFF)text=text.slice(1);
   const lines=text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').trim().split('\n');
-  if(lines.length<2) return [];
+  if(lines.length<2)return[];
   const sep=detectSep(lines[0]);
   const headers=splitLine(lines[0],sep).map(h=>h.replace(/^"|"$/g,'').trim());
   return lines.slice(1).filter(l=>l.trim()).map(l=>{
     const vals=splitLine(l,sep);
-    const r={};
-    headers.forEach((h,i)=>{r[h]=(vals[i]||'').replace(/^"|"$/g,'').trim();});
+    const r={};headers.forEach((h,i)=>{r[h]=(vals[i]||'').replace(/^"|"$/g,'').trim();});
     return r;
   });
 }
-function readWithFallback(file,cb) {
+function readWithFallback(file,cb){
   const tryEnc=enc=>{
     const fr=new FileReader();
-    fr.onload=ev=>{
-      const txt=ev.target.result;
-      if(enc==='UTF-8'&&txt.includes('\uFFFD')) tryEnc('windows-1252');
-      else cb(txt);
-    };
+    fr.onload=ev=>{const txt=ev.target.result;if(enc==='UTF-8'&&txt.includes('\uFFFD'))tryEnc('windows-1252');else cb(txt);};
     fr.onerror=()=>alert('Error leyendo el archivo');
     fr.readAsText(file,enc);
   };
   tryEnc('UTF-8');
 }
-function handleFile(input,type) {
-  const file=input.files[0]; if(!file) return;
-  readWithFallback(file,txt=>processFile(txt,type,file.name));
-}
+function handleFile(input,type){const file=input.files[0];if(!file)return;readWithFallback(file,txt=>processFile(txt,type,file.name));}
 function evDrag(e,id){e.preventDefault();document.getElementById(id).classList.add('drag');}
 function evLeave(id){document.getElementById(id).classList.remove('drag');}
 function evDrop(e,type){
   e.preventDefault();
-  const id=type==='hist'?'zone-hist':'zone-equipo';
-  document.getElementById(id).classList.remove('drag');
-  const file=e.dataTransfer.files[0]; if(!file) return;
+  const zoneMap={hist:'zone-hist',equipo:'zone-equipo',auditados:'zone-auditados',mao:'zone-mao'};
+  document.getElementById(zoneMap[type]).classList.remove('drag');
+  const file=e.dataTransfer.files[0];if(!file)return;
   readWithFallback(file,txt=>processFile(txt,type,file.name));
 }
-function processFile(txt,type,name) {
+function processFile(txt,type,name){
   const rows=parseCSV(txt);
-  if(!rows.length){alert(`No se pudo parsear "${name}". Ver consola.`);return;}
+  if(!rows.length){alert(`No se pudo parsear "${name}".`);return;}
   DATA[type]=rows;
-  const zId=type==='hist'?'zone-hist':'zone-equipo';
-  const sId=type==='hist'?'sub-hist':'sub-equipo';
-  document.getElementById(zId).classList.add('done');
-  document.getElementById(sId).textContent=`✓ ${name} · ${rows.length.toLocaleString()} filas`;
-  if(type==='hist') showPreview(rows);
-  document.getElementById('alert-partial').style.display=(DATA.hist&&!DATA.equipo)?'flex':'none';
-  if(DATA.hist){computeAll();activatePages();}
+  const zoneMap={hist:'zone-hist',equipo:'zone-equipo',auditados:'zone-auditados',mao:'zone-mao'};
+  const subMap={hist:'sub-hist',equipo:'sub-equipo',auditados:'sub-auditados',mao:'sub-mao'};
+  document.getElementById(zoneMap[type]).classList.add('done');
+  document.getElementById(subMap[type]).textContent=`✓ ${name} · ${rows.length.toLocaleString()} filas`;
+  if(type==='hist')showPreview(rows);
+  updateCapabilities();
+  if(DATA.hist){
+    computeQuality();
+    computeAll();
+    activatePages();
+  }
 }
-function showPreview(rows) {
-  const prev=rows.slice(-8), keys=Object.keys(prev[0]);
+function showPreview(rows){
+  const prev=rows.slice(-8),keys=Object.keys(prev[0]);
   let h=`<thead><tr>${keys.map(k=>`<th>${k}</th>`).join('')}</tr></thead><tbody>`;
   prev.forEach(r=>{h+=`<tr>${keys.map(k=>`<td style="color:var(--text2)">${r[k]||''}</td>`).join('')}</tr>`;});
   document.getElementById('preview-table').innerHTML=h+'</tbody>';
-  document.getElementById('preview-count').textContent=`${rows.length.toLocaleString()} filas cargadas`;
+  document.getElementById('preview-count').textContent=`${rows.length.toLocaleString()} filas`;
   document.getElementById('preview-section').style.display='block';
 }
-function activatePages() {
+function updateCapabilities(){
+  const h=!!DATA.hist,eq=!!DATA.equipo,au=!!DATA.auditados,all=h&&eq&&au;
+  const upd=(id,on,txt)=>{
+    document.getElementById(id+'-dot').className='cap-dot '+(on?'on':au&&id==='cap-calidad'?'partial':'off');
+    document.getElementById(id+'-txt').style.color=on?'var(--text2)':'var(--text3)';
+    document.getElementById(id+'-txt').textContent=txt;
+  };
+  upd('cap-historico',h,h?'✓ Histórico, ranking y calculadora habilitados':'Histórico, ranking y calculadora — requiere historico.csv');
+  upd('cap-equipo',eq,eq?'✓ Filtro por equipo y separación de roles habilitados':'Filtro por equipo y separación de roles — requiere equipo_colaboradores.csv');
+  upd('cap-calidad',au,au?`✓ Calidad SdC cargada${DATA.mao?' + MAO':' (MAO no cargado)'}`:'Calidad auditada y elegibilidad completa — requiere auditados.csv');
+  upd('cap-incentivos',all,all?'✓ Simulador de incentivos con elegibilidad completa':'Simulador de incentivos completo — requiere los 4 archivos');
+}
+function activatePages(){
   ['hist-empty','rank-empty'].forEach(id=>document.getElementById(id).style.display='none');
   ['hist-content','rank-content'].forEach(id=>document.getElementById(id).style.display='block');
   populateIncPeriodSelects();
 }
 
-// ═══════════════════════════════════════════════════════════════
-// COLUMN AUTO-DETECT
-// ═══════════════════════════════════════════════════════════════
-function findCol(row,candidates) {
+// ═══════════════════════════════════════════════════════════
+// COLUMN DETECT
+// ═══════════════════════════════════════════════════════════
+function findCol(row,candidates){
   const keys=Object.keys(row);
-  for(const c of candidates){
-    const f=keys.find(k=>k.trim().toLowerCase()===c.toLowerCase());
-    if(f) return f;
-  }
+  for(const c of candidates){const f=keys.find(k=>k.trim().toLowerCase()===c.toLowerCase());if(f)return f;}
   return null;
 }
-function parseDate(s) {
-  if(!s) return null; s=s.trim();
-  let m=s.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/);
-  if(m) return new Date(+m[3],+m[2]-1,+m[1]);
-  m=s.match(/^(\d{4})[\/\-](\d{2})[\/\-](\d{2})/);
-  if(m) return new Date(+m[1],+m[2]-1,+m[3]);
-  const d=new Date(s); return isNaN(d)?null:d;
+function parseDate(s){
+  if(!s)return null;s=s.trim();
+  // "29 dic 2025" format
+  const m1=s.match(/^(\d{1,2})\s+([a-záéíóúü]+)\s+(\d{4})$/i);
+  if(m1){const mo=MESES_ES[m1[2].toLowerCase()];if(mo)return new Date(+m1[3],mo-1,+m1[1]);}
+  // DD/MM/YYYY or DD-MM-YYYY
+  const m2=s.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/);
+  if(m2)return new Date(+m2[3],+m2[2]-1,+m2[1]);
+  // YYYY-MM-DD
+  const m3=s.match(/^(\d{4})[\/\-](\d{2})[\/\-](\d{2})/);
+  if(m3)return new Date(+m3[1],+m3[2]-1,+m3[3]);
+  const d=new Date(s);return isNaN(d)?null:d;
 }
-function isoWeek(d) {
+function isoWeek(d){
   const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
-  const day=t.getUTCDay()||7; t.setUTCDate(t.getUTCDate()+4-day);
+  const day=t.getUTCDay()||7;t.setUTCDate(t.getUTCDate()+4-day);
   const yr=new Date(Date.UTC(t.getUTCFullYear(),0,1));
   return{year:t.getUTCFullYear(),week:Math.ceil(((t-yr)/86400000+1)/7)};
 }
 
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
+// QUALITY COMPUTATION (Modelo A — pool unificado)
+// ═══════════════════════════════════════════════════════════
+function computeQuality(){
+  QUALITY={};
+  const pool=[]; // {user, date, score}
+
+  // SdC
+  if(DATA.auditados&&DATA.auditados.length){
+    const s=DATA.auditados[0];
+    const cUser=findCol(s,['usuario','Usuario','user','User']);
+    const cDate=findCol(s,['ultimaActualizacion','fecha','Fecha','Date','date']);
+    const cEF  =findCol(s,['EstadoFinal_esCorrecto','estadofinal_escorrecto']);
+    const cMR  =findCol(s,['Motivo_de_Rechazo_esCorrecto','motivoderechazo_escorrecto']);
+    if(cUser&&cEF&&cMR){
+      DATA.auditados.forEach(r=>{
+        const ef=(r[cEF]||'').trim(),mr=(r[cMR]||'').trim();
+        let score=0;
+        if(ef==='OK'&&mr==='OK')score=1.0;
+        else if(ef==='OK'&&mr==='NOT OK')score=0.5;
+        else score=0.0;
+        pool.push({user:(r[cUser]||'').trim(),date:parseDate(r[cDate]||''),score});
+      });
+    }
+  }
+
+  // MAO
+  if(DATA.mao&&DATA.mao.length){
+    const s=DATA.mao[0];
+    const cUser=findCol(s,['COLABORADOR','colaborador','usuario','Usuario']);
+    const cDate=findCol(s,['FECHA_ACCIONAMIENTO','fecha','Fecha']);
+    const cEF  =findCol(s,['EstadoFinal_esCorrecto']);
+    const cMR  =findCol(s,['Motivo_de_Rechazo_esCorrecto']);
+    if(cUser&&cEF&&cMR){
+      DATA.mao.forEach(r=>{
+        const ef=(r[cEF]||'').trim(),mr=(r[cMR]||'').trim();
+        let score=0;
+        if(ef==='OK'&&mr==='OK')score=1.0;
+        else if(ef==='OK'&&mr==='NOT OK')score=0.5;
+        else score=0.0;
+        pool.push({user:(r[cUser]||'').trim(),date:parseDate(r[cDate]||''),score});
+      });
+    }
+  }
+
+  // Aggregate by user
+  const byUser={};
+  pool.forEach(r=>{
+    if(!r.user)return;
+    if(!byUser[r.user])byUser[r.user]={score:0,total:0,dates:[]};
+    byUser[r.user].score+=r.score;
+    byUser[r.user].total++;
+    if(r.date)byUser[r.user].dates.push(r.date);
+  });
+  Object.entries(byUser).forEach(([u,v])=>{
+    QUALITY[u]={score:v.score,total:v.total,pct:v.total?v.score/v.total*100:0,dates:v.dates};
+  });
+}
+
+// Get quality for a user filtered by date range
+function getQualityForPeriod(user,fromDate,toDate){
+  if(!QUALITY||!QUALITY[user])return{pct:null,total:0};
+  // If no date filter, use all
+  if(!fromDate&&!toDate)return{pct:QUALITY[user].pct,total:QUALITY[user].total};
+  // Filter pool — we need per-row data; rebuild from DATA
+  const pool=[];
+  const addFromSource=(rows,cUser,cDate,cEF,cMR)=>{
+    if(!rows||!cUser||!cEF||!cMR)return;
+    rows.forEach(r=>{
+      if((r[cUser]||'').trim()!==user)return;
+      const d=parseDate(r[cDate]||'');
+      if(fromDate&&d&&d<fromDate)return;
+      if(toDate&&d&&d>toDate)return;
+      const ef=(r[cEF]||'').trim(),mr=(r[cMR]||'').trim();
+      let score=0;
+      if(ef==='OK'&&mr==='OK')score=1.0;
+      else if(ef==='OK'&&mr==='NOT OK')score=0.5;
+      else score=0.0;
+      pool.push(score);
+    });
+  };
+  if(DATA.auditados){
+    const s=DATA.auditados[0];
+    addFromSource(DATA.auditados,findCol(s,['usuario']),findCol(s,['ultimaActualizacion']),findCol(s,['EstadoFinal_esCorrecto']),findCol(s,['Motivo_de_Rechazo_esCorrecto']));
+  }
+  if(DATA.mao){
+    const s=DATA.mao[0];
+    addFromSource(DATA.mao,findCol(s,['COLABORADOR']),findCol(s,['FECHA_ACCIONAMIENTO']),findCol(s,['EstadoFinal_esCorrecto']),findCol(s,['Motivo_de_Rechazo_esCorrecto']));
+  }
+  if(!pool.length)return{pct:null,total:0};
+  return{pct:pool.reduce((a,b)=>a+b,0)/pool.length*100,total:pool.length};
+}
+
+// ═══════════════════════════════════════════════════════════
 // POINT CALCULATION
-// ═══════════════════════════════════════════════════════════════
-function getFlujoPeso(flujoId) {
-  const f = FLUJOS.find(f => f.id === flujoId);
-  return f ? f.weight : 1.0;
+// ═══════════════════════════════════════════════════════════
+function calcRowPts(flujoId,status,iniRaw,incRaw){
+  if(status!=='DONE')return 0;
+  if(flujoId==='Soporte'){}// Soporte DONE = normal
+  const pesoFlujo=(FLUJOS.find(f=>f.id===flujoId)||{weight:1.0}).weight;
+  const iniKey=(iniRaw||'').trim().toLowerCase();
+  const iniBonus=iniKey&&INICIATIVAS[iniKey]?INICIATIVAS[iniKey].bonus:0;
+  const incKey=(incRaw||'').trim().toLowerCase();
+  const incPts=incKey&&INCIDENCIAS[incKey]?INCIDENCIAS[incKey].pts:0;
+  return pesoFlujo*(1+iniBonus)+incPts;
 }
 
-function calcRowPts(flujoId, status, iniciativaRaw, incidenciaRaw) {
-  // Soporte HOLD = 0
-  if (flujoId === 'Soporte' && status !== 'DONE') return 0;
-  if (status !== 'DONE') return 0;
-
-  const pesoFlujo = getFlujoPeso(flujoId);
-
-  // Bonus iniciativa (normalize key)
-  const iniKey = (iniciativaRaw || '').trim().toLowerCase();
-  const iniBonusObj = iniKey ? INICIATIVAS[iniKey] : null;
-  const iniBonus = iniBonusObj ? (iniBonusObj.bonus || 0) : 0;
-
-  // Incidencia pts
-  const incKey = (incidenciaRaw || '').trim().toLowerCase();
-  const incObj = incKey ? INCIDENCIAS[incKey] : null;
-  const incPts = incObj ? (incObj.pts || 0) : 0;
-
-  return pesoFlujo * (1 + iniBonus) + incPts;
-}
-
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
 // COMPUTE ALL
-// ═══════════════════════════════════════════════════════════════
-function computeAll() {
-  if(!DATA.hist||!DATA.hist.length) return;
+// ═══════════════════════════════════════════════════════════
+function computeAll(){
+  if(!DATA.hist||!DATA.hist.length)return;
   const sample=DATA.hist[0];
   const COL={
-    fecha:    findCol(sample,['Fecha','fecha','Date','date','FECHA']),
-    status:   findCol(sample,['Status','status','Estado','estado','STATUS']),
-    flujo:    findCol(sample,['Flujo de Tarea','Flujo','flujo','FLUJO','flow','Flow']),
-    user:     findCol(sample,['Usuario','usuario','User','user','USUARIO','Colaborador','colaborador']),
-    iniciativa: findCol(sample,['Iniciativa','iniciativa','Initiative']),
-    incidencia: findCol(sample,['Incidencias','incidencia','Incidencia','incidencias']),
+    fecha:    findCol(sample,['Fecha','fecha','Date','date']),
+    status:   findCol(sample,['Status','status','Estado','estado']),
+    flujo:    findCol(sample,['Flujo de Tarea','Flujo','flujo']),
+    user:     findCol(sample,['Usuario','usuario','User','user','Colaborador']),
+    iniciativa:findCol(sample,['Iniciativa','iniciativa']),
+    incidencia:findCol(sample,['Incidencias','incidencia','Incidencia']),
     ids:      findCol(sample,['IDs trabajados','ids trabajados','IDs','ids']),
   };
   if(!COL.fecha||!COL.status||!COL.flujo||!COL.user){
-    const miss=Object.entries(COL).filter(([,v])=>!v).map(([k])=>k);
-    alert(`Columnas no encontradas: ${miss.join(', ')}\nColumnas disponibles: ${Object.keys(sample).join(', ')}`);
-    return;
+    alert(`Columnas no encontradas. Disponibles: ${Object.keys(sample).join(', ')}`);return;
   }
 
-  // Auto-detect new iniciativas from CSV and add to INICIATIVAS if not present
-  const csvIniciativas = new Set();
-  DATA.hist.forEach(r => {
-    const v = (COL.iniciativa ? r[COL.iniciativa] : '').trim();
-    if (v) csvIniciativas.add(v);
-  });
-  let newIni = false;
-  csvIniciativas.forEach(v => {
-    const k = v.toLowerCase();
-    if (!INICIATIVAS[k]) { INICIATIVAS[k] = { label:v, bonus:0 }; newIni=true; }
-  });
-  if (newIni) renderIniciativasList();
-
-  // Auto-detect new incidencias
-  const csvIncidencias = new Set();
-  DATA.hist.forEach(r => {
-    const v = (COL.incidencia ? r[COL.incidencia] : '').trim();
-    if (v) csvIncidencias.add(v);
-  });
-  let newInc = false;
-  csvIncidencias.forEach(v => {
-    const k = v.toLowerCase();
-    if (!INCIDENCIAS[k]) { INCIDENCIAS[k] = { label:v, pts:0.3 }; newInc=true; }
-  });
-  if (newInc) renderIncidenciasList();
-
-  const rawRows = []; let skipped = 0;
-  DATA.hist.forEach(r => {
-    const st = (r[COL.status]||'').trim();
-    const date = parseDate(r[COL.fecha]);
-    if (!date) { skipped++; return; }
-    const user = (r[COL.user]||'').trim();
-    const flujo = (r[COL.flujo]||'Demanda').trim();
-    const ini = COL.iniciativa ? (r[COL.iniciativa]||'').trim() : '';
-    const inc = COL.incidencia ? (r[COL.incidencia]||'').trim() : '';
-    const idsVal = COL.ids ? (+(r[COL.ids]||0)||0) : 1;
-
-    const pts = calcRowPts(flujo, st, ini, inc);
-    if (st !== 'DONE') return; // only DONE rows kept (pts already 0 for soporte hold)
-
-    const wk = isoWeek(date);
-    rawRows.push({
-      user, flujo, pts, ids:idsVal,
-      date, dateStr:r[COL.fecha].trim(),
-      year:date.getFullYear(), month:date.getMonth()+1,
-      week:wk.week, weekYear:wk.year,
-      monthKey:`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}`,
-      iniciativa:ini, incidencia:inc,
-    });
-  });
-
-  // Equipo map
-  const equipoMap = {};
-  if (DATA.equipo&&DATA.equipo.length) {
-    const eS=DATA.equipo[0];
-    const eId  =findCol(eS,['ID_MELI','id_meli','ID','id','Usuario','usuario','user']);
-    const eNom =findCol(eS,['Nombre','nombre','Name','name']);
-    const eRol =findCol(eS,['Rol','rol','Role','role']);
-    const eEq  =findCol(eS,['Equipo','equipo','Team','team','TL']);
+  // Build equipo map (only include users in equipo_colaboradores if loaded)
+  const equipoMap={};
+  let equipoFilter=null; // set of valid user IDs if equipo loaded
+  if(DATA.equipo&&DATA.equipo.length){
+    const es=DATA.equipo[0];
+    const eId  =findCol(es,['ID_MELI','id_meli','ID','id','Usuario','usuario','user','Colaborador','colaborador']);
+    const eNom =findCol(es,['Nombre','nombre','Name','name']);
+    const eRol =findCol(es,['Rol','rol','Role','role']);
+    const eEq  =findCol(es,['Equipo','equipo','Team','team','TL']);
+    equipoFilter=new Set();
     DATA.equipo.forEach(r=>{
       const id=((eId?r[eId]:'')||'').trim();
-      if(id) equipoMap[id]={
-        nombre:(eNom?r[eNom]:id)||id,
-        rol:(eRol?r[eRol]:'')||'',
-        equipo:(eEq?r[eEq]:'')||'',
-      };
+      if(id){
+        equipoFilter.add(id);
+        equipoMap[id]={nombre:(eNom?r[eNom]:id)||id,rol:(eRol?r[eRol]:'')||'',equipo:(eEq?r[eEq]:'')||''};
+      }
     });
   }
 
-  const years  = [...new Set(rawRows.map(r=>r.year))].sort();
-  const months = [...new Set(rawRows.map(r=>r.monthKey))].sort();
-  const weeks  = [...new Set(rawRows.map(r=>`${r.weekYear}-W${String(r.week).padStart(2,'0')}`))].sort();
+  // Auto-detect new iniciativas/incidencias from CSV
+  let changed=false;
+  DATA.hist.forEach(r=>{
+    const v=(COL.iniciativa?r[COL.iniciativa]:'').trim();
+    if(v&&!INICIATIVAS[v.toLowerCase()]){INICIATIVAS[v.toLowerCase()]={label:v,bonus:0};changed=true;}
+    const inc=(COL.incidencia?r[COL.incidencia]:'').trim();
+    if(inc&&!INCIDENCIAS[inc.toLowerCase()]){INCIDENCIAS[inc.toLowerCase()]={label:inc,pts:0.3};changed=true;}
+  });
+  if(changed)renderAllSidebar();
 
-  // Populate equipo options from data
-  const equipos = [...new Set(Object.values(equipoMap).map(e=>e.equipo).filter(Boolean))].sort();
+  // Parse rows — only DONE, only users in equipoFilter if available
+  const rawRows=[];
+  DATA.hist.forEach(r=>{
+    const st=(r[COL.status]||'').trim();
+    if(st!=='DONE')return;
+    const user=(r[COL.user]||'').trim();
+    if(equipoFilter&&!equipoFilter.has(user))return;
+    const date=parseDate(r[COL.fecha]);
+    if(!date)return;
+    const flujo=(r[COL.flujo]||'Demanda').trim();
+    const ini=COL.iniciativa?(r[COL.iniciativa]||'').trim():'';
+    const inc=COL.incidencia?(r[COL.incidencia]||'').trim():'';
+    const ids=COL.ids?(+(r[COL.ids]||0)||0):1;
+    const pts=calcRowPts(flujo,st,ini,inc);
+    const wk=isoWeek(date);
+    rawRows.push({user,flujo,pts,ids,date,dateStr:r[COL.fecha].trim(),
+      year:date.getFullYear(),month:date.getMonth()+1,
+      week:wk.week,weekYear:wk.year,
+      monthKey:`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}`});
+  });
+
+  // Also add equipo users with zero activity
+  const activeUsers=new Set(rawRows.map(r=>r.user));
+  if(equipoFilter){
+    equipoFilter.forEach(id=>{
+      if(!activeUsers.has(id)&&equipoMap[id]){
+        // represented as zero-activity person (no rawRows)
+      }
+    });
+  }
+
+  const years=[...new Set(rawRows.map(r=>r.year))].sort();
+  const months=[...new Set(rawRows.map(r=>r.monthKey))].sort();
+  const weeks=[...new Set(rawRows.map(r=>`${r.weekYear}-W${String(r.week).padStart(2,'0')}`))].sort();
+
+  // Equipo options for filters
+  const equipos=[...new Set(Object.values(equipoMap).map(e=>e.equipo).filter(Boolean))].sort();
   ['h-equipo-filter','r-equipo'].forEach(id=>{
     const el=document.getElementById(id);
     el.innerHTML='<option value="">Todos</option>';
     equipos.forEach(eq=>el.insertAdjacentHTML('beforeend',`<option value="${eq}">${eq}</option>`));
   });
 
-  PROC = { rawRows, equipoMap, years, months, weeks };
+  PROC={rawRows,equipoMap,equipoFilter,years,months,weeks};
   populateFilterSelects();
   applyHistFilter();
   applyRankFilter();
@@ -1002,74 +1013,20 @@ function computeAll() {
   syncCalcSelectors();
 }
 
-// ═══════════════════════════════════════════════════════════════
-// FILTER SELECTS
-// ═══════════════════════════════════════════════════════════════
-function populateFilterSelects() {
-  ['h-year','r-year'].forEach(id=>{
-    const el=document.getElementById(id);
-    el.innerHTML='<option value="">Todos</option>';
-    PROC.years.forEach(y=>el.insertAdjacentHTML('beforeend',`<option value="${y}">${y}</option>`));
-  });
-  ['h-month','r-month'].forEach(id=>{
-    const el=document.getElementById(id);
-    el.innerHTML='<option value="">Todos</option>';
-    PROC.months.forEach(mk=>{
-      const[y,m]=mk.split('-');
-      el.insertAdjacentHTML('beforeend',`<option value="${mk}">${MONTH_NAMES[+m-1]} ${y}</option>`);
-    });
-  });
-  ['h-week','r-week'].forEach(id=>{
-    const el=document.getElementById(id);
-    el.innerHTML='<option value="">Todas</option>';
-    PROC.weeks.forEach(w=>el.insertAdjacentHTML('beforeend',`<option value="${w}">Sem. ${w}</option>`));
-  });
-}
-function buildFilter(prefix) {
-  return {
-    year: document.getElementById(`${prefix}-year`).value,
-    month:document.getElementById(`${prefix}-month`).value,
-    week: document.getElementById(`${prefix}-week`).value,
-    from: document.getElementById(`${prefix}-from`).value,
-    to:   document.getElementById(`${prefix}-to`).value,
-  };
-}
-function filterRows(rows,f) {
-  return rows.filter(r=>{
-    if(f.year  &&r.year!==+f.year) return false;
-    if(f.month &&r.monthKey!==f.month) return false;
-    if(f.week){const wk=`${r.weekYear}-W${String(r.week).padStart(2,'0')}`;if(wk!==f.week)return false;}
-    if(f.from&&r.date<new Date(f.from)) return false;
-    if(f.to  &&r.date>new Date(f.to+' 23:59:59')) return false;
-    return true;
-  });
-}
-function clearHistFilter() {
-  ['h-year','h-month','h-week'].forEach(id=>document.getElementById(id).value='');
-  ['h-from','h-to'].forEach(id=>document.getElementById(id).value='');
-  applyHistFilter();
-}
-function clearRankFilter() {
-  ['r-year','r-month','r-week'].forEach(id=>document.getElementById(id).value='');
-  ['r-from','r-to'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('r-equipo').value='';
-  applyRankFilter();
-}
-
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
 // AGGREGATE PERSONS
-// ═══════════════════════════════════════════════════════════════
-function aggregatePersons(rows,equipoMap) {
+// ═══════════════════════════════════════════════════════════
+function aggregatePersons(rows,equipoMap,equipoFilter){
   const byUserDay={};
   rows.forEach(r=>{
-    if(!byUserDay[r.user]) byUserDay[r.user]={};
-    if(!byUserDay[r.user][r.dateStr]) byUserDay[r.user][r.dateStr]={pts:0,tasks:0,ids:0,flujos:{},monthKey:r.monthKey};
-    byUserDay[r.user][r.dateStr].pts  += r.pts;
+    if(!byUserDay[r.user])byUserDay[r.user]={};
+    if(!byUserDay[r.user][r.dateStr])byUserDay[r.user][r.dateStr]={pts:0,tasks:0,ids:0,monthKey:r.monthKey};
+    byUserDay[r.user][r.dateStr].pts+=r.pts;
     byUserDay[r.user][r.dateStr].tasks++;
-    byUserDay[r.user][r.dateStr].ids  += r.ids||0;
-    byUserDay[r.user][r.dateStr].flujos[r.flujo]=(byUserDay[r.user][r.dateStr].flujos[r.flujo]||0)+1;
+    byUserDay[r.user][r.dateStr].ids+=r.ids||0;
   });
-  return Object.entries(byUserDay).map(([user,days])=>{
+
+  const persons=Object.entries(byUserDay).map(([user,days])=>{
     const info=equipoMap[user]||{nombre:user,rol:'',equipo:''};
     const dayArr=Object.values(days);
     const activeDays=dayArr.length;
@@ -1081,154 +1038,167 @@ function aggregatePersons(rows,equipoMap) {
     const avgIds=activeDays?totalIds/activeDays:0;
     const byMonth={};
     dayArr.forEach(d=>{
-      const mk=d.monthKey;
-      if(!byMonth[mk]) byMonth[mk]={pts:0,tasks:0,ids:0,days:0};
-      byMonth[mk].pts+=d.pts; byMonth[mk].tasks+=d.tasks; byMonth[mk].ids+=d.ids; byMonth[mk].days++;
+      if(!byMonth[d.monthKey])byMonth[d.monthKey]={pts:0,tasks:0,ids:0,days:0};
+      byMonth[d.monthKey].pts+=d.pts;byMonth[d.monthKey].tasks+=d.tasks;
+      byMonth[d.monthKey].ids+=d.ids;byMonth[d.monthKey].days++;
     });
-    const ft={};
-    dayArr.forEach(d=>Object.entries(d.flujos).forEach(([f,c])=>{ft[f]=(ft[f]||0)+c;}));
-    const dom=Object.entries(ft).sort((a,b)=>b[1]-a[1])[0];
-    return{user,...info,activeDays,avgPts,avgTasks,avgIds,byMonth,domFlujo:dom?dom[0]:'Demanda',band:getBand(avgPts)};
+    return{user,...info,activeDays,avgPts,avgTasks,avgIds,byMonth,band:getBand(avgPts)};
   });
+
+  // Add zero-activity users from equipoFilter
+  if(equipoFilter){
+    const active=new Set(persons.map(p=>p.user));
+    equipoFilter.forEach(id=>{
+      if(!active.has(id)&&equipoMap[id]){
+        persons.push({user:id,...equipoMap[id],activeDays:0,avgPts:0,avgTasks:0,avgIds:0,byMonth:{},band:getBand(0)});
+      }
+    });
+  }
+  return persons;
 }
 
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
+// FILTERS
+// ═══════════════════════════════════════════════════════════
+function populateFilterSelects(){
+  ['h-year','r-year'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.innerHTML='<option value="">Todos</option>';
+    PROC.years.forEach(y=>el.insertAdjacentHTML('beforeend',`<option value="${y}">${y}</option>`));
+  });
+  ['h-month','r-month'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.innerHTML='<option value="">Todos</option>';
+    PROC.months.forEach(mk=>{const[y,m]=mk.split('-');el.insertAdjacentHTML('beforeend',`<option value="${mk}">${MONTH_NAMES[+m-1]} ${y}</option>`);});
+  });
+  ['h-week','r-week'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.innerHTML='<option value="">Todas</option>';
+    PROC.weeks.forEach(w=>el.insertAdjacentHTML('beforeend',`<option value="${w}">Sem. ${w}</option>`));
+  });
+}
+function buildFilter(prefix){
+  return{year:document.getElementById(`${prefix}-year`).value,month:document.getElementById(`${prefix}-month`).value,
+    week:document.getElementById(`${prefix}-week`).value,from:document.getElementById(`${prefix}-from`).value,
+    to:document.getElementById(`${prefix}-to`).value};
+}
+function getFilterDates(f){
+  let fromDate=null,toDate=null;
+  if(f.from)fromDate=new Date(f.from);
+  if(f.to)toDate=new Date(f.to+' 23:59:59');
+  if(f.month){const[y,m]=f.month.split('-');fromDate=new Date(+y,+m-1,1);toDate=new Date(+y,+m,0,23,59,59);}
+  if(f.year&&!f.month){fromDate=new Date(+f.year,0,1);toDate=new Date(+f.year,11,31,23,59,59);}
+  return{fromDate,toDate};
+}
+function filterRows(rows,f){
+  return rows.filter(r=>{
+    if(f.year&&r.year!==+f.year)return false;
+    if(f.month&&r.monthKey!==f.month)return false;
+    if(f.week){const wk=`${r.weekYear}-W${String(r.week).padStart(2,'0')}`;if(wk!==f.week)return false;}
+    if(f.from&&r.date<new Date(f.from))return false;
+    if(f.to&&r.date>new Date(f.to+' 23:59:59'))return false;
+    return true;
+  });
+}
+function clearHistFilter(){['h-year','h-month','h-week'].forEach(id=>document.getElementById(id).value='');['h-from','h-to'].forEach(id=>document.getElementById(id).value='');applyHistFilter();}
+function clearRankFilter(){['r-year','r-month','r-week'].forEach(id=>document.getElementById(id).value='');['r-from','r-to'].forEach(id=>document.getElementById(id).value='');document.getElementById('r-equipo').value='';applyRankFilter();}
+
+// ═══════════════════════════════════════════════════════════
 // HISTORICO
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
 let HIST_PERSONS=[];
-function applyHistFilter() {
-  if(!PROC) return;
+function applyHistFilter(){
+  if(!PROC)return;
   const f=buildFilter('h');
   const filtered=filterRows(PROC.rawRows,f);
-  HIST_PERSONS=aggregatePersons(filtered,PROC.equipoMap);
-  renderHistStats(HIST_PERSONS);
-  renderBandsChart(filtered);
-  renderHistTable();
+  HIST_PERSONS=aggregatePersons(filtered,PROC.equipoMap,PROC.equipoFilter);
+  renderHistStats(HIST_PERSONS);renderBandsChart(filtered);renderHistTable();
 }
-function renderHistStats(persons) {
+function renderHistStats(persons){
   const active=persons.filter(p=>p.avgPts>0);
   const avg=active.length?active.reduce((s,p)=>s+p.avgPts,0)/active.length:0;
   const aboveBase=active.filter(p=>p.avgPts>=88).length;
   const elite=active.filter(p=>p.avgPts>=110).length;
   const risk=active.filter(p=>p.avgPts<88).length;
+  const inactive=persons.filter(p=>p.activeDays===0).length;
   document.getElementById('hist-stats').innerHTML=`
     <div class="stat-card acc"><div class="stat-label">Promedio equipo (pts)</div><div class="stat-value">${avg.toFixed(1)}</div><div class="stat-sub">período seleccionado</div></div>
     <div class="stat-card grn"><div class="stat-label">Base o superior</div><div class="stat-value">${aboveBase}</div><div class="stat-sub">de ${active.length} activos</div></div>
-    <div class="stat-card amb"><div class="stat-label">Banda Elite</div><div class="stat-value">${elite}</div><div class="stat-sub">objetivo MELI alcanzado</div></div>
-    <div class="stat-card redd"><div class="stat-label">Bajo Base (&lt;88 pts)</div><div class="stat-value">${risk}</div><div class="stat-sub">requieren atención TL</div></div>`;
+    <div class="stat-card amb"><div class="stat-label">Elite MELI</div><div class="stat-value">${elite}</div><div class="stat-sub">objetivo MELI alcanzado</div></div>
+    <div class="stat-card redd"><div class="stat-label">Sin actividad</div><div class="stat-value">${inactive}</div><div class="stat-sub">en el período</div></div>`;
 }
-function renderBandsChart(rows) {
+function renderBandsChart(rows){
   const byUser={};
-  rows.forEach(r=>{
-    if(!byUser[r.user]) byUser[r.user]={pts:0,days:new Set()};
-    byUser[r.user].pts+=r.pts; byUser[r.user].days.add(r.dateStr);
-  });
+  rows.forEach(r=>{if(!byUser[r.user])byUser[r.user]={pts:0,days:new Set()};byUser[r.user].pts+=r.pts;byUser[r.user].days.add(r.dateStr);});
   const counts=new Array(BANDS.length).fill(0);
-  Object.values(byUser).forEach(u=>{
-    const avg=u.pts/u.days.size;
-    const bi=BANDS.findIndex(b=>avg>=b.min&&avg<b.max);
-    if(bi>=0) counts[bi]++;
-  });
+  Object.values(byUser).forEach(u=>{const avg=u.pts/u.days.size;const bi=BANDS.findIndex(b=>avg>=b.min&&avg<b.max);if(bi>=0)counts[bi]++;});
   const ctx=document.getElementById('chart-bands').getContext('2d');
-  if(CHARTS.bands) CHARTS.bands.destroy();
-  CHARTS.bands=new Chart(ctx,{
-    type:'bar',
-    data:{labels:BANDS.map(b=>b.label),datasets:[{data:counts,backgroundColor:BANDS.map(b=>b.color+'88'),borderColor:BANDS.map(b=>b.color),borderWidth:1.5,borderRadius:6}]},
-    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1c2030',titleColor:'#e8eaf2',bodyColor:'#8b91a8',borderColor:'#252a3a',borderWidth:1,callbacks:{label:c=>`${c.raw} analistas`}}},scales:{x:{grid:{color:'#252a3a'},ticks:{color:'#8b91a8',precision:0},beginAtZero:true},y:{grid:{display:false},ticks:{color:'#8b91a8',font:{size:11}}}}}
-  });
+  if(CHARTS.bands)CHARTS.bands.destroy();
+  CHARTS.bands=new Chart(ctx,{type:'bar',data:{labels:BANDS.map(b=>b.label),datasets:[{data:counts,backgroundColor:BANDS.map(b=>b.color+'88'),borderColor:BANDS.map(b=>b.color),borderWidth:1.5,borderRadius:6}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1c2030',titleColor:'#e8eaf2',bodyColor:'#8b91a8',borderColor:'#252a3a',borderWidth:1,callbacks:{label:c=>`${c.raw} colaboradores`}}},scales:{x:{grid:{color:'#252a3a'},ticks:{color:'#8b91a8',precision:0},beginAtZero:true},y:{grid:{display:false},ticks:{color:'#8b91a8',font:{size:11}}}}}});
 }
-function renderHistTable() {
-  if(!HIST_PERSONS.length) return;
+function renderHistTable(){
+  if(!HIST_PERSONS.length)return;
   const search=(document.getElementById('search-hist')?.value||'').toLowerCase();
-  const eqFilter=(document.getElementById('h-equipo-filter')?.value||'');
+  const eqFilter=document.getElementById('h-equipo-filter')?.value||'';
   const allMonths=[...new Set(HIST_PERSONS.flatMap(p=>Object.keys(p.byMonth)))].sort();
   document.getElementById('hist-thead').innerHTML=`<tr>
-    <th onclick="sortHist('nombre')">Colaborador</th>
-    <th onclick="sortHist('equipo')">Equipo</th>
-    ${allMonths.map(mk=>{const[y,m]=mk.split('-');return`<th>${MONTH_NAMES[+m-1]} ${y}<br><span style="font-weight:400;color:var(--text3)">pts / t / IDs</span></th>`}).join('')}
-    <th onclick="sortHist('avgPts')">Pts/día ▾</th>
-    <th onclick="sortHist('avgTasks')">T/día</th>
-    <th onclick="sortHist('avgIds')">IDs/día</th>
-    <th onclick="sortHist('activeDays')">Días</th>
-    <th>Banda</th>
-  </tr>`;
-  let persons=[...HIST_PERSONS];
-  if(eqFilter) persons=persons.filter(p=>p.equipo===eqFilter);
-  if(search) persons=persons.filter(p=>(p.nombre||p.user).toLowerCase().includes(search)||p.equipo.toLowerCase().includes(search));
-  persons.sort((a,b)=>{
-    let va=a[HIST_SORT.col],vb=b[HIST_SORT.col];
-    if(typeof va==='string'){va=va.toLowerCase();vb=vb.toLowerCase();}
-    return va<vb?HIST_SORT.dir:-HIST_SORT.dir;
-  });
-  document.getElementById('hist-tbody').innerHTML=persons.map(p=>{
-    const mcells=allMonths.map(mk=>{
-      const m=p.byMonth[mk];
-      if(!m) return`<td style="color:var(--text3)">—</td>`;
-      const b=getBand(m.pts/m.days);
-      return`<td><span class="mono-cell" style="color:${b.color}">${(m.pts/m.days).toFixed(1)}</span><span style="color:var(--text3);font-size:10px"> / ${(m.tasks/m.days).toFixed(0)} / ${(m.ids/m.days).toFixed(0)}</span></td>`;
-    });
-    return`<tr>
-      <td class="name-cell">${p.nombre||p.user}</td>
-      <td style="font-size:11px;color:var(--text3)">${p.equipo||'—'}</td>
-      ${mcells.join('')}
-      <td class="mono-cell" style="color:${p.band.color};font-weight:500">${p.avgPts.toFixed(1)}</td>
-      <td class="mono-cell">${p.avgTasks.toFixed(1)}</td>
-      <td class="mono-cell" style="color:var(--teal)">${p.avgIds.toFixed(0)}</td>
+    <th onclick="sortHist('nombre')">Colaborador</th><th onclick="sortHist('equipo')">Equipo</th>
+    ${allMonths.map(mk=>{const[y,m]=mk.split('-');return`<th>${MONTH_NAMES[+m-1]} ${y}<br><span style="font-weight:400;color:var(--text3)">pts/t/IDs</span></th>`}).join('')}
+    <th onclick="sortHist('avgPts')">Pts/día ▾</th><th onclick="sortHist('avgTasks')">T/día</th>
+    <th onclick="sortHist('avgIds')">IDs/día</th><th onclick="sortHist('activeDays')">Días</th><th>Banda</th></tr>`;
+  let ps=[...HIST_PERSONS];
+  if(eqFilter)ps=ps.filter(p=>p.equipo===eqFilter);
+  if(search)ps=ps.filter(p=>(p.nombre||p.user).toLowerCase().includes(search)||p.equipo.toLowerCase().includes(search));
+  ps.sort((a,b)=>{let va=a[HIST_SORT.col],vb=b[HIST_SORT.col];if(typeof va==='string'){va=va.toLowerCase();vb=vb.toLowerCase();}return va<vb?HIST_SORT.dir:-HIST_SORT.dir;});
+  document.getElementById('hist-tbody').innerHTML=ps.map(p=>{
+    const mcells=allMonths.map(mk=>{const m=p.byMonth[mk];if(!m)return`<td style="color:var(--text3)">—</td>`;const b=getBand(m.pts/m.days);return`<td><span class="mono-cell" style="color:${b.color}">${(m.pts/m.days).toFixed(1)}</span><span style="color:var(--text3);font-size:10px"> / ${(m.tasks/m.days).toFixed(0)} / ${(m.ids/m.days).toFixed(0)}</span></td>`;});
+    const inactiveStyle=p.activeDays===0?'opacity:.5':'';
+    return`<tr style="${inactiveStyle}"><td class="name-cell">${p.nombre||p.user}${p.activeDays===0?' <span style="font-size:10px;color:var(--text3)">(sin actividad)</span>':''}</td>
+      <td style="font-size:11px;color:var(--text3)">${p.equipo||'—'}</td>${mcells.join('')}
+      <td class="mono-cell" style="color:${p.band.color};font-weight:500">${p.avgPts>0?p.avgPts.toFixed(1):'—'}</td>
+      <td class="mono-cell">${p.avgTasks>0?p.avgTasks.toFixed(1):'—'}</td>
+      <td class="mono-cell" style="color:var(--teal)">${p.avgIds>0?p.avgIds.toFixed(0):'—'}</td>
       <td class="mono-cell" style="color:var(--text3)">${p.activeDays}</td>
-      <td><span class="badge ${p.band.css}">${p.band.label}</span></td>
-    </tr>`;
+      <td>${p.activeDays>0?`<span class="badge ${p.band.css}">${p.band.label}</span>`:'<span style="font-size:11px;color:var(--text3)">—</span>'}</td></tr>`;
   }).join('');
 }
-function sortHist(col) {
-  if(HIST_SORT.col===col) HIST_SORT.dir*=-1;
-  else{HIST_SORT.col=col;HIST_SORT.dir=-1;}
-  renderHistTable();
-}
+function sortHist(col){if(HIST_SORT.col===col)HIST_SORT.dir*=-1;else{HIST_SORT.col=col;HIST_SORT.dir=-1;}renderHistTable();}
 
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
 // RANKING
-// ═══════════════════════════════════════════════════════════════
-function applyRankFilter() {
-  if(!PROC) return;
+// ═══════════════════════════════════════════════════════════
+function applyRankFilter(){
+  if(!PROC)return;
   const f=buildFilter('r');
   const eqFilter=document.getElementById('r-equipo')?.value||'';
   const filtered=filterRows(PROC.rawRows,f);
-  const persons=aggregatePersons(filtered,PROC.equipoMap);
-  const byEquipo=eqFilter?persons.filter(p=>p.equipo===eqFilter):persons;
-  renderRankingChart(byEquipo);
+  const persons=aggregatePersons(filtered,PROC.equipoMap,PROC.equipoFilter);
+  const show=eqFilter?persons.filter(p=>p.equipo===eqFilter):persons;
+  renderRankingChart(show.filter(p=>p.activeDays>0));
 }
-function renderRankingChart(persons) {
+function renderRankingChart(persons){
   const sorted=[...persons].filter(p=>p.avgPts>0).sort((a,b)=>b.avgPts-a.avgPts);
-  if(!sorted.length) return;
-  const barH=26,padH=80;
-  const h=Math.max(300,sorted.length*barH+padH);
+  if(!sorted.length)return;
+  const h=Math.max(300,sorted.length*26+80);
   const canvas=document.getElementById('chart-ranking');
-  canvas.style.height=h+'px'; canvas.height=h;
+  canvas.style.height=h+'px';canvas.height=h;
   const ctx=canvas.getContext('2d');
-  if(CHARTS.ranking) CHARTS.ranking.destroy();
-  CHARTS.ranking=new Chart(ctx,{
-    type:'bar',
-    data:{labels:sorted.map(p=>p.nombre||p.user),datasets:[{data:sorted.map(p=>p.avgPts),backgroundColor:sorted.map(p=>p.band.color+'99'),borderColor:sorted.map(p=>p.band.color),borderWidth:1.5,borderRadius:5}]},
-    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1c2030',titleColor:'#e8eaf2',bodyColor:'#8b91a8',borderColor:'#252a3a',borderWidth:1,callbacks:{label:c=>`${c.raw.toFixed(1)} pts · ${sorted[c.dataIndex].activeDays} días activos · ${sorted[c.dataIndex].avgIds.toFixed(0)} IDs/día`}}},scales:{x:{grid:{color:'#252a3a'},ticks:{color:'#8b91a8'},min:0},y:{grid:{display:false},ticks:{color:'#8b91a8',font:{size:11}}}}}
-  });
+  if(CHARTS.ranking)CHARTS.ranking.destroy();
+  CHARTS.ranking=new Chart(ctx,{type:'bar',data:{labels:sorted.map(p=>p.nombre||p.user),datasets:[{data:sorted.map(p=>p.avgPts),backgroundColor:sorted.map(p=>p.band.color+'99'),borderColor:sorted.map(p=>p.band.color),borderWidth:1.5,borderRadius:5}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1c2030',titleColor:'#e8eaf2',bodyColor:'#8b91a8',borderColor:'#252a3a',borderWidth:1,callbacks:{label:c=>`${c.raw.toFixed(1)} pts · ${sorted[c.dataIndex].activeDays} días · ${sorted[c.dataIndex].avgIds.toFixed(0)} IDs/día`}}},scales:{x:{grid:{color:'#252a3a'},ticks:{color:'#8b91a8'},min:0},y:{grid:{display:false},ticks:{color:'#8b91a8',font:{size:11}}}}}});
 }
 
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
 // CALCULATOR
-// ═══════════════════════════════════════════════════════════════
-function renderCalcSliders() {
-  const cont=document.getElementById('calc-sliders'); if(!cont) return;
-  // Ensure CALC_VALS has entries for all flujos
-  FLUJOS.forEach(f=>{ if(CALC_VALS[f.id]===undefined) CALC_VALS[f.id]=f.id==='Demanda'?70:0; });
-  // Remove stale keys
-  Object.keys(CALC_VALS).forEach(k=>{ if(!FLUJOS.find(f=>f.id===k)) delete CALC_VALS[k]; });
-
+// ═══════════════════════════════════════════════════════════
+function renderCalcSliders(){
+  const cont=document.getElementById('calc-sliders');if(!cont)return;
+  FLUJOS.forEach(f=>{if(CALC_VALS[f.id]===undefined)CALC_VALS[f.id]=f.id==='Demanda'?70:0;});
+  Object.keys(CALC_VALS).forEach(k=>{if(!FLUJOS.find(f=>f.id===k))delete CALC_VALS[k];});
   cont.innerHTML=FLUJOS.map((f,i)=>`
     <div class="input-group">
-      <div class="input-label">
-        <span>${f.label} <span style="color:var(--text3);font-size:10px">×${f.weight.toFixed(2)}</span></span>
-        <span id="lbl-cf${i}">${CALC_VALS[f.id]||0}</span>
-      </div>
+      <div class="input-label"><span>${f.label} <span style="color:var(--text3);font-size:10px">×${f.weight.toFixed(2)}</span></span><span id="lbl-cf${i}">${CALC_VALS[f.id]||0}</span></div>
       <div class="range-wrap">
         <input type="range" id="r-cf${i}" min="0" max="200" value="${CALC_VALS[f.id]||0}" oninput="onSlide('${f.id}',${i},this.value)">
         <span class="range-val" id="v-cf${i}">${CALC_VALS[f.id]||0}</span>
@@ -1236,319 +1206,314 @@ function renderCalcSliders() {
     </div>`).join('');
   updateCalc();
 }
-
-function syncCalcSelectors() {
-  const iniSel=document.getElementById('calc-iniciativa');
-  const incSel=document.getElementById('calc-incidencia');
-  if(!iniSel||!incSel) return;
-  const curIni=iniSel.value, curInc=incSel.value;
-  iniSel.innerHTML='<option value="">— sin iniciativa —</option>';
-  Object.entries(INICIATIVAS).sort((a,b)=>a[1].label.localeCompare(b[1].label)).forEach(([k,v])=>{
-    iniSel.insertAdjacentHTML('beforeend',`<option value="${k}">${v.label} (+${(v.bonus*100).toFixed(0)}%)</option>`);
-  });
-  iniSel.value=curIni;
-  incSel.innerHTML='<option value="">— sin incidencia —</option>';
-  Object.entries(INCIDENCIAS).sort((a,b)=>a[1].label.localeCompare(b[1].label)).forEach(([k,v])=>{
-    incSel.insertAdjacentHTML('beforeend',`<option value="${k}">${v.label} (+${v.pts.toFixed(1)} pts)</option>`);
-  });
-  incSel.value=curInc;
+function syncCalcSelectors(){
+  const is=document.getElementById('calc-iniciativa'),ic=document.getElementById('calc-incidencia');
+  if(!is||!ic)return;
+  const ci=is.value,cc=ic.value;
+  is.innerHTML='<option value="">— sin iniciativa —</option>';
+  Object.entries(INICIATIVAS).sort((a,b)=>a[1].label.localeCompare(b[1].label)).forEach(([k,v])=>{is.insertAdjacentHTML('beforeend',`<option value="${k}">${v.label} (+${(v.bonus*100).toFixed(0)}%)</option>`);});
+  is.value=ci;
+  ic.innerHTML='<option value="">— sin incidencia —</option>';
+  Object.entries(INCIDENCIAS).sort((a,b)=>a[1].label.localeCompare(b[1].label)).forEach(([k,v])=>{ic.insertAdjacentHTML('beforeend',`<option value="${k}">${v.label} (+${v.pts.toFixed(1)}pts)</option>`);});
+  ic.value=cc;
   updateCalc();
 }
-
-function onSlide(flujoId,i,val) {
-  CALC_VALS[flujoId]=+val;
-  const lbl=document.getElementById(`lbl-cf${i}`);
-  const disp=document.getElementById(`v-cf${i}`);
-  if(lbl) lbl.textContent=val;
-  if(disp) disp.textContent=val;
+function onSlide(id,i,val){
+  CALC_VALS[id]=+val;
+  document.getElementById(`lbl-cf${i}`).textContent=val;
+  document.getElementById(`v-cf${i}`).textContent=val;
   updateCalc();
 }
-
-function updateCalc() {
-  const iniKey=(document.getElementById('calc-iniciativa')?.value||'');
-  const incKey=(document.getElementById('calc-incidencia')?.value||'');
+function updateCalc(){
+  const iniKey=document.getElementById('calc-iniciativa')?.value||'';
+  const incKey=document.getElementById('calc-incidencia')?.value||'';
   const iniObj=iniKey?INICIATIVAS[iniKey]:null;
   const incObj=incKey?INCIDENCIAS[incKey]:null;
-  const iniBonus=iniObj?(iniObj.bonus||0):0;
-  const incPts=incObj?(incObj.pts||0):0;
-
-  // Update labels
-  const lbIni=document.getElementById('lbl-ini-bonus');
-  const lbInc=document.getElementById('lbl-inc-bonus');
-  if(lbIni) lbIni.textContent=iniBonus>=0?`+${(iniBonus*100).toFixed(0)}%`:`${(iniBonus*100).toFixed(0)}%`;
-  if(lbInc) lbInc.textContent=`+${incPts.toFixed(1)} pts`;
-
+  const iniBonus=iniObj?.bonus||0;
+  const incPts=incObj?.pts||0;
+  const lbI=document.getElementById('lbl-ini-bonus'),lbC=document.getElementById('lbl-inc-bonus');
+  if(lbI)lbI.textContent=`${iniBonus>=0?'+':''}${(iniBonus*100).toFixed(0)}%`;
+  if(lbC)lbC.textContent=`+${incPts.toFixed(1)} pts`;
   let total=0,tasks=0;
   const rows=[];
   FLUJOS.forEach(f=>{
-    const v=CALC_VALS[f.id]||0;
-    if(!v) return;
-    // Apply iniciativa bonus to each flujo's contribution
-    const pts=v*f.weight*(1+iniBonus)+v*incPts/Math.max(tasks||1,1);
-    // Simpler: bonus applies to this flujo's points
-    const ptsClean=v*f.weight*(1+iniBonus);
-    total+=ptsClean; tasks+=v;
-    rows.push(`<div class="bd-row"><span class="bd-lbl">${f.label} ×${f.weight.toFixed(2)}${iniBonus?` ×${(1+iniBonus).toFixed(2)}`:''}:</span><span class="bd-val">${ptsClean.toFixed(1)}</span></div>`);
+    const v=CALC_VALS[f.id]||0;if(!v)return;
+    const pts=v*f.weight*(1+iniBonus);
+    total+=pts;tasks+=v;
+    rows.push(`<div class="bd-row"><span class="bd-lbl">${f.label} ×${f.weight.toFixed(2)}${iniBonus?` ×${(1+iniBonus).toFixed(2)}`:''}:</span><span class="bd-val">${pts.toFixed(1)}</span></div>`);
   });
-  // Add incidencia as flat bonus (once per "task session")
-  if(incPts>0&&tasks>0){
-    total+=incPts;
-    rows.push(`<div class="bd-row"><span class="bd-lbl">Incidencia (${incObj.label}):</span><span class="bd-val">+${incPts.toFixed(1)}</span></div>`);
-  }
-
-  const be=document.getElementById('calc-breakdown');
-  if(be) be.innerHTML=rows.join('');
-  const te=document.getElementById('bd-tasks');
-  if(te) te.textContent=tasks;
-
+  if(incPts>0&&tasks>0){total+=incPts;rows.push(`<div class="bd-row"><span class="bd-lbl">Incidencia (${incObj.label}):</span><span class="bd-val">+${incPts.toFixed(1)}</span></div>`);}
+  const be=document.getElementById('calc-breakdown');if(be)be.innerHTML=rows.join('');
+  const te=document.getElementById('bd-tasks');if(te)te.textContent=tasks;
   const band=getBand(total);
-  const bigEl=document.getElementById('pts-big');
-  if(bigEl){bigEl.textContent=total.toFixed(1);bigEl.style.color=band.color;}
-  const nameEl=document.getElementById('band-name');
-  const descEl=document.getElementById('band-desc');
-  if(nameEl) nameEl.textContent=band.label;
-  if(descEl) descEl.textContent=band.desc;
+  const big=document.getElementById('pts-big');if(big){big.textContent=total.toFixed(1);big.style.color=band.color;}
+  const nm=document.getElementById('band-name'),dc=document.getElementById('band-desc');
+  if(nm)nm.textContent=band.label;if(dc)dc.textContent=band.desc;
   const bd=document.getElementById('band-display');
   if(bd){bd.style.background=band.color+'22';bd.style.border=`1px solid ${band.color}44`;}
 }
-
-function renderBandsRef() {
-  const el=document.getElementById('bands-ref'); if(!el) return;
-  el.innerHTML=BANDS.map(b=>`
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-      <span class="badge ${b.css}">${b.label}</span>
-      <span class="mono-cell" style="font-size:10px;color:var(--text3)">${b.min}–${b.max>=1e9?'∞':b.max} pts</span>
-    </div>`).join('');
+function renderBandsRef(){
+  const el=document.getElementById('bands-ref');if(!el)return;
+  el.innerHTML=BANDS.map(b=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border)">
+    <span class="badge ${b.css}">${b.label}</span>
+    <span class="mono-cell" style="font-size:10px;color:var(--text3)">${b.min}–${b.max>=1e9?'∞':b.max} pts</span>
+  </div>`).join('');
 }
-
-function renderScenarios() {
+function renderScenarios(){
   const w=Object.fromEntries(FLUJOS.map(f=>[f.id,f.weight]));
   const get=id=>w[id]||0;
-  const scenarios=[
-    {name:'90 Demanda puras',        mix:{Demanda:90}},
-    {name:'80 Dem + 7 Enh',          mix:{Demanda:80,Enhancement:7}},
-    {name:'70 Dem + 10 Enh + 5 EC',  mix:{Demanda:70,'Enhanced Content':5,Enhancement:10}},
-    {name:'55 Dem + 25 Enh + 8 EC',  mix:{Demanda:55,'Enhanced Content':8,Enhancement:25}},
-    {name:'50 Dem + 30 Enh + 10 EC', mix:{Demanda:50,'Enhanced Content':10,Enhancement:30}},
-    {name:'80 Validación puras',      mix:{Validación:80}},
-    {name:'20 Soporte DONE + 60 Dem', mix:{Soporte:20,Demanda:60}},
+  const sc=[
+    {name:'90 Demanda puras',mix:{Demanda:90}},
+    {name:'80 Dem + 7 Enh',mix:{Demanda:80,Enhancement:7}},
+    {name:'70 Dem + 10 Enh + 5 EC',mix:{Demanda:70,'Enhanced Content':5,Enhancement:10}},
+    {name:'55 Dem + 25 Enh + 8 EC',mix:{Demanda:55,'Enhanced Content':8,Enhancement:25}},
+    {name:'50 Dem + 30 Enh + 10 EC',mix:{Demanda:50,'Enhanced Content':10,Enhancement:30}},
+    {name:'80 Validación',mix:{Validación:80}},
+    {name:'20 Soporte DONE + 60 Dem',mix:{Soporte:20,Demanda:60}},
   ];
-  document.getElementById('scenarios-grid').innerHTML=scenarios.map(s=>{
+  document.getElementById('scenarios-grid').innerHTML=sc.map(s=>{
     const pts=Object.entries(s.mix).reduce((sum,[id,v])=>sum+v*(get(id)||1),0);
     const tasks=Object.values(s.mix).reduce((a,b)=>a+b,0);
     const band=getBand(pts);
     const mix=Object.entries(s.mix).map(([k,v])=>`${v} ${k.replace('Enhancement','Enh').replace('Enhanced Content','EC')}`).join(' + ');
-    return`<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;cursor:pointer;transition:border-color .15s"
+    return`<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px;cursor:pointer;transition:border-color .15s"
       onclick="applyScenario(${JSON.stringify(s.mix).replace(/"/g,"'")})"
       onmouseover="this.style.borderColor='${band.color}'" onmouseout="this.style.borderColor='var(--border)'">
-      <div style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:6px">${s.name}</div>
-      <div style="font-size:11px;color:var(--text3);margin-bottom:8px">${mix}</div>
+      <div style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:5px">${s.name}</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:7px">${mix}</div>
       <div style="display:flex;justify-content:space-between;align-items:center">
-        <span class="mono-cell" style="font-size:16px;color:${band.color}">${pts.toFixed(1)} pts</span>
+        <span class="mono-cell" style="font-size:15px;color:${band.color}">${pts.toFixed(1)} pts</span>
         <span class="badge ${band.css}">${band.label}</span>
       </div>
-      <div style="font-size:10px;color:var(--text3);margin-top:4px">${tasks} tareas totales</div>
+      <div style="font-size:10px;color:var(--text3);margin-top:4px">${tasks} tareas</div>
     </div>`;
   }).join('');
 }
-
-function applyScenario(mix) {
-  FLUJOS.forEach(f=>{ CALC_VALS[f.id]=mix[f.id]||0; });
-  renderCalcSliders();
-  showPage('calc');
+function applyScenario(mix){FLUJOS.forEach(f=>{CALC_VALS[f.id]=mix[f.id]||0;});renderCalcSliders();showPage('calc');}
+function applyWeights(){
+  FLUJOS.forEach((f,i)=>{const inp=document.getElementById(`fw-${i}`);if(inp)f.weight=+(inp.value)||0;});
+  if(PROC)computeAll();renderCalcSliders();renderScenarios();
 }
 
-// ═══════════════════════════════════════════════════════════════
-// WEIGHTS APPLY
-// ═══════════════════════════════════════════════════════════════
-function applyWeights() {
-  FLUJOS.forEach((f,i)=>{
-    const inp=document.getElementById(`fw-${i}`);
-    if(inp) f.weight=+(inp.value)||0;
-  });
-  if(PROC) computeAll();
-  renderCalcSliders();
-  renderScenarios();
-}
-
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
 // INCENTIVOS
-// ═══════════════════════════════════════════════════════════════
-function populateIncPeriodSelects() {
-  if(!PROC) return;
-  const ySel=document.getElementById('inc-year-sel');
-  ySel.innerHTML='<option value="">— año —</option>';
-  PROC.years.forEach(y=>ySel.insertAdjacentHTML('beforeend',`<option value="${y}">${y}</option>`));
-  const mSel=document.getElementById('inc-month-sel');
-  mSel.innerHTML='<option value="">— mes —</option>';
-  PROC.months.forEach(mk=>{
-    const[y,m]=mk.split('-');
-    mSel.insertAdjacentHTML('beforeend',`<option value="${mk}">${MONTH_NAMES[+m-1]} ${y}</option>`);
-  });
+// ═══════════════════════════════════════════════════════════
+function populateIncPeriodSelects(){
+  if(!PROC)return;
+  const ys=document.getElementById('inc-year-sel');
+  ys.innerHTML='<option value="">— año —</option>';
+  PROC.years.forEach(y=>ys.insertAdjacentHTML('beforeend',`<option value="${y}">${y}</option>`));
+  const ms=document.getElementById('inc-month-sel');
+  ms.innerHTML='<option value="">— mes —</option>';
+  PROC.months.forEach(mk=>{const[y,m]=mk.split('-');ms.insertAdjacentHTML('beforeend',`<option value="${mk}">${MONTH_NAMES[+m-1]} ${y}</option>`);});
   onPeriodTypeChange();
+  // Update topes preview on input
+  ['inc-budget-total','inc-headcount'].forEach(id=>{
+    document.getElementById(id).addEventListener('input',updateTopesPreview);
+  });
 }
-function onPeriodTypeChange() {
+function onPeriodTypeChange(){
   const type=document.getElementById('inc-period-type').value;
   document.getElementById('inc-month-sel').style.display=type==='month'?'block':'none';
   document.getElementById('inc-quarter-sel').style.display=type==='quarter'?'block':'none';
   document.getElementById('inc-from').style.display=type==='custom'?'block':'none';
   document.getElementById('inc-to').style.display=type==='custom'?'block':'none';
 }
-function getIncRows() {
-  if(!PROC) return [];
+function updateTopesPreview(){
+  const budget=+(document.getElementById('inc-budget-total').value)||0;
+  const hc=+(document.getElementById('inc-headcount').value)||45;
+  if(!budget){document.getElementById('inc-topes-preview').style.display='none';return;}
+  const base=budget/hc;
+  const fmtARS=n=>'$'+Math.round(n).toLocaleString('es-AR');
+  document.getElementById('inc-topes-preview').style.display='block';
+  document.getElementById('topes-content').innerHTML=`
+    <div style="color:var(--text2)">Analista Base: <span class="mono-cell" style="color:var(--accent)">${fmtARS(roundK(base))}</span></div>
+    <div style="color:var(--text2)">TL/CP Base: <span class="mono-cell" style="color:var(--accent)">${fmtARS(roundK(base*2))}</span></div>
+    <div style="color:var(--text2)">Analista Sólido: <span class="mono-cell" style="color:var(--green)">${fmtARS(roundK(base*1.4))}</span></div>
+    <div style="color:var(--text2)">TL/CP Sólido: <span class="mono-cell" style="color:var(--green)">${fmtARS(roundK(base*2.8))}</span></div>
+    <div style="color:var(--text2)">Analista HP: <span class="mono-cell" style="color:var(--purple)">${fmtARS(roundK(base*1.8))}</span></div>
+    <div style="color:var(--text2)">TL/CP HP: <span class="mono-cell" style="color:var(--purple)">${fmtARS(roundK(base*3.6))}</span></div>
+    <div style="color:var(--text2)">Analista Elite: <span class="mono-cell" style="color:var(--amber)">${fmtARS(roundK(base*2.4))}</span></div>
+    <div style="color:var(--text3);font-size:11px">Tope Elite TL/CP: <span class="mono-cell">${fmtARS(roundK(base*4.8))}</span></div>`;
+}
+function getIncRows(){
+  if(!PROC)return{rows:[],fromDate:null,toDate:null};
   const type=document.getElementById('inc-period-type').value;
   const year=+(document.getElementById('inc-year-sel').value)||0;
-  let rows=PROC.rawRows;
+  let rows=PROC.rawRows,fromDate=null,toDate=null;
   if(type==='month'){
     const mk=document.getElementById('inc-month-sel').value;
-    if(mk) rows=rows.filter(r=>r.monthKey===mk);
-    else if(year) rows=rows.filter(r=>r.year===year);
+    if(mk){rows=rows.filter(r=>r.monthKey===mk);const[y,m]=mk.split('-');fromDate=new Date(+y,+m-1,1);toDate=new Date(+y,+m,0,23,59,59);}
+    else if(year){rows=rows.filter(r=>r.year===year);fromDate=new Date(year,0,1);toDate=new Date(year,11,31,23,59,59);}
   } else if(type==='quarter'){
     const q=+(document.getElementById('inc-quarter-sel').value)||1;
     const qM={1:[1,2,3],2:[4,5,6],3:[7,8,9],4:[10,11,12]};
     const ms=qM[q];
-    if(year) rows=rows.filter(r=>r.year===year&&ms.includes(r.month));
+    if(year){rows=rows.filter(r=>r.year===year&&ms.includes(r.month));fromDate=new Date(year,ms[0]-1,1);toDate=new Date(year,ms[2],0,23,59,59);}
     else rows=rows.filter(r=>ms.includes(r.month));
   } else {
-    const from=document.getElementById('inc-from').value;
-    const to=document.getElementById('inc-to').value;
-    if(from) rows=rows.filter(r=>r.date>=new Date(from));
-    if(to)   rows=rows.filter(r=>r.date<=new Date(to+' 23:59:59'));
+    const from=document.getElementById('inc-from').value,to=document.getElementById('inc-to').value;
+    if(from){rows=rows.filter(r=>r.date>=new Date(from));fromDate=new Date(from);}
+    if(to){rows=rows.filter(r=>r.date<=new Date(to+' 23:59:59'));toDate=new Date(to+' 23:59:59');}
   }
-  return rows;
+  return{rows,fromDate,toDate};
 }
-
-function fmtARS(n){return '$'+Math.round(n).toLocaleString('es-AR');}
+function fmtARS(n){return'$'+Math.round(n).toLocaleString('es-AR');}
 function roundK(n){return Math.round(n/1000)*1000;}
 
-function runIncentivos() {
-  if(!PROC||!PROC.rawRows.length){
-    document.getElementById('inc-empty').style.display='block';
-    document.getElementById('inc-content').style.display='none';
-    return;
-  }
-  const rows=getIncRows();
+function runIncentivos(){
+  if(!PROC||!PROC.rawRows.length){alert('Cargá historico.csv primero.');return;}
+  if(!DATA.equipo){document.getElementById('inc-no-equipo-warn').style.display='flex';return;}
+  document.getElementById('inc-no-equipo-warn').style.display='none';
+
+  const {rows,fromDate,toDate}=getIncRows();
   if(!rows.length){alert('No hay datos para el período seleccionado.');return;}
 
-  const totalBudget=+(document.getElementById('inc-budget-total').value)||0;
-  if(!totalBudget){alert('Ingresá un presupuesto total.');return;}
+  const budget=+(document.getElementById('inc-budget-total').value)||0;
+  if(!budget){alert('Ingresá un presupuesto total.');return;}
+  const hc=+(document.getElementById('inc-headcount').value)||45;
 
-  const persons=aggregatePersons(rows,PROC.equipoMap);
+  const topeBase=budget/hc;
+  const topes={a:{0:null,1:topeBase,2:topeBase*1.4,3:topeBase*1.8,4:topeBase*2.4}};
+  const topesTL={1:topeBase*2,2:topeBase*2.8,3:topeBase*3.6};
 
-  // ── Separar roles ──
-  const analistas=persons.filter(p=>{
-    const r=(p.rol||'').toLowerCase();
-    return !r.includes('team leader')&&!r.includes('coordinador')&&!r.includes('tl');
-  });
-  const tls=persons.filter(p=>{
-    const r=(p.rol||'').toLowerCase();
-    return r.includes('team leader')||r.includes('tl');
-  });
-  const cp=persons.filter(p=>{
-    const r=(p.rol||'').toLowerCase();
-    return r.includes('coordinador');
-  });
+  const persons=aggregatePersons(rows,PROC.equipoMap,PROC.equipoFilter);
 
-  // ── Elegibilidad analistas ──
+  // Separate roles
+  const analistas=persons.filter(p=>{const r=(p.rol||'').toLowerCase();return!r.includes('team leader')&&!r.includes('coordinador')&&!r.includes('tl');});
+  const tls=persons.filter(p=>{const r=(p.rol||'').toLowerCase();return r.includes('team leader')||r.includes(' tl');});
+  const cpList=persons.filter(p=>(p.rol||'').toLowerCase().includes('coordinador'));
+
+  const hasCalidad=!!(DATA.auditados||DATA.mao);
+  document.getElementById('inc-missing-warn').style.display=hasCalidad?'none':'flex';
+
+  // ── ANALISTAS ──
   const incA=analistas.map(p=>{
-    let status='no_eligible',reason='';
-    if(p.activeDays<1){status='no_data';reason='Sin días activos';}
-    else if(p.avgPts<88){status='no_eligible';reason=`${p.avgPts.toFixed(1)} pts < 88`;}
-    else status='eligible';
-    return{...p,incStatus:status,reason,amount:0,bandIdx:BANDS.findIndex(b=>p.avgPts>=b.min&&p.avgPts<b.max)};
+    if(p.activeDays===0)return{...p,incStatus:'inactive',reason:'Sin actividad en el período',amount:0,calidad:null,bandIdx:-1};
+    const bi=getBandIdx(p.avgPts);
+    if(bi<=0)return{...p,incStatus:'no_eligible',reason:`${p.avgPts.toFixed(1)} pts < 88`,amount:0,calidad:null,bandIdx:bi};
+    // Check calidad
+    let calidad=null,calTotal=0,calStatus='no_data';
+    if(hasCalidad){
+      const cq=getQualityForPeriod(p.user,fromDate,toDate);
+      calidad=cq.pct;calTotal=cq.total;
+      if(cq.total<5)calStatus='insufficient';
+      else if(cq.pct===null)calStatus='no_data';
+      else calStatus=cq.pct>=90?'ok':'fail';
+    }
+    let status='eligible',reason='';
+    if(!hasCalidad){status='manual';reason='Sin datos de calidad';}
+    else if(calStatus==='no_data'){status='manual';reason='Sin registros de auditoría';}
+    else if(calStatus==='insufficient'){status='manual';reason=`Solo ${calTotal} registros (mín. 5)`;}
+    else if(calStatus==='fail'){status='no_eligible';reason=`Calidad ${calidad.toFixed(1)}% < 90%`;}
+    const tope=status==='eligible'?topes.a[bi]:0;
+    return{...p,incStatus:status,reason,amount:tope,calidad,calTotal,bandIdx:bi};
   });
-  const eligibleA=incA.filter(p=>p.incStatus==='eligible');
 
-  // ── Elegibilidad TLs (por equipo en el equipo_colaboradores) ──
-  const tlNames=[...new Set(persons.map(p=>p.equipo).filter(Boolean))];
+  // ── TLs ──
+  const tlNames=[...new Set(analistas.map(p=>p.equipo).filter(Boolean))];
   const incTl=tlNames.map(tlName=>{
-    const team=analistas.filter(p=>p.equipo===tlName);
-    if(!team.length) return null;
-    const avgT=team.length?team.reduce((s,p)=>s+p.avgPts,0)/team.length:0;
+    const team=analistas.filter(p=>p.equipo===tlName&&p.activeDays>0);
+    if(!team.length)return null;
+    const avgT=team.reduce((s,p)=>s+p.avgPts,0)/team.length;
     const pctEl=team.filter(p=>p.avgPts>=88).length/team.length;
-    let status='no_eligible',reason='',tlBandLabel='',tlBandMult=1;
-    if(avgT<90){status='no_eligible';reason=`Promedio ${avgT.toFixed(1)} pts < 90`;}
-    else if(pctEl<0.7){status='no_eligible';reason=`${(pctEl*100).toFixed(0)}% elegible < 70%`;}
+    let status='no_eligible',reason='',tlBandLabel='',tlBandIdx=0;
+    if(avgT<90){status='no_eligible';reason=`Promedio equipo ${avgT.toFixed(1)} pts < 90`;}
+    else if(pctEl<0.7){status='no_eligible';reason=`${(pctEl*100).toFixed(0)}% en banda Base < 70%`;}
     else{
       status='eligible';
-      if(avgT>=103&&pctEl>=0.85){tlBandLabel='High Performer';tlBandMult=2.0;}
-      else if(avgT>=95&&pctEl>=0.8){tlBandLabel='Sólido';tlBandMult=1.5;}
-      else{tlBandLabel='Base';tlBandMult=1.0;}
+      if(avgT>=103&&pctEl>=0.85){tlBandLabel='High Performer';tlBandIdx=3;}
+      else if(avgT>=95&&pctEl>=0.8){tlBandLabel='Sólido';tlBandIdx=2;}
+      else{tlBandLabel='Base';tlBandIdx=1;}
     }
-    return{nombre:tlName,avgTeam:avgT,pctEligible:pctEl,incStatus:status,reason,tlBandLabel,tlBandMult,amount:0,teamSize:team.length};
+    const amount=status==='eligible'?topesTL[tlBandIdx]:0;
+    return{nombre:tlName,avgTeam:avgT,pctEligible:pctEl,incStatus:status,reason,tlBandLabel,tlBandIdx,amount,teamSize:team.length};
   }).filter(Boolean);
-  const eligibleTl=incTl.filter(p=>p.incStatus==='eligible');
 
-  // ── CP: revisión manual ──
-  const cpBudgetShare=4; // CP = 4 unidades base
+  // ── CP ──
+  let cpEntry=null;
+  if(cpList.length>0||persons.find(p=>(p.rol||'').toLowerCase().includes('coordinador'))){
+    const cpPerson=cpList[0]||{nombre:'Victoria Tofalo',user:'ext_vitofalo'};
+    if(hasCalidad){
+      // Calidad de todos los analistas
+      let totalScore=0,totalRecs=0;
+      analistas.forEach(p=>{
+        const cq=getQualityForPeriod(p.user,fromDate,toDate);
+        if(cq.total>0){totalScore+=cq.pct/100*cq.total;totalRecs+=cq.total;}
+      });
+      const calEq=totalRecs>0?totalScore/totalRecs*100:null;
+      let cpBandLabel='',cpAmount=0,cpStatus='';
+      if(calEq===null){cpStatus='manual';cpBandLabel='Sin datos';}
+      else if(calEq<90){cpStatus='no_eligible';cpBandLabel='No elegible';reason=`Calidad equipo ${calEq.toFixed(1)}% < 90%`;}
+      else{
+        cpStatus='eligible';
+        if(calEq>=97){cpBandLabel='High Performer';cpAmount=topesTL[3];}
+        else if(calEq>=93){cpBandLabel='Sólido';cpAmount=topesTL[2];}
+        else{cpBandLabel='Base';cpAmount=topesTL[1];}
+        cpAmount=roundK(cpAmount);
+      }
+      cpEntry={...cpPerson,calEq,cpStatus,cpBandLabel,amount:cpAmount};
+    } else {
+      cpEntry={...cpPerson,calEq:null,cpStatus:'manual',cpBandLabel:'Sin datos calidad',amount:0};
+    }
+  }
 
-  // ── Calcular unidades totales para distribución jerárquica ──
-  // Analistas: cada elegible contribuye con su multiplicador de banda
-  // TLs: cada elegible contribuye con 3 × multiplicador de banda TL
-  // CP: 4 unidades (manual)
-  const unitA=eligibleA.reduce((s,p)=>{
-    const bi=p.bandIdx>=0?p.bandIdx:0;
-    const bMult=[1.0,1.0,1.4,1.8,2.4][Math.min(bi,4)];
-    return s+bMult;
-  },0);
-  const unitT=eligibleTl.reduce((s,p)=>s+3*p.tlBandMult,0);
-  const unitC=4; // CP siempre reserva 4 unidades
-  const totalUnits=unitA+unitT+unitC;
+  // ── SALVAGUARDA ──
+  const totalTopes=incA.filter(p=>p.incStatus==='eligible').reduce((s,p)=>s+p.amount,0)
+    +incTl.filter(p=>p.incStatus==='eligible').reduce((s,p)=>s+p.amount,0)
+    +(cpEntry?.incStatus==='eligible'?cpEntry.amount:0);
+  let scaleFactor=1;
+  if(totalTopes>budget){scaleFactor=budget/totalTopes;}
+  const scaleApplied=scaleFactor<1;
 
-  const unitValue=totalUnits>0?totalBudget/totalUnits:0;
+  // Apply scale and rounding
+  incA.forEach(p=>{if(p.incStatus==='eligible')p.amountFinal=roundK(p.amount*scaleFactor);else p.amountFinal=0;});
+  incTl.forEach(p=>{if(p.incStatus==='eligible')p.amountFinal=roundK(p.amount*scaleFactor);else p.amountFinal=0;});
+  if(cpEntry&&cpEntry.incStatus==='eligible')cpEntry.amountFinal=roundK(cpEntry.amount*scaleFactor);
 
-  // Assign amounts
-  incA.forEach(p=>{
-    if(p.incStatus!=='eligible'){p.amount=0;return;}
-    const bi=p.bandIdx>=0?p.bandIdx:0;
-    const bMult=[1.0,1.0,1.4,1.8,2.4][Math.min(bi,4)];
-    p.amount=roundK(unitValue*bMult);
-  });
-  incTl.forEach(p=>{
-    if(p.incStatus!=='eligible'){p.amount=0;return;}
-    p.amount=roundK(unitValue*3*p.tlBandMult);
-  });
-  const cpAmount=roundK(unitValue*unitC);
+  const totalA=incA.reduce((s,p)=>s+(p.amountFinal||0),0);
+  const totalT=incTl.reduce((s,p)=>s+(p.amountFinal||0),0);
+  const totalC=cpEntry?.amountFinal||0;
+  const totalAssigned=totalA+totalT+totalC;
 
-  const totalA=incA.reduce((s,p)=>s+p.amount,0);
-  const totalT=incTl.reduce((s,p)=>s+p.amount,0);
-  const totalAssigned=totalA+totalT+cpAmount;
-
-  // ── Summary ──
+  // ── SUMMARY ──
+  const eligA=incA.filter(p=>p.incStatus==='eligible').length;
+  const manualA=incA.filter(p=>p.incStatus==='manual').length;
   document.getElementById('inc-summary-grid').innerHTML=`
-    <div class="inc-stat"><div class="inc-stat-label">Presupuesto total</div><div class="inc-stat-value" style="color:var(--accent)">${fmtARS(totalBudget)}</div><div class="inc-stat-sub">un solo pool distribuido</div></div>
-    <div class="inc-stat"><div class="inc-stat-label">Analistas elegibles</div><div class="inc-stat-value" style="color:var(--green)">${eligibleA.length}</div><div class="inc-stat-sub">de ${analistas.length} en el período</div></div>
-    <div class="inc-stat"><div class="inc-stat-label">TLs elegibles</div><div class="inc-stat-value" style="color:var(--purple)">${eligibleTl.length}</div><div class="inc-stat-sub">de ${incTl.length} equipos</div></div>
-    <div class="inc-stat"><div class="inc-stat-label">Asignado analistas</div><div class="inc-stat-value" style="color:var(--teal)">${fmtARS(totalA)}</div><div class="inc-stat-sub">promedio ${fmtARS(eligibleA.length?totalA/eligibleA.length:0)}/persona</div></div>
-    <div class="inc-stat"><div class="inc-stat-label">Asignado TLs</div><div class="inc-stat-value" style="color:var(--teal)">${fmtARS(totalT)}</div><div class="inc-stat-sub">${eligibleTl.length} TLs elegibles</div></div>
-    <div class="inc-stat"><div class="inc-stat-label">Reserva CP</div><div class="inc-stat-value" style="color:var(--amber)">${fmtARS(cpAmount)}</div><div class="inc-stat-sub">sujeto a calidad auditada</div></div>`;
+    <div class="inc-stat"><div class="inc-stat-label">Presupuesto total</div><div class="inc-stat-value" style="color:var(--accent)">${fmtARS(budget)}</div><div class="inc-stat-sub">tope base ${fmtARS(roundK(topeBase))}/analista</div></div>
+    <div class="inc-stat"><div class="inc-stat-label">Analistas elegibles</div><div class="inc-stat-value" style="color:var(--green)">${eligA}</div><div class="inc-stat-sub">${manualA>0?`${manualA} en revisión manual · `:''}${analistas.length} total</div></div>
+    <div class="inc-stat"><div class="inc-stat-label">TLs elegibles</div><div class="inc-stat-value" style="color:var(--purple)">${incTl.filter(p=>p.incStatus==='eligible').length}</div><div class="inc-stat-sub">de ${incTl.length} equipos</div></div>
+    <div class="inc-stat"><div class="inc-stat-label">Total asignado</div><div class="inc-stat-value" style="color:var(--teal)">${fmtARS(totalAssigned)}</div><div class="inc-stat-sub">remanente ${fmtARS(Math.max(0,budget-totalAssigned))}</div></div>
+    <div class="inc-stat"><div class="inc-stat-label">Analistas</div><div class="inc-stat-value" style="color:var(--teal)">${fmtARS(totalA)}</div><div class="inc-stat-sub">prom. ${fmtARS(eligA?totalA/eligA:0)}/persona</div></div>
+    <div class="inc-stat"><div class="inc-stat-label">TLs + CP</div><div class="inc-stat-value" style="color:var(--teal)">${fmtARS(totalT+totalC)}</div><div class="inc-stat-sub">${incTl.filter(p=>p.incStatus==='eligible').length+(cpEntry?.incStatus==='eligible'?1:0)} elegibles</div></div>`;
 
-  // ── Table analistas ──
+  const sw=document.getElementById('inc-scale-warn');
+  if(scaleApplied){sw.style.display='block';sw.textContent=`⚠ El presupuesto no alcanza para pagar todos los topes. Se aplicó factor de escala proporcional: ${(scaleFactor*100).toFixed(1)}%. Todos los elegibles reciben el mismo porcentaje de su tope.`;}
+  else sw.style.display='none';
+
+  // ── TABLA ANALISTAS ──
   const sortedA=[...incA].sort((a,b)=>b.avgPts-a.avgPts);
   document.getElementById('inc-table-analistas').innerHTML=`
-    <div class="inc-table-wrap" style="margin-top:12px"><table>
-      <thead><tr>
-        <th>Colaborador</th><th>Equipo TL</th><th>Pts/día</th><th>IDs/día</th><th>Días</th><th>Banda</th><th>Estado</th><th>Incentivo</th>
-      </tr></thead>
-      <tbody>${sortedA.map(p=>`<tr>
+    <div class="inc-table-wrap" style="margin-top:10px"><table>
+      <thead><tr><th>Colaborador</th><th>Equipo</th><th>Pts/día</th><th>IDs/día</th><th>Días</th><th>Calidad</th><th>Banda</th><th>Estado</th><th>Incentivo</th></tr></thead>
+      <tbody>${sortedA.map(p=>`<tr${p.activeDays===0?' style="opacity:.5"':''}>
         <td class="name-cell">${p.nombre||p.user}</td>
         <td style="font-size:11px;color:var(--text3)">${p.equipo||'—'}</td>
-        <td class="mono-cell" style="color:${p.band.color}">${p.avgPts.toFixed(1)}</td>
-        <td class="mono-cell" style="color:var(--teal)">${p.avgIds.toFixed(0)}</td>
+        <td class="mono-cell" style="color:${p.band.color}">${p.avgPts>0?p.avgPts.toFixed(1):'—'}</td>
+        <td class="mono-cell" style="color:var(--teal)">${p.avgIds>0?p.avgIds.toFixed(0):'—'}</td>
         <td class="mono-cell" style="color:var(--text3)">${p.activeDays}</td>
-        <td><span class="badge ${p.band.css}">${p.band.label}</span></td>
-        <td>${p.incStatus==='eligible'?'<span class="eligible-tag">Elegible</span>':p.incStatus==='no_data'?'<span class="manual-tag">Sin datos</span>':'<span class="ineligible-tag">No elegible</span>'}</td>
-        <td>${p.incStatus==='eligible'?`<span class="amount-tag">${fmtARS(p.amount)}</span>`:'<span style="color:var(--text3)">—</span>'}</td>
+        <td class="mono-cell">${p.calidad!==null?`<span style="color:${p.calidad>=90?'var(--green)':'var(--red)'}">${p.calidad.toFixed(1)}%</span> <span style="color:var(--text3);font-size:10px">(${p.calTotal})</span>`:'<span style="color:var(--text3)">—</span>'}</td>
+        <td>${p.activeDays>0?`<span class="badge ${p.band.css}">${p.band.label}</span>`:'—'}</td>
+        <td>${p.incStatus==='eligible'?'<span class="eligible-tag">Elegible</span>':p.incStatus==='manual'?'<span class="manual-tag">Revisión manual</span>':p.incStatus==='inactive'?'<span style="font-size:10px;color:var(--text3)">Sin actividad</span>':'<span class="ineligible-tag">No elegible</span>'}</td>
+        <td>${p.incStatus==='eligible'?`<span class="amount-tag">${fmtARS(p.amountFinal)}</span>${scaleApplied?` <span style="font-size:10px;color:var(--text3)">(tope ${fmtARS(roundK(p.amount))})</span>`:''}`:'<span style="color:var(--text3)">—</span>'}</td>
       </tr>`).join('')}</tbody>
     </table></div>`;
-  document.getElementById('inc-notice-analistas').innerHTML=`<strong>Simulación estimada · no representa liquidación final.</strong> Calidad auditada requiere validación manual. Distribución jerárquica: analista Base ×1.0 · Sólido ×1.4 · HP ×1.8 · Elite ×2.4. Redondeo a $1.000. Total unidades en el sistema: ${totalUnits.toFixed(1)} → valor unitario: ${fmtARS(unitValue)}.`;
+  document.getElementById('inc-notice-analistas').innerHTML=`<strong>Simulación estimada · no representa liquidación final.</strong> Topes: Base ${fmtARS(roundK(topeBase))} · Sólido ${fmtARS(roundK(topeBase*1.4))} · HP ${fmtARS(roundK(topeBase*1.8))} · Elite ${fmtARS(roundK(topeBase*2.4))}. Umbral calidad 90%. Redondeo $1.000.${!hasCalidad?' Calidad no disponible — cargá auditados.csv para elegibilidad completa.':''}`;
 
-  // ── Table TLs ──
+  // ── TABLA TLs ──
   document.getElementById('inc-table-tls').innerHTML=`
-    <div class="inc-table-wrap" style="margin-top:12px"><table>
-      <thead><tr>
-        <th>Team Leader</th><th>Equipo</th><th>Prom. equipo</th><th>% elegible</th><th>Banda TL</th><th>Estado</th><th>Incentivo</th>
-      </tr></thead>
+    <div class="inc-table-wrap" style="margin-top:10px"><table>
+      <thead><tr><th>Team Leader</th><th>Equipo</th><th>Prom. equipo</th><th>% elegible</th><th>Banda TL</th><th>Estado</th><th>Tope</th><th>Incentivo</th></tr></thead>
       <tbody>${incTl.map(p=>`<tr>
         <td class="name-cell">${p.nombre}</td>
         <td class="mono-cell" style="color:var(--text3)">${p.teamSize} pers.</td>
@@ -1556,75 +1521,59 @@ function runIncentivos() {
         <td class="mono-cell">${(p.pctEligible*100).toFixed(0)}%</td>
         <td>${p.tlBandLabel?`<span class="badge ${p.tlBandLabel==='High Performer'?'bh':p.tlBandLabel==='Sólido'?'bs':'bb'}">${p.tlBandLabel}</span>`:'—'}</td>
         <td>${p.incStatus==='eligible'?'<span class="eligible-tag">Elegible</span>':'<span class="ineligible-tag">No elegible</span>'}</td>
-        <td>${p.incStatus==='eligible'?`<span class="amount-tag">${fmtARS(p.amount)}</span>`:'<span style="color:var(--text3)">—</span>'}</td>
+        <td class="mono-cell" style="color:var(--text3)">${p.incStatus==='eligible'?fmtARS(roundK(p.amount)):'—'}</td>
+        <td>${p.incStatus==='eligible'?`<span class="amount-tag">${fmtARS(p.amountFinal)}</span>`:'<span style="color:var(--text3)">—</span>'}</td>
       </tr>`).join('')}</tbody>
     </table></div>`;
-  document.getElementById('inc-notice-tls').innerHTML=`Cada TL elegible equivale a 3 unidades base × multiplicador de banda (Base ×1.0 · Sólido ×1.5 · HP ×2.0). Ajuste de calidad grupal requiere datos de auditoría. Remanente por redondeo: ${fmtARS(Math.max(0,totalBudget-totalAssigned))}.`;
+  document.getElementById('inc-notice-tls').innerHTML=`Topes TL: Base ${fmtARS(roundK(topeBase*2))} · Sólido ${fmtARS(roundK(topeBase*2.8))} · HP ${fmtARS(roundK(topeBase*3.6))}. Elegibilidad: promedio equipo ≥ 90 pts/día + ≥ 70% en Base o superior.`;
 
   // ── CP ──
-  document.getElementById('inc-table-cp').innerHTML=`
-    <div class="inc-criteria" style="margin-top:12px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-        <span class="manual-tag">Revisión manual requerida</span>
-        <span style="font-size:12px;color:var(--text2)">Victoria Tofalo · Coordinadora Pedagógica</span>
-      </div>
-      <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:14px">La CP equivale a 4 unidades base en el sistema jerárquico. El monto reservado es <span class="amount-tag">${fmtARS(cpAmount)}</span>. Para confirmar elegibilidad ingresá la calidad promedio del período:</p>
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-        <span class="budget-label">Calidad general (%)</span>
-        <input class="budget-input" type="number" id="cp-quality-input" placeholder="ej: 94.2" min="80" max="100" step="0.1" style="width:100px">
-        <button class="inc-calc-btn" onclick="calcCP(${cpAmount})">Ver banda</button>
-        <span id="cp-result"></span>
-      </div>
-      <div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-        <div class="inc-stat"><div class="inc-stat-label">Base ≥93%</div><div style="font-size:12px;color:var(--green);margin-top:4px">×0.8 → ${fmtARS(cpAmount*0.8)}</div></div>
-        <div class="inc-stat"><div class="inc-stat-label">Sólido ≥95%</div><div style="font-size:12px;color:var(--teal);margin-top:4px">×1.0 → ${fmtARS(cpAmount)}</div></div>
-        <div class="inc-stat"><div class="inc-stat-label">HP ≥97%</div><div style="font-size:12px;color:var(--purple);margin-top:4px">×1.2 → ${fmtARS(cpAmount*1.2)}</div></div>
-      </div>
-    </div>`;
-  document.getElementById('inc-notice-cp').innerHTML=`La CP responde por la calidad transversal del equipo. Monto calculado proporcional al presupuesto total via unidades jerárquicas. Validación manual requerida antes de cualquier pago.`;
+  document.getElementById('inc-table-cp').innerHTML=cpEntry?`
+    <div class="inc-table-wrap" style="margin-top:10px"><table>
+      <thead><tr><th>Colaboradora</th><th>Calidad equipo</th><th>Banda CP</th><th>Estado</th><th>Tope</th><th>Incentivo</th></tr></thead>
+      <tbody><tr>
+        <td class="name-cell">${cpEntry.nombre||cpEntry.user}</td>
+        <td class="mono-cell">${cpEntry.calEq!==null?`<span style="color:${cpEntry.calEq>=90?'var(--green)':'var(--red)'}">${cpEntry.calEq.toFixed(1)}%</span>`:'<span style="color:var(--text3)">Sin datos</span>'}</td>
+        <td>${cpEntry.cpBandLabel?`<span class="badge ${cpEntry.cpBandLabel==='High Performer'?'bh':cpEntry.cpBandLabel==='Sólido'?'bs':cpEntry.cpBandLabel==='Base'?'bb':'bp'}">${cpEntry.cpBandLabel}</span>`:'—'}</td>
+        <td>${cpEntry.cpStatus==='eligible'?'<span class="eligible-tag">Elegible</span>':cpEntry.cpStatus==='manual'?'<span class="manual-tag">Revisión manual</span>':'<span class="ineligible-tag">No elegible</span>'}</td>
+        <td class="mono-cell" style="color:var(--text3)">${cpEntry.cpStatus==='eligible'?fmtARS(roundK(cpEntry.amount)):'—'}</td>
+        <td>${cpEntry.cpStatus==='eligible'?`<span class="amount-tag">${fmtARS(cpEntry.amountFinal)}</span>`:'<span style="color:var(--text3)">—</span>'}</td>
+      </tr></tbody>
+    </table></div>`
+    :'<div style="font-size:12px;color:var(--text3);padding:12px">No se encontró ningún colaborador con rol de Coordinador/a en equipo_colaboradores.csv</div>';
+  document.getElementById('inc-notice-cp').innerHTML=`La CP responde por la calidad promedio ponderada de todos los analistas (Modelo A: SdC + MAO unificados). Topes: Base ${fmtARS(roundK(topeBase*2))} · Sólido ${fmtARS(roundK(topeBase*2.8))} · HP ${fmtARS(roundK(topeBase*3.6))}. Umbral 90%. ${!hasCalidad?'Cargá auditados.csv para calcular automáticamente.':''}`;
 
   document.getElementById('inc-empty').style.display='none';
   document.getElementById('inc-content').style.display='block';
 }
 
-function calcCP(cpAmount) {
-  const q=+(document.getElementById('cp-quality-input')?.value)||0;
-  const el=document.getElementById('cp-result');
-  if(!q){el.textContent='Ingresá un valor.';return;}
-  if(q<93){el.innerHTML='<span class="ineligible-tag">No elegible</span> Calidad < 93%';}
-  else{
-    const band=q>=97?'High Performer':q>=95?'Sólido':'Base';
-    const mult=q>=97?1.2:q>=95?1.0:0.8;
-    el.innerHTML=`<span class="eligible-tag">${band}</span> &nbsp; <span class="amount-tag">${fmtARS(roundK(cpAmount*mult))}</span>`;
-  }
-}
-
-function switchIncTab(tab) {
+function switchIncTab(tab){
   const tabs=['analistas','tls','cp'];
   document.querySelectorAll('.role-tab').forEach((t,i)=>t.classList.toggle('active',tabs[i]===tab));
   document.querySelectorAll('.inc-role-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById(`inc-panel-${tab}`).classList.add('active');
 }
 
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
 // NAV
-// ═══════════════════════════════════════════════════════════════
-function showPage(id) {
+// ═══════════════════════════════════════════════════════════
+function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById(`page-${id}`).classList.add('active');
   const map={upload:0,historico:1,ranking:2,calc:3,incentivos:4};
   document.querySelectorAll('.nav-item')[map[id]]?.classList.add('active');
-  if(id==='calc') renderCalcSliders();
+  if(id==='calc')renderCalcSliders();
 }
 
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
 // INIT
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
 renderAllSidebar();
 renderCalcSliders();
 renderBandsRef();
 renderScenarios();
+updateCapabilities();
 </script>
 </body>
 </html>
