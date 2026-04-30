@@ -471,8 +471,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <div class="inc-section">
         <div class="inc-section-title">Detalle Team Leaders</div>
         <div class="inc-criteria">
-          <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Elegibilidad:</strong> Promedio equipo ≥ 90 pts/día + ≥ 70% del equipo en banda Base o superior</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Topes:</strong> Mismo rango que analistas × 2. Base ×2.0 · Sólido ×2.8 · HP ×3.6 sobre tope Base analista</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Elegibilidad:</strong> Promedio equipo ≥ 75 pts/día (mínimo absoluto)</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Bandas relativas al promedio general del período:</strong> Base (75 pts – prom. general) · Sólido (≥ prom. general) · HP (≥ prom. general +10%)</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--purple)"></div><strong style="color:var(--text)">Topes:</strong> Base ×2.0 · Sólido ×2.8 · HP ×3.6 sobre tope Base analista</div>
         </div>
         <div id="inc-table-tls"></div>
         <div class="inc-notice" id="inc-notice-tls"></div>
@@ -1410,24 +1411,37 @@ function runIncentivos(){
     return{...p,incStatus:status,reason,amount:tope,calidad,calTotal,bandIdx:bi};
   });
 
-  // ── TLs ──
+  // ── TLs — bandas relativas al promedio general del periodo ──
+  // Promedio general: todos los analistas con al menos 1 dia activo
+  const activeAnalistas=analistas.filter(p=>p.activeDays>0);
+  const avgGeneral=activeAnalistas.length
+    ?activeAnalistas.reduce((s,p)=>s+p.avgPts,0)/activeAnalistas.length:0;
+
   const tlNames=[...new Set(analistas.map(p=>p.equipo).filter(Boolean))];
   const incTl=tlNames.map(tlName=>{
     const team=analistas.filter(p=>p.equipo===tlName&&p.activeDays>0);
     if(!team.length)return null;
     const avgT=team.reduce((s,p)=>s+p.avgPts,0)/team.length;
-    const pctEl=team.filter(p=>p.avgPts>=88).length/team.length;
     let status='no_eligible',reason='',tlBandLabel='',tlBandIdx=0;
-    if(avgT<90){status='no_eligible';reason=`Promedio equipo ${avgT.toFixed(1)} pts < 90`;}
-    else if(pctEl<0.7){status='no_eligible';reason=`${(pctEl*100).toFixed(0)}% en banda Base < 70%`;}
-    else{
+    if(avgT<75){
+      status='no_eligible';
+      reason='Promedio equipo '+avgT.toFixed(1)+' pts < 75 (minimo absoluto)';
+    } else {
       status='eligible';
-      if(avgT>=103&&pctEl>=0.85){tlBandLabel='High Performer';tlBandIdx=3;}
-      else if(avgT>=95&&pctEl>=0.8){tlBandLabel='Sólido';tlBandIdx=2;}
-      else{tlBandLabel='Base';tlBandIdx=1;}
+      const umbralHP=avgGeneral*1.1;
+      if(avgT>=umbralHP){
+        tlBandLabel='High Performer';tlBandIdx=3;
+        reason=avgT.toFixed(1)+' pts > promedio general +10% ('+umbralHP.toFixed(1)+')';
+      } else if(avgT>=avgGeneral){
+        tlBandLabel='Solido';tlBandIdx=2;
+        reason=avgT.toFixed(1)+' pts >= promedio general ('+avgGeneral.toFixed(1)+')';
+      } else {
+        tlBandLabel='Base';tlBandIdx=1;
+        reason=avgT.toFixed(1)+' pts entre 75 y promedio general ('+avgGeneral.toFixed(1)+')';
+      }
     }
     const amount=status==='eligible'?topesTL[tlBandIdx]:0;
-    return{nombre:tlName,avgTeam:avgT,pctEligible:pctEl,incStatus:status,reason,tlBandLabel,tlBandIdx,amount,teamSize:team.length};
+    return{nombre:tlName,avgTeam:avgT,avgGeneral,incStatus:status,reason,tlBandLabel,tlBandIdx,amount,teamSize:team.length};
   }).filter(Boolean);
 
   // ── CP ──
@@ -1513,19 +1527,19 @@ function runIncentivos(){
   // ── TABLA TLs ──
   document.getElementById('inc-table-tls').innerHTML=`
     <div class="inc-table-wrap" style="margin-top:10px"><table>
-      <thead><tr><th>Team Leader</th><th>Equipo</th><th>Prom. equipo</th><th>% elegible</th><th>Banda TL</th><th>Estado</th><th>Tope</th><th>Incentivo</th></tr></thead>
+      <thead><tr><th>Team Leader</th><th>Equipo</th><th>Prom. equipo</th><th>Prom. general</th><th>Banda TL</th><th>Estado</th><th>Tope</th><th>Incentivo</th></tr></thead>
       <tbody>${incTl.map(p=>`<tr>
         <td class="name-cell">${p.nombre}</td>
         <td class="mono-cell" style="color:var(--text3)">${p.teamSize} pers.</td>
         <td class="mono-cell" style="color:${getBand(p.avgTeam).color}">${p.avgTeam.toFixed(1)}</td>
-        <td class="mono-cell">${(p.pctEligible*100).toFixed(0)}%</td>
+        <td class="mono-cell" style="color:var(--text3)">${p.avgGeneral?p.avgGeneral.toFixed(1)+' pts ref.':'—'}</td>
         <td>${p.tlBandLabel?`<span class="badge ${p.tlBandLabel==='High Performer'?'bh':p.tlBandLabel==='Sólido'?'bs':'bb'}">${p.tlBandLabel}</span>`:'—'}</td>
         <td>${p.incStatus==='eligible'?'<span class="eligible-tag">Elegible</span>':'<span class="ineligible-tag">No elegible</span>'}</td>
         <td class="mono-cell" style="color:var(--text3)">${p.incStatus==='eligible'?fmtARS(roundK(p.amount)):'—'}</td>
         <td>${p.incStatus==='eligible'?`<span class="amount-tag">${fmtARS(p.amountFinal)}</span>`:'<span style="color:var(--text3)">—</span>'}</td>
       </tr>`).join('')}</tbody>
     </table></div>`;
-  document.getElementById('inc-notice-tls').innerHTML=`Topes TL: Base ${fmtARS(roundK(topeBase*2))} · Sólido ${fmtARS(roundK(topeBase*2.8))} · HP ${fmtARS(roundK(topeBase*3.6))}. Elegibilidad: promedio equipo ≥ 90 pts/día + ≥ 70% en Base o superior.`;
+  document.getElementById('inc-notice-tls').innerHTML=`Topes TL: Base ${fmtARS(roundK(topeBase*2))} · Sólido ${fmtARS(roundK(topeBase*2.8))} · HP ${fmtARS(roundK(topeBase*3.6))}. Bandas relativas al promedio general del período (${avgGeneral.toFixed(1)} pts): Base = 75–${avgGeneral.toFixed(1)} pts · Sólido = ${avgGeneral.toFixed(1)}–${(avgGeneral*1.1).toFixed(1)} pts · HP > ${(avgGeneral*1.1).toFixed(1)} pts. Mínimo absoluto: 75 pts.`;
 
   // ── CP ──
   document.getElementById('inc-table-cp').innerHTML=cpEntry?`
