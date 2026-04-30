@@ -1452,9 +1452,9 @@ function runIncentivos(){
         else{cpBandLabel='Base';cpAmount=topesTL[1];}
         cpAmount=roundK(cpAmount);
       }
-      cpEntry={...cpPerson,calEq,cpStatus,cpBandLabel,amount:cpAmount};
+      cpEntry={...cpPerson,calEq,cpStatus,incStatus:cpStatus,cpBandLabel,amount:cpAmount,amountFinal:cpAmount};
     } else {
-      cpEntry={...cpPerson,calEq:null,cpStatus:'manual',cpBandLabel:'Sin datos calidad',amount:0};
+      cpEntry={...cpPerson,calEq:null,cpStatus:'manual',incStatus:'manual',cpBandLabel:'Sin datos calidad',amount:0,amountFinal:0};
     }
   }
 
@@ -1469,7 +1469,7 @@ function runIncentivos(){
   // Apply scale and rounding
   incA.forEach(p=>{if(p.incStatus==='eligible')p.amountFinal=roundK(p.amount*scaleFactor);else p.amountFinal=0;});
   incTl.forEach(p=>{if(p.incStatus==='eligible')p.amountFinal=roundK(p.amount*scaleFactor);else p.amountFinal=0;});
-  if(cpEntry&&cpEntry.incStatus==='eligible')cpEntry.amountFinal=roundK(cpEntry.amount*scaleFactor);
+  if(cpEntry&&cpEntry.incStatus==='eligible'){cpEntry.amountFinal=roundK(cpEntry.amount*scaleFactor);}
 
   const totalA=incA.reduce((s,p)=>s+(p.amountFinal||0),0);
   const totalT=incTl.reduce((s,p)=>s+(p.amountFinal||0),0);
@@ -1535,9 +1535,9 @@ function runIncentivos(){
         <td class="name-cell">${cpEntry.nombre||cpEntry.user}</td>
         <td class="mono-cell">${cpEntry.calEq!==null?`<span style="color:${cpEntry.calEq>=90?'var(--green)':'var(--red)'}">${cpEntry.calEq.toFixed(1)}%</span>`:'<span style="color:var(--text3)">Sin datos</span>'}</td>
         <td>${cpEntry.cpBandLabel?`<span class="badge ${cpEntry.cpBandLabel==='High Performer'?'bh':cpEntry.cpBandLabel==='Sólido'?'bs':cpEntry.cpBandLabel==='Base'?'bb':'bp'}">${cpEntry.cpBandLabel}</span>`:'—'}</td>
-        <td>${cpEntry.cpStatus==='eligible'?'<span class="eligible-tag">Elegible</span>':cpEntry.cpStatus==='manual'?'<span class="manual-tag">Revisión manual</span>':'<span class="ineligible-tag">No elegible</span>'}</td>
-        <td class="mono-cell" style="color:var(--text3)">${cpEntry.cpStatus==='eligible'?fmtARS(roundK(cpEntry.amount)):'—'}</td>
-        <td>${cpEntry.cpStatus==='eligible'?`<span class="amount-tag">${fmtARS(cpEntry.amountFinal)}</span>`:'<span style="color:var(--text3)">—</span>'}</td>
+        <td>${cpEntry.incStatus==='eligible'?'<span class="eligible-tag">Elegible</span>':cpEntry.incStatus==='manual'?'<span class="manual-tag">Revisión manual</span>':'<span class="ineligible-tag">No elegible</span>'}</td>
+        <td class="mono-cell" style="color:var(--text3)">${cpEntry.incStatus==='eligible'?fmtARS(roundK(cpEntry.amount)):'—'}</td>
+        <td>${cpEntry.incStatus==='eligible'?`<span class="amount-tag">${fmtARS(cpEntry.amountFinal)}</span>`:'<span style="color:var(--text3)">—</span>'}</td>
       </tr></tbody>
     </table></div>`
     :'<div style="font-size:12px;color:var(--text3);padding:12px">No se encontró ningún colaborador con rol de Coordinador/a en equipo_colaboradores.csv</div>';
