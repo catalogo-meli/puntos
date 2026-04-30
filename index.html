@@ -426,10 +426,12 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <input class="budget-input" type="number" id="inc-budget-total" placeholder="ej: 1000000" min="0" step="1000" style="width:140px">
       <span class="budget-label">Headcount ref.</span>
       <input class="budget-input" type="number" id="inc-headcount" value="45" min="1" max="200" step="1" style="width:70px">
-      <span class="budget-label" style="color:var(--text3);font-size:11px">analistas de referencia para calcular tope Base</span>
+      <span class="budget-label">Piso mínimo (pts/día)</span>
+      <input class="budget-input" type="number" id="inc-piso" value="75" min="50" max="100" step="1" style="width:70px">
+      <span class="budget-label" style="color:var(--text3);font-size:11px">aplica a analistas (curva) y TLs (elegibilidad)</span>
     </div>
     <div id="inc-topes-preview" style="display:none;background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius);padding:10px 14px;margin-bottom:9px">
-      <div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px">Topes por banda (calculados automáticamente)</div>
+      <div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px">Topes por banda · piso ${piso} pts · curva regresiva (√)</div>
       <div id="topes-content" style="display:grid;grid-template-columns:1fr 1fr;gap:4px 20px;font-size:12px"></div>
     </div>
     <div style="display:flex;justify-content:flex-end">
@@ -461,7 +463,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
         <div class="inc-criteria">
           <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Elegibilidad:</strong> Productividad ≥ 88 pts/día Y calidad ≥ 90% (Modelo A: SdC + MAO pool unificado, correcto=1.0 / leve=0.5 / grave=0.0)</div>
           <div class="crit-row"><div class="crit-dot" style="background:var(--amber)"></div><strong style="color:var(--text)">Sin datos calidad (< 5 registros):</strong> Revisión manual si productividad es elegible</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Topes:</strong> Base ×1.0 · Sólido ×1.4 · HP ×1.8 · Elite ×2.4 sobre el tope Base calculado</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Curva regresiva (√):</strong> desde el piso mínimo configurable hasta 110 pts. El monto crece rápido al principio y se aplana al acercarse al tope de banda. Piso configurable junto al presupuesto.</div>
         </div>
         <div id="inc-table-analistas"></div>
         <div class="inc-notice" id="inc-notice-analistas"></div>
@@ -473,8 +475,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <div class="inc-section">
         <div class="inc-section-title">Detalle Team Leaders</div>
         <div class="inc-criteria">
-          <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Elegibilidad:</strong> Promedio equipo ≥ 75 pts/día (mínimo absoluto)</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Bandas relativas al promedio general del período:</strong> Base (75 pts – prom. general) · Sólido (≥ prom. general) · HP (≥ prom. general +10%)</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Elegibilidad:</strong> Promedio equipo ≥ piso mínimo configurable (default 75 pts)</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Bandas relativas al promedio general del período:</strong> Base (piso – prom. general) · Sólido (≥ prom. general) · HP (≥ prom. general +10%)</div>
           <div class="crit-row"><div class="crit-dot" style="background:var(--purple)"></div><strong style="color:var(--text)">Topes:</strong> Base ×2.0 · Sólido ×2.8 · HP ×3.6 sobre tope Base analista</div>
         </div>
         <div id="inc-table-tls"></div>
@@ -526,7 +528,7 @@ let FLUJOS = [
   { id:'Enhanced Content', label:'Enhanced Content', weight:0.95 },
   { id:'Enhancement',      label:'Enhancement',      weight:1.3  },
   { id:'Validación',       label:'Validación',       weight:0.95 },
-  { id:'Soporte',          label:'Soporte',    weight:4.0  },
+  { id:'Soporte',          label:'Soporte (DONE)',    weight:4.0  },
   { id:'Fallos',           label:'Fallos',           weight:1.1  },
   { id:'Known Values',     label:'Known Values',     weight:1.0  },
 ];
@@ -1271,7 +1273,8 @@ function renderScenarios(){
     {name:'70 Dem + 10 Enh + 5 EC',mix:{Demanda:70,'Enhanced Content':5,Enhancement:10}},
     {name:'55 Dem + 25 Enh + 8 EC',mix:{Demanda:55,'Enhanced Content':8,Enhancement:25}},
     {name:'50 Dem + 30 Enh + 10 EC',mix:{Demanda:50,'Enhanced Content':10,Enhancement:30}},
-    {name:'100 Validación',mix:{Validación:100}},
+    {name:'80 Validación',mix:{Validación:80}},
+    {name:'20 Soporte DONE + 60 Dem',mix:{Soporte:20,Demanda:60}},
   ];
   document.getElementById('scenarios-grid').innerHTML=sc.map(s=>{
     const pts=Object.entries(s.mix).reduce((sum,[id,v])=>sum+v*(get(id)||1),0);
@@ -1310,7 +1313,7 @@ function populateIncPeriodSelects(){
   PROC.months.forEach(mk=>{const[y,m]=mk.split('-');ms.insertAdjacentHTML('beforeend',`<option value="${mk}">${MONTH_NAMES[+m-1]} ${y}</option>`);});
   onPeriodTypeChange();
   // Update topes preview on input
-  ['inc-budget-total','inc-headcount'].forEach(id=>{
+  ['inc-budget-total','inc-headcount','inc-piso'].forEach(id=>{
     document.getElementById(id).addEventListener('input',updateTopesPreview);
   });
 }
@@ -1324,6 +1327,7 @@ function onPeriodTypeChange(){
 function updateTopesPreview(){
   const budget=+(document.getElementById('inc-budget-total').value)||0;
   const hc=+(document.getElementById('inc-headcount').value)||45;
+  const piso=+(document.getElementById('inc-piso').value)||75;
   if(!budget){document.getElementById('inc-topes-preview').style.display='none';return;}
   const base=budget/hc;
   const fmtARS=n=>'$'+Math.round(n).toLocaleString('es-AR');
@@ -1374,6 +1378,8 @@ function runIncentivos(){
   const budget=+(document.getElementById('inc-budget-total').value)||0;
   if(!budget){alert('Ingresá un presupuesto total.');return;}
   const hc=+(document.getElementById('inc-headcount').value)||45;
+  const piso=+(document.getElementById('inc-piso').value)||75;
+  const pisoTL=piso; // mismo piso para TLs
 
   const topeBase=budget/hc;
   const topes={a:{0:null,1:topeBase,2:topeBase*1.4,3:topeBase*1.8,4:topeBase*2.4}};
@@ -1408,8 +1414,16 @@ function runIncentivos(){
     else if(calStatus==='no_data'){status='manual';reason='Sin registros de auditoría';}
     else if(calStatus==='insufficient'){status='manual';reason=`Solo ${calTotal} registros (mín. 5)`;}
     else if(calStatus==='fail'){status='no_eligible';reason=`Calidad ${calidad.toFixed(1)}% < 90%`;}
-    const tope=status==='eligible'?topes.a[bi]:0;
-    return{...p,incStatus:status,reason,amount:tope,calidad,calTotal,bandIdx:bi};
+    // Curva regresiva: monto proporcional a pts independientemente de la banda
+    // Solo aplica si productividad >= piso Y calidad OK
+    let amount=0;
+    if(status==='eligible'){
+      const MAX_PTS=110;
+      const factor=Math.sqrt(Math.max(0,(p.avgPts-piso)/(MAX_PTS-piso)));
+      const topeMax=topes.a[bi]||topeBase; // tope de su banda actual
+      amount=roundK(topeMax*Math.min(1,factor));
+    }
+    return{...p,incStatus:status,reason,amount,calidad,calTotal,bandIdx:bi};
   });
 
   // ── TLs — bandas relativas al promedio general del periodo ──
@@ -1424,9 +1438,9 @@ function runIncentivos(){
     if(!team.length)return null;
     const avgT=team.reduce((s,p)=>s+p.avgPts,0)/team.length;
     let status='no_eligible',reason='',tlBandLabel='',tlBandIdx=0;
-    if(avgT<75){
+    if(avgT<pisoTL){
       status='no_eligible';
-      reason='Promedio equipo '+avgT.toFixed(1)+' pts < 75 (minimo absoluto)';
+      reason='Promedio equipo '+avgT.toFixed(1)+' pts < '+pisoTL+' (piso minimo)';
     } else {
       status='eligible';
       const umbralHP=avgGeneral*1.1;
@@ -1523,7 +1537,7 @@ function runIncentivos(){
         <td>${p.incStatus==='eligible'?`<span class="amount-tag">${fmtARS(p.amountFinal)}</span>${scaleApplied?` <span style="font-size:10px;color:var(--text3)">(tope ${fmtARS(roundK(p.amount))})</span>`:''}`:'<span style="color:var(--text3)">—</span>'}</td>
       </tr>`).join('')}</tbody>
     </table></div>`;
-  document.getElementById('inc-notice-analistas').innerHTML=`<strong>Simulación estimada · no representa liquidación final.</strong> Topes: Base ${fmtARS(roundK(topeBase))} · Sólido ${fmtARS(roundK(topeBase*1.4))} · HP ${fmtARS(roundK(topeBase*1.8))} · Elite ${fmtARS(roundK(topeBase*2.4))}. Umbral calidad 90%. Redondeo $1.000.${!hasCalidad?' Calidad no disponible — cargá auditados.csv para elegibilidad completa.':''}`;
+  document.getElementById('inc-notice-analistas').innerHTML=`<strong>Simulación estimada · no representa liquidación final.</strong> Curva regresiva (√) desde ${pisoTL} pts hasta 110 pts · tope máximo por banda. Piso ${pisoTL} pts — calidad ≥ 90% requerida. Umbral calidad duro: por debajo de 90% = no elegible. Redondeo $1.000.${!hasCalidad?' Calidad no disponible — cargá auditados.csv para elegibilidad completa.':''}`;
 
   // ── TABLA TLs ──
   document.getElementById('inc-table-tls').innerHTML=`
@@ -1540,7 +1554,7 @@ function runIncentivos(){
         <td>${p.incStatus==='eligible'?`<span class="amount-tag">${fmtARS(p.amountFinal)}</span>`:'<span style="color:var(--text3)">—</span>'}</td>
       </tr>`).join('')}</tbody>
     </table></div>`;
-  document.getElementById('inc-notice-tls').innerHTML=`Topes TL: Base ${fmtARS(roundK(topeBase*2))} · Sólido ${fmtARS(roundK(topeBase*2.8))} · HP ${fmtARS(roundK(topeBase*3.6))}. Bandas relativas al promedio general del período (${avgGeneral.toFixed(1)} pts): Base = 75–${avgGeneral.toFixed(1)} pts · Sólido = ${avgGeneral.toFixed(1)}–${(avgGeneral*1.1).toFixed(1)} pts · HP > ${(avgGeneral*1.1).toFixed(1)} pts. Mínimo absoluto: 75 pts.`;
+  document.getElementById('inc-notice-tls').innerHTML=`Topes TL: Base ${fmtARS(roundK(topeBase*2))} · Sólido ${fmtARS(roundK(topeBase*2.8))} · HP ${fmtARS(roundK(topeBase*3.6))}. Bandas relativas al promedio general del período (${avgGeneral.toFixed(1)} pts): Base = ${pisoTL}–${avgGeneral.toFixed(1)} pts · Sólido = ${avgGeneral.toFixed(1)}–${(avgGeneral*1.1).toFixed(1)} pts · HP > ${(avgGeneral*1.1).toFixed(1)} pts. Piso mínimo: ${pisoTL} pts.`;
 
   // ── CP ──
   document.getElementById('inc-table-cp').innerHTML=cpEntry?`
