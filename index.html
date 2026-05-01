@@ -517,12 +517,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
         <div class="inc-section-title">Team Leaders — evaluados por el rendimiento de su equipo</div>
         <div class="inc-criteria">
           <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Mínimo de entrada:</strong> el promedio de puntos del equipo tiene que superar el piso mínimo (default 75 pts). Si no llega, no hay incentivo ese período.</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Bandas por posición relativa al promedio general del período:</strong><br>
-            · <strong>Base</strong> — equipo entre el piso y el promedio general<br>
-            · <strong>Sólido</strong> — equipo igual o por encima del promedio general<br>
-            · <strong>High Performer</strong> — equipo más de 10% sobre el promedio general<br>
-            · <strong>Elite ⭐</strong> — equipo más de 20% sobre el promedio general</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--purple)"></div><strong style="color:var(--text)">Topes TL (doble del analista):</strong> Base ×2.0 · Sólido ×2.8 · HP ×3.6 · <strong>Elite ×4.8</strong></div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Bandas por posición relativa al promedio general:</strong> Base (piso → promedio) · Sólido (≥ promedio) · High Performer (+10%) · Elite ⭐ (+20%)</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--purple)"></div><strong style="color:var(--text)">Topes TL (doble del analista):</strong> Base ×2.0 · Sólido ×2.8 · HP ×3.6 · Elite ×4.8</div>
         </div>
         <div id="inc-table-tls"></div>
         <div class="inc-notice" id="inc-notice-tls"></div>
@@ -535,12 +531,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
         <div class="inc-section-title">Coordinadora Pedagógica — responde por la calidad de todo el equipo</div>
         <div class="inc-criteria">
           <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Métrica:</strong> calidad promedio ponderada de todos los analistas en el período (SdC + MAO unificados). Umbral mínimo de elegibilidad: 90%.</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Bandas por calidad general del equipo:</strong><br>
-            · <strong>Base</strong> — calidad entre 90% y 93%<br>
-            · <strong>Sólido</strong> — calidad entre 93% y 97%<br>
-            · <strong>High Performer</strong> — calidad entre 97% y 99%<br>
-            · <strong>Elite ⭐</strong> — calidad igual o mayor al 99%</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--purple)"></div><strong style="color:var(--text)">Topes CP (doble del analista):</strong> Base ×2.0 · Sólido ×2.8 · HP ×3.6 · <strong>Elite ×4.8</strong></div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Bandas por calidad del equipo:</strong> Base (90–93%) · Sólido (93–97%) · High Performer (97–99%) · Elite ⭐ (≥99%)</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--purple)"></div><strong style="color:var(--text)">Topes CP (doble del analista):</strong> Base ×2.0 · Sólido ×2.8 · HP ×3.6 · Elite ×4.8</div>
           <div class="crit-row"><div class="crit-dot" style="background:var(--amber)"></div><strong style="color:var(--text)">Sin datos de auditoría:</strong> el resultado queda en revisión manual. Cargá auditados.csv para calcularlo automáticamente.</div>
         </div>
         <div id="inc-table-cp"></div>
