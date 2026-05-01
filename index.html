@@ -390,12 +390,28 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px">
         <div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">¿Tenía iniciativa o incidencia? (opcional)</div>
         <div class="input-group" style="margin-bottom:7px">
-          <div class="input-label"><span class="tooltip-wrap">Iniciativa<span class="tooltip-icon">?</span><span class="tooltip-box">Si las tareas del día corresponden a una iniciativa específica, cada tarea suma los puntos de esa iniciativa. El bonus aplica sobre todas las tareas del mix.</span></span> <span id="lbl-ini-bonus" style="color:var(--green)">+0.00 pts/tarea</span></div>
-          <select class="calc-sel" id="calc-iniciativa" onchange="updateCalc()"><option value="">Sin iniciativa especial</option></select>
+          <div class="input-label">
+            <span class="tooltip-wrap">Iniciativa<span class="tooltip-icon">?</span><span class="tooltip-box">Seleccioná la iniciativa y después ajustá qué % de las tareas del día la tenían declarada. Si solo el 30% de tus tareas eran MAO, poné 30%.</span></span>
+            <span id="lbl-ini-bonus" style="color:var(--green)">+0.00 pts</span>
+          </div>
+          <select class="calc-sel" id="calc-iniciativa" onchange="if(!this.value){document.getElementById('pct-ini').value=0;document.getElementById('pct-ini-val').textContent='0%';}else if(+document.getElementById('pct-ini').value===0){document.getElementById('pct-ini').value=50;document.getElementById('pct-ini-val').textContent='50%';}updateCalc()" style="margin-bottom:5px"><option value="">Sin iniciativa</option></select>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:2px">
+            <span style="font-size:10px;color:var(--text3);white-space:nowrap">% de tareas con esta iniciativa</span>
+            <input type="range" id="pct-ini" min="0" max="100" step="5" value="0" oninput="document.getElementById('pct-ini-val').textContent=this.value+'%';updateCalc()" style="flex:1;-webkit-appearance:none;height:3px;border-radius:2px;background:var(--border2);outline:none">
+            <span id="pct-ini-val" style="font-size:11px;font-family:'DM Mono',monospace;color:var(--text);min-width:32px;text-align:right">0%</span>
+          </div>
         </div>
         <div class="input-group">
-          <div class="input-label"><span class="tooltip-wrap">Incidencia<span class="tooltip-icon">?</span><span class="tooltip-box">Paso extra necesario para resolver la tarea. Solo suma una incidencia por sesión de cálculo. Los bloqueantes externos (Esperando respuesta, PPMC en espera) valen 0 pts.</span></span> <span id="lbl-inc-bonus" style="color:var(--teal)">+0.00 pts</span></div>
-          <select class="calc-sel" id="calc-incidencia" onchange="updateCalc()"><option value="">Sin incidencia adicional</option></select>
+          <div class="input-label">
+            <span class="tooltip-wrap">Incidencia<span class="tooltip-icon">?</span><span class="tooltip-box">Seleccioná el tipo de incidencia y ajustá qué % de las tareas del día la tuvieron. Si solo 1 de 70 tareas tuvo una incidencia, poné ~1%.</span></span>
+            <span id="lbl-inc-bonus" style="color:var(--teal)">+0.00 pts</span>
+          </div>
+          <select class="calc-sel" id="calc-incidencia" onchange="if(!this.value){document.getElementById('pct-inc').value=0;document.getElementById('pct-inc-val').textContent='0%';}else if(+document.getElementById('pct-inc').value===0){document.getElementById('pct-inc').value=10;document.getElementById('pct-inc-val').textContent='10%';}updateCalc()" style="margin-bottom:5px"><option value="">Sin incidencia</option></select>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:2px">
+            <span style="font-size:10px;color:var(--text3);white-space:nowrap">% de tareas con esta incidencia</span>
+            <input type="range" id="pct-inc" min="0" max="100" step="5" value="0" oninput="document.getElementById('pct-inc-val').textContent=this.value+'%';updateCalc()" style="flex:1;-webkit-appearance:none;height:3px;border-radius:2px;background:var(--border2);outline:none">
+            <span id="pct-inc-val" style="font-size:11px;font-family:'DM Mono',monospace;color:var(--text);min-width:32px;text-align:right">0%</span>
+          </div>
         </div>
       </div>
       <div class="breakdown">
@@ -1496,20 +1512,28 @@ function updateCalc(){
   const incObj=incKey?INCIDENCIAS[incKey]:null;
   const iniBonus=iniObj?.bonus||0;
   const incPts=incObj?.pts||0;
+  // Porcentaje de tareas que tienen esta iniciativa/incidencia (0-1)
+  const pctIni=(+(document.getElementById('pct-ini')?.value||0))/100;
+  const pctInc=(+(document.getElementById('pct-inc')?.value||0))/100;
   const lbI=document.getElementById('lbl-ini-bonus'),lbC=document.getElementById('lbl-inc-bonus');
-  if(lbI)lbI.textContent=`${iniBonus>=0?'+':''}${iniBonus.toFixed(2)} pts`;
-  if(lbC)lbC.textContent=`+${incPts.toFixed(2)} pts`;
+  // Mostrar el bonus efectivo promedio por tarea del día
+  if(lbI)lbI.textContent=`+${(iniBonus*pctIni).toFixed(2)} pts promedio`;
+  if(lbC)lbC.textContent=`+${(incPts*pctInc).toFixed(2)} pts promedio`;
   let total=0,tasks=0;
   const rows=[];
   FLUJOS.forEach(f=>{
     const v=CALC_VALS[f.id]||0;if(!v)return;
-    // Sumatorio: (peso_flujo + bonus_ini + pts_inc) por tarea
-    const ptsPerTask=f.weight+iniBonus+incPts;
-    const pts=v*ptsPerTask;
+    // Puntos base (todas las tareas)
+    const ptsBase=v*f.weight;
+    // Bonus de iniciativa solo sobre las tareas que la tenían (v × pctIni)
+    const ptsIni=v*pctIni*iniBonus;
+    // Puntos de incidencia solo sobre las tareas que la tuvieron (v × pctInc)
+    const ptsInc=v*pctInc*incPts;
+    const pts=ptsBase+ptsIni+ptsInc;
     total+=pts;tasks+=v;
     let lbl=`${f.label} ×${f.weight.toFixed(2)}`;
-    if(iniBonus)lbl+=` +${iniBonus.toFixed(2)} ini`;
-    if(incPts)lbl+=` +${incPts.toFixed(2)} inc`;
+    if(iniBonus&&pctIni>0)lbl+=` +${(pctIni*100).toFixed(0)}% ini(+${iniBonus.toFixed(2)})`;
+    if(incPts&&pctInc>0)lbl+=` +${(pctInc*100).toFixed(0)}% inc(+${incPts.toFixed(2)})`;
     rows.push(`<div class="bd-row"><span class="bd-lbl">${lbl}:</span><span class="bd-val">${pts.toFixed(1)}</span></div>`);
   });
   const be=document.getElementById('calc-breakdown');if(be)be.innerHTML=rows.join('');
