@@ -390,9 +390,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px">
         <div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">¿Tenía iniciativa o incidencia? (opcional)</div>
         <div id="ini-section" class="input-group" style="margin-bottom:7px">
-          <div id="ini-note" style="display:none;font-size:10px;color:var(--amber);margin-bottom:5px;padding:4px 7px;background:rgba(246,166,35,.08);border-radius:5px;border:1px solid rgba(246,166,35,.2)">
-            ⚠ Ningún flujo activo acepta iniciativas. Las iniciativas aplican solo a Enhancement y Soporte.
-          </div>
+          <div id="ini-note" style="display:none;font-size:10px;color:var(--amber);margin-bottom:5px;padding:4px 7px;background:rgba(246,166,35,.08);border-radius:5px;border:1px solid rgba(246,166,35,.2)"></div>
           <div class="input-label">
             <span class="tooltip-wrap">Iniciativa<span class="tooltip-icon">?</span><span class="tooltip-box">Solo aplica a flujos marcados con "ini" en el sidebar (Enhancement y Soporte por defecto). Si el mix no incluye esos flujos, el bonus no tiene efecto.</span></span>
             <span id="lbl-ini-bonus" style="color:var(--green)">+0.00 pts</span>
@@ -685,7 +683,7 @@ function renderFlujosList(){
         id="fw-${i}" onchange="FLUJOS[${i}].weight=+(this.value)||0" style="width:46px">
       <label title="¿Este flujo puede tener iniciativas?" style="display:flex;align-items:center;gap:3px;cursor:pointer;flex-shrink:0" onclick="event.stopPropagation()">
         <input type="checkbox" ${f.acceptsIni?'checked':''} 
-          onchange="FLUJOS[${i}].acceptsIni=this.checked;syncCalcSelectors();if(PROC)computeAll();"
+          onchange="FLUJOS[${i}].acceptsIni=this.checked;_updateIniVisibility();syncCalcSelectors();if(PROC)computeAll();"
           style="width:12px;height:12px;accent-color:var(--accent);cursor:pointer">
         <span style="font-size:9px;color:var(--text3);white-space:nowrap">ini</span>
       </label>
@@ -1511,24 +1509,33 @@ function syncCalcSelectors(){
   ic.innerHTML='<option value="">Sin incidencia</option>';
   Object.entries(INCIDENCIAS).sort((a,b)=>a[1].label.localeCompare(b[1].label)).forEach(([k,v])=>{ic.insertAdjacentHTML('beforeend',`<option value="${k}">${v.label} (+${v.pts.toFixed(1)}pts)</option>`);});
   ic.value=cc;
-  // Mostrar/ocultar sección de iniciativa según si hay flujos activos que la acepten
+  _updateIniVisibility();
+  updateCalc();
+}
+
+function _updateIniVisibility(){
   const anyAcceptsIni=FLUJOS.some(f=>f.acceptsIni&&(CALC_VALS[f.id]||0)>0);
   const iniSection=document.getElementById('ini-section');
   if(iniSection)iniSection.style.opacity=anyAcceptsIni?'1':'0.35';
   const iniNote=document.getElementById('ini-note');
-  if(iniNote)iniNote.style.display=anyAcceptsIni?'none':'block';
-  updateCalc();
+  if(!iniNote)return;
+  if(anyAcceptsIni){
+    iniNote.style.display='none';
+  } else {
+    // Generar dinámicamente la lista de flujos que aceptan iniciativas
+    const flujosCon=FLUJOS.filter(f=>f.acceptsIni).map(f=>f.label);
+    const listaFlujos=flujosCon.length
+      ?flujosCon.join(' y ')
+      :'ningún flujo configurado';
+    iniNote.innerHTML=`⚠ Ningún flujo activo acepta iniciativas en el mix actual. Las iniciativas aplican solo a: <strong>${listaFlujos}</strong>.`;
+    iniNote.style.display='block';
+  }
 }
 function onSlide(id,i,val){
   CALC_VALS[id]=+val;
   document.getElementById(`lbl-cf${i}`).textContent=val;
   document.getElementById(`v-cf${i}`).textContent=val;
-  // Actualizar visibilidad de sección de iniciativa
-  const anyAcceptsIni=FLUJOS.some(f=>f.acceptsIni&&(CALC_VALS[f.id]||0)>0);
-  const iniSection=document.getElementById('ini-section');
-  if(iniSection)iniSection.style.opacity=anyAcceptsIni?'1':'0.35';
-  const iniNote=document.getElementById('ini-note');
-  if(iniNote)iniNote.style.display=anyAcceptsIni?'none':'block';
+  _updateIniVisibility();
   updateCalc();
 }
 function updateCalc(){
