@@ -389,9 +389,12 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <div id="calc-sliders"></div>
       <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px">
         <div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">¿Tenía iniciativa o incidencia? (opcional)</div>
-        <div class="input-group" style="margin-bottom:7px">
+        <div id="ini-section" class="input-group" style="margin-bottom:7px">
+          <div id="ini-note" style="display:none;font-size:10px;color:var(--amber);margin-bottom:5px;padding:4px 7px;background:rgba(246,166,35,.08);border-radius:5px;border:1px solid rgba(246,166,35,.2)">
+            ⚠ Ningún flujo activo acepta iniciativas. Las iniciativas aplican solo a Enhancement y Soporte.
+          </div>
           <div class="input-label">
-            <span class="tooltip-wrap">Iniciativa<span class="tooltip-icon">?</span><span class="tooltip-box">Seleccioná la iniciativa y después ajustá qué % de las tareas del día la tenían declarada. Si solo el 30% de tus tareas eran MAO, poné 30%.</span></span>
+            <span class="tooltip-wrap">Iniciativa<span class="tooltip-icon">?</span><span class="tooltip-box">Solo aplica a flujos marcados con "ini" en el sidebar (Enhancement y Soporte por defecto). Si el mix no incluye esos flujos, el bonus no tiene efecto.</span></span>
             <span id="lbl-ini-bonus" style="color:var(--green)">+0.00 pts</span>
           </div>
           <select class="calc-sel" id="calc-iniciativa" onchange="if(!this.value){document.getElementById('pct-ini').value=0;document.getElementById('pct-ini-val').textContent='0%';}else if(+document.getElementById('pct-ini').value===0){document.getElementById('pct-ini').value=50;document.getElementById('pct-ini-val').textContent='50%';}updateCalc()" style="margin-bottom:5px"><option value="">Sin iniciativa</option></select>
@@ -582,13 +585,13 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 let DATA = { hist:null, equipo:null, auditados:null, mao:null };
 
 let FLUJOS = [
-  { id:'Demanda',          label:'Demanda',         weight:1.0  },
-  { id:'Enhanced Content', label:'Enhanced Content', weight:0.95 },
-  { id:'Enhancement',      label:'Enhancement',      weight:1.3  },
-  { id:'Validación',       label:'Validación',       weight:0.95 },
-  { id:'Soporte',          label:'Soporte',    weight:4.0  },
-  { id:'Fallos',           label:'Fallos',           weight:1.1  },
-  { id:'Known Values',     label:'Known Values',     weight:1.0  },
+  { id:'Demanda',          label:'Demanda',         weight:1.0,  acceptsIni:false },
+  { id:'Enhanced Content', label:'Enhanced Content', weight:0.95, acceptsIni:false },
+  { id:'Enhancement',      label:'Enhancement',      weight:1.3,  acceptsIni:true  },
+  { id:'Validación',       label:'Validación',       weight:0.95, acceptsIni:false },
+  { id:'Soporte',          label:'Soporte',          weight:4.0,  acceptsIni:true  },
+  { id:'Fallos',           label:'Fallos',           weight:1.1,  acceptsIni:false },
+  { id:'Known Values',     label:'Known Values',     weight:1.0,  acceptsIni:false },
 ];
 
 let INICIATIVAS = {
@@ -676,10 +679,16 @@ let _modalMode='';
 // ═══════════════════════════════════════════════════════════
 function renderFlujosList(){
   document.getElementById('flujos-list').innerHTML=FLUJOS.map((f,i)=>`
-    <div class="cfg-row">
-      <span class="cfg-label" title="${f.label}">${f.label}</span>
+    <div class="cfg-row" style="align-items:center">
+      <span class="cfg-label" title="${f.label}" style="flex:1;min-width:0">${f.label}</span>
       <input class="cfg-input" type="number" step="0.05" min="0" max="20" value="${f.weight}"
-        id="fw-${i}" onchange="FLUJOS[${i}].weight=+(this.value)||0">
+        id="fw-${i}" onchange="FLUJOS[${i}].weight=+(this.value)||0" style="width:46px">
+      <label title="¿Este flujo puede tener iniciativas?" style="display:flex;align-items:center;gap:3px;cursor:pointer;flex-shrink:0" onclick="event.stopPropagation()">
+        <input type="checkbox" ${f.acceptsIni?'checked':''} 
+          onchange="FLUJOS[${i}].acceptsIni=this.checked;syncCalcSelectors();if(PROC)computeAll();"
+          style="width:12px;height:12px;accent-color:var(--accent);cursor:pointer">
+        <span style="font-size:9px;color:var(--text3);white-space:nowrap">ini</span>
+      </label>
       <button class="cfg-del" onclick="deleteFlujo(${i})" title="Eliminar">✕</button>
     </div>`).join('');
 }
@@ -1062,9 +1071,13 @@ function computeAll(){
   // para evitar que valores de texto libre del CSV contaminen las listas.
   const changed=false;
 
-  // Precalcular mapa de flujos para O(1) lookup en lugar de find() en cada fila
+  // Precalcular mapas de flujos para O(1) lookup
   const flujoWeightMap={};
-  FLUJOS.forEach(f=>{flujoWeightMap[f.id]=f.weight;});
+  const flujoAcceptsIniMap={};
+  FLUJOS.forEach(f=>{
+    flujoWeightMap[f.id]=f.weight;
+    flujoAcceptsIniMap[f.id]=f.acceptsIni??true;
+  });
 
   // Parse rows — only DONE, only users in equipoFilter if available
   const rawRows=[];
@@ -1080,8 +1093,9 @@ function computeAll(){
     const inc=COL.incidencia?(r[COL.incidencia]||'').trim():'';
     const ids=COL.ids?(+(r[COL.ids]||0)||0):1;
     const pesoFlujo=flujoWeightMap[flujo]??1.0;
+    const flujoAcceptsIni=flujoAcceptsIniMap[flujo]??true;
     const iniKey=(ini||'').trim().toLowerCase();
-    const iniObj=_iniCache[iniKey]||_iniCache[_normKey(ini)]||{bonus:0};
+    const iniObj=flujoAcceptsIni?(_iniCache[iniKey]||_iniCache[_normKey(ini)]||{bonus:0}):{bonus:0};
     const incKey=(inc||'').trim().toLowerCase();
     const incObj=_incCache[incKey]||_incCache[_normKey(inc)]||{pts:0};
     const pts=pesoFlujo+iniObj.bonus+incObj.pts;
@@ -1491,18 +1505,30 @@ function syncCalcSelectors(){
   const is=document.getElementById('calc-iniciativa'),ic=document.getElementById('calc-incidencia');
   if(!is||!ic)return;
   const ci=is.value,cc=ic.value;
-  is.innerHTML='<option value="">— sin iniciativa —</option>';
-  Object.entries(INICIATIVAS).sort((a,b)=>a[1].label.localeCompare(b[1].label)).forEach(([k,v])=>{is.insertAdjacentHTML('beforeend',`<option value="${k}">${v.label} (+${(v.bonus*100).toFixed(0)}%)</option>`);});
+  is.innerHTML='<option value="">Sin iniciativa</option>';
+  Object.entries(INICIATIVAS).sort((a,b)=>a[1].label.localeCompare(b[1].label)).forEach(([k,v])=>{is.insertAdjacentHTML('beforeend',`<option value="${k}">${v.label} (+${(v.bonus).toFixed(2)}pts)</option>`);});
   is.value=ci;
-  ic.innerHTML='<option value="">— sin incidencia —</option>';
+  ic.innerHTML='<option value="">Sin incidencia</option>';
   Object.entries(INCIDENCIAS).sort((a,b)=>a[1].label.localeCompare(b[1].label)).forEach(([k,v])=>{ic.insertAdjacentHTML('beforeend',`<option value="${k}">${v.label} (+${v.pts.toFixed(1)}pts)</option>`);});
   ic.value=cc;
+  // Mostrar/ocultar sección de iniciativa según si hay flujos activos que la acepten
+  const anyAcceptsIni=FLUJOS.some(f=>f.acceptsIni&&(CALC_VALS[f.id]||0)>0);
+  const iniSection=document.getElementById('ini-section');
+  if(iniSection)iniSection.style.opacity=anyAcceptsIni?'1':'0.35';
+  const iniNote=document.getElementById('ini-note');
+  if(iniNote)iniNote.style.display=anyAcceptsIni?'none':'block';
   updateCalc();
 }
 function onSlide(id,i,val){
   CALC_VALS[id]=+val;
   document.getElementById(`lbl-cf${i}`).textContent=val;
   document.getElementById(`v-cf${i}`).textContent=val;
+  // Actualizar visibilidad de sección de iniciativa
+  const anyAcceptsIni=FLUJOS.some(f=>f.acceptsIni&&(CALC_VALS[f.id]||0)>0);
+  const iniSection=document.getElementById('ini-section');
+  if(iniSection)iniSection.style.opacity=anyAcceptsIni?'1':'0.35';
+  const iniNote=document.getElementById('ini-note');
+  if(iniNote)iniNote.style.display=anyAcceptsIni?'none':'block';
   updateCalc();
 }
 function updateCalc(){
@@ -1523,16 +1549,16 @@ function updateCalc(){
   const rows=[];
   FLUJOS.forEach(f=>{
     const v=CALC_VALS[f.id]||0;if(!v)return;
-    // Puntos base (todas las tareas)
     const ptsBase=v*f.weight;
-    // Bonus de iniciativa solo sobre las tareas que la tenían (v × pctIni)
-    const ptsIni=v*pctIni*iniBonus;
-    // Puntos de incidencia solo sobre las tareas que la tuvieron (v × pctInc)
+    // Bonus de iniciativa solo si el flujo acepta iniciativas
+    const efectivoIni=f.acceptsIni?pctIni:0;
+    const ptsIni=v*efectivoIni*iniBonus;
     const ptsInc=v*pctInc*incPts;
     const pts=ptsBase+ptsIni+ptsInc;
     total+=pts;tasks+=v;
     let lbl=`${f.label} ×${f.weight.toFixed(2)}`;
-    if(iniBonus&&pctIni>0)lbl+=` +${(pctIni*100).toFixed(0)}% ini(+${iniBonus.toFixed(2)})`;
+    if(iniBonus&&efectivoIni>0)lbl+=` +${(efectivoIni*100).toFixed(0)}% ini(+${iniBonus.toFixed(2)})`;
+    else if(iniBonus&&!f.acceptsIni&&pctIni>0)lbl+=` <span style="color:var(--text3);font-size:10px">(sin ini)</span>`;
     if(incPts&&pctInc>0)lbl+=` +${(pctInc*100).toFixed(0)}% inc(+${incPts.toFixed(2)})`;
     rows.push(`<div class="bd-row"><span class="bd-lbl">${lbl}:</span><span class="bd-val">${pts.toFixed(1)}</span></div>`);
   });
@@ -1583,7 +1609,11 @@ function renderScenarios(){
 }
 function applyScenario(mix){FLUJOS.forEach(f=>{CALC_VALS[f.id]=mix[f.id]||0;});renderCalcSliders();showPage('calc');}
 function applyWeights(){
-  FLUJOS.forEach((f,i)=>{const inp=document.getElementById(`fw-${i}`);if(inp)f.weight=+(inp.value)||0;});
+  FLUJOS.forEach((f,i)=>{
+    const inp=document.getElementById(`fw-${i}`);
+    if(inp)f.weight=+(inp.value)||0;
+    // acceptsIni se actualiza en tiempo real via onchange del checkbox
+  });
   buildLookupCache();
   if(PROC)computeAll();renderCalcSliders();renderScenarios();
 }
