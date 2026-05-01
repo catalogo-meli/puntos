@@ -970,21 +970,35 @@ function getQualityForPeriod(user,fromDate,toDate){
 // ═══════════════════════════════════════════════════════════
 // POINT CALCULATION
 // ═══════════════════════════════════════════════════════════
+// Cache de lookup normalizado — se reconstruye al llamar buildLookupCache()
+let _iniCache={}, _incCache={};
+function _normKey(s){
+  return(s||'').trim().toLowerCase()
+    .replace(/á/g,'a').replace(/é/g,'e').replace(/í/g,'i')
+    .replace(/ó/g,'o').replace(/ú/g,'u').replace(/ü/g,'u');
+}
+function buildLookupCache(){
+  // Para cada iniciativa/incidencia, registrar todas las variantes posibles
+  _iniCache={};
+  Object.entries(INICIATIVAS).forEach(([k,v])=>{
+    _iniCache[k]=v;              // clave exacta
+    _iniCache[_normKey(k)]=v;   // clave normalizada
+  });
+  _incCache={};
+  Object.entries(INCIDENCIAS).forEach(([k,v])=>{
+    _incCache[k]=v;
+    _incCache[_normKey(k)]=v;
+  });
+}
+
 function calcRowPts(flujoId,status,iniRaw,incRaw){
   if(status!=='DONE')return 0;
   const pesoFlujo=(FLUJOS.find(f=>f.id===flujoId)||{weight:1.0}).weight;
-  // Normalizar a lowercase + sin tildes para matching robusto
-  const norm=s=>(s||'').trim().toLowerCase()
-    .replace(/á/g,'a').replace(/é/g,'e').replace(/í/g,'i')
-    .replace(/ó/g,'o').replace(/ú/g,'u').replace(/ü/g,'u');
-  const iniKeyRaw=(iniRaw||'').trim().toLowerCase();
-  // Buscar primero clave exacta, luego normalizada
-  const iniObj=INICIATIVAS[iniKeyRaw]
-    ||Object.entries(INICIATIVAS).find(([k])=>norm(k)===norm(iniRaw))?.[1];
+  const iniKey=(iniRaw||'').trim().toLowerCase();
+  const iniObj=_iniCache[iniKey]||_iniCache[_normKey(iniRaw)];
   const iniBonus=iniObj?iniObj.bonus:0;
-  const incKeyRaw=(incRaw||'').trim().toLowerCase();
-  const incObj=INCIDENCIAS[incKeyRaw]
-    ||Object.entries(INCIDENCIAS).find(([k])=>norm(k)===norm(incRaw))?.[1];
+  const incKey=(incRaw||'').trim().toLowerCase();
+  const incObj=_incCache[incKey]||_incCache[_normKey(incRaw)];
   const incPts=incObj?incObj.pts:0;
   return pesoFlujo+iniBonus+incPts;
 }
@@ -994,6 +1008,7 @@ function calcRowPts(flujoId,status,iniRaw,incRaw){
 // ═══════════════════════════════════════════════════════════
 function computeAll(){
   if(!DATA.hist||!DATA.hist.length)return;
+  buildLookupCache(); // precalcular lookup de iniciativas/incidencias
   const sample=DATA.hist[0];
   const COL={
     fecha:    findCol(sample,['Fecha','fecha','Date','date']),
@@ -1031,6 +1046,10 @@ function computeAll(){
   // para evitar que valores de texto libre del CSV contaminen las listas.
   const changed=false;
 
+  // Precalcular mapa de flujos para O(1) lookup en lugar de find() en cada fila
+  const flujoWeightMap={};
+  FLUJOS.forEach(f=>{flujoWeightMap[f.id]=f.weight;});
+
   // Parse rows — only DONE, only users in equipoFilter if available
   const rawRows=[];
   DATA.hist.forEach(r=>{
@@ -1044,7 +1063,12 @@ function computeAll(){
     const ini=COL.iniciativa?(r[COL.iniciativa]||'').trim():'';
     const inc=COL.incidencia?(r[COL.incidencia]||'').trim():'';
     const ids=COL.ids?(+(r[COL.ids]||0)||0):1;
-    const pts=calcRowPts(flujo,st,ini,inc);
+    const pesoFlujo=flujoWeightMap[flujo]??1.0;
+    const iniKey=(ini||'').trim().toLowerCase();
+    const iniObj=_iniCache[iniKey]||_iniCache[_normKey(ini)]||{bonus:0};
+    const incKey=(inc||'').trim().toLowerCase();
+    const incObj=_incCache[incKey]||_incCache[_normKey(inc)]||{pts:0};
+    const pts=pesoFlujo+iniObj.bonus+incObj.pts;
     const wk=isoWeek(date);
     rawRows.push({user,flujo,pts,ids,date,dateStr:r[COL.fecha].trim(),
       year:date.getFullYear(),month:date.getMonth()+1,
@@ -1536,6 +1560,7 @@ function renderScenarios(){
 function applyScenario(mix){FLUJOS.forEach(f=>{CALC_VALS[f.id]=mix[f.id]||0;});renderCalcSliders();showPage('calc');}
 function applyWeights(){
   FLUJOS.forEach((f,i)=>{const inp=document.getElementById(`fw-${i}`);if(inp)f.weight=+(inp.value)||0;});
+  buildLookupCache();
   if(PROC)computeAll();renderCalcSliders();renderScenarios();
 }
 
@@ -1885,15 +1910,19 @@ function showPage(id){
 // ═══════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════
+// Precalcular cache de lookup
+buildLookupCache();
 // Render ligero inmediato — no bloquea interacciones
 updateCapabilities();
 // Diferir renders pesados al siguiente frame para no bloquear el file picker
-requestAnimationFrame(function(){
+// setTimeout(0) cede el control al browser para el file picker
+// sin el overhead visual de requestAnimationFrame
+setTimeout(function(){
   renderAllSidebar();
   renderCalcSliders();
   renderBandsRef();
   renderScenarios();
-});
+},0);
 
 // Tooltip positioning con position:fixed — evita recorte en sidebar con overflow
 (function(){
