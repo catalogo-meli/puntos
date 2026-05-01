@@ -341,7 +341,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
     </div>
     <div class="chart-wrap">
       <div class="chart-title-row"><span class="chart-title">Puntos ponderados promedio por colaborador</span></div>
-      <div style="height:420px;overflow-y:auto"><canvas id="chart-ranking"></canvas></div>
+      <div id="rank-table-wrap" style="overflow-x:auto;max-height:460px;overflow-y:auto">
+        <table><thead id="rank-thead"></thead><tbody id="rank-tbody"></tbody></table>
+      </div>
     </div>
   </div>
 </div>
@@ -486,7 +488,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
         <div class="inc-section-title">Team Leaders — evaluados por el rendimiento de su equipo</div>
         <div class="inc-criteria">
           <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Mínimo de entrada:</strong> el promedio de puntos del equipo tiene que superar el piso mínimo (default 75 pts). Si no llega, no hay incentivo ese período.</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Banda según posición relativa:</strong> si el equipo está por encima del promedio general del período → Sólido. Más de 10% por encima → High Performer. Por debajo del promedio pero sobre el piso → Base.</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Banda según posición relativa:</strong> por debajo del promedio general → Base · igual o por encima → Sólido · +10% sobre el promedio → High Performer · +20% sobre el promedio → Elite.</div>
           <div class="crit-row"><div class="crit-dot" style="background:var(--purple)"></div><strong style="color:var(--text)">Topes TL = doble del analista:</strong> Base ×2.0 · Sólido ×2.8 · HP ×3.6 · Elite ×4.8. El +20% sobre el promedio general desbloquea Elite.</div>
         </div>
         <div id="inc-table-tls"></div>
@@ -500,7 +502,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
         <div class="inc-section-title">Coordinadora Pedagógica — responde por la calidad de todo el equipo</div>
         <div class="inc-criteria">
           <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Métrica:</strong> calidad promedio ponderada de todos los analistas en el período. Si supera el 90%, es elegible.</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Bandas CP:</strong> Base 90–93% · Sólido 93–97% · HP 97–99% · Elite ≥99%. Topes: doble del analista. Calidad perfecta o casi perfecta desbloquea Elite.</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Bandas de calidad:</strong> Base 90–93% · Sólido 93–97% · High Performer 97–99% · Elite ≥99%. Cada banda desbloquea el doble del tope de la misma banda para analistas.</div>
           <div class="crit-row"><div class="crit-dot" style="background:var(--amber)"></div><strong style="color:var(--text)">Sin datos de auditoría:</strong> el resultado queda en revisión manual. Cargá auditados.csv para calcularlo automáticamente.</div>
         </div>
         <div id="inc-table-cp"></div>
@@ -605,6 +607,7 @@ let CHARTS={};
 let PROC=null;
 let QUALITY=null; // {userId -> {score, total, pct}}
 let HIST_SORT={col:'avgPts',dir:-1};
+let RANK_SORT={col:'avgPts',dir:-1};
 let INC_SORT_A={col:'avgPts',dir:-1};
 let INC_SORT_TL={col:'avgTeam',dir:-1};
 let INC_SORT_CP={col:'calEq',dir:-1};
@@ -1257,6 +1260,7 @@ function _sa2(sortState,col){return sortState.col===col?(sortState.dir===-1?' �
 // ═══════════════════════════════════════════════════════════
 // RANKING
 // ═══════════════════════════════════════════════════════════
+let _rankPersons=[];
 function applyRankFilter(){
   if(!PROC)return;
   const f=buildFilter('r');
@@ -1264,18 +1268,45 @@ function applyRankFilter(){
   const filtered=filterRows(PROC.rawRows,f);
   const persons=aggregatePersons(filtered,PROC.equipoMap,PROC.equipoFilter);
   const show=eqFilter?persons.filter(p=>p.equipo===eqFilter):persons;
-  renderRankingChart(show.filter(p=>p.activeDays>0));
+  _rankPersons=show.filter(p=>p.activeDays>0);
+  RANK_SORT={col:'avgPts',dir:-1};
+  renderRankingTable();
 }
-function renderRankingChart(persons){
-  const sorted=[...persons].filter(p=>p.avgPts>0).sort((a,b)=>b.avgPts-a.avgPts);
-  if(!sorted.length)return;
-  const h=Math.max(300,sorted.length*26+80);
-  const canvas=document.getElementById('chart-ranking');
-  canvas.style.height=h+'px';canvas.height=h;
-  const ctx=canvas.getContext('2d');
-  if(CHARTS.ranking)CHARTS.ranking.destroy();
-  CHARTS.ranking=new Chart(ctx,{type:'bar',data:{labels:sorted.map(p=>p.nombre||p.user),datasets:[{data:sorted.map(p=>p.avgPts),backgroundColor:sorted.map(p=>p.band.color+'99'),borderColor:sorted.map(p=>p.band.color),borderWidth:1.5,borderRadius:5}]},
-    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1c2030',titleColor:'#e8eaf2',bodyColor:'#8b91a8',borderColor:'#252a3a',borderWidth:1,callbacks:{label:c=>`${c.raw.toFixed(1)} pts · ${sorted[c.dataIndex].activeDays} días · ${sorted[c.dataIndex].avgIds.toFixed(0)} IDs/día`}}},scales:{x:{grid:{color:'#252a3a'},ticks:{color:'#8b91a8'},min:0},y:{grid:{display:false},ticks:{color:'#8b91a8',font:{size:11}}}}}});
+function sortRank(col){
+  if(RANK_SORT.col===col)RANK_SORT.dir*=-1;else{RANK_SORT.col=col;RANK_SORT.dir=-1;}
+  renderRankingTable();
+}
+function getRankSortVal(p,col){
+  if(col==='bandIdx')return getBandIdx(p.avgPts);
+  return p[col]??'';
+}
+function renderRankingTable(){
+  if(!_rankPersons.length)return;
+  const _sa=col=>RANK_SORT.col===col?(RANK_SORT.dir===-1?' ↓':' ↑'):'';
+  const ps=[..._rankPersons].sort((a,b)=>{
+    let va=getRankSortVal(a,RANK_SORT.col),vb=getRankSortVal(b,RANK_SORT.col);
+    if(typeof va==='string'){va=va.toLowerCase();vb=vb.toLowerCase();}
+    if(va===vb)return 0;
+    return va<vb?RANK_SORT.dir:-RANK_SORT.dir;
+  });
+  document.getElementById('rank-thead').innerHTML=`<tr>
+    <th onclick="sortRank('nombre')">Colaborador${_sa('nombre')}</th>
+    <th onclick="sortRank('equipo')">Equipo${_sa('equipo')}</th>
+    <th onclick="sortRank('avgPts')">Pts/día${_sa('avgPts')}</th>
+    <th onclick="sortRank('avgTasks')">Tareas/día${_sa('avgTasks')}</th>
+    <th onclick="sortRank('avgIds')">IDs/día${_sa('avgIds')}</th>
+    <th onclick="sortRank('activeDays')">Días activos${_sa('activeDays')}</th>
+    <th onclick="sortRank('bandIdx')">Banda${_sa('bandIdx')}</th>
+  </tr>`;
+  document.getElementById('rank-tbody').innerHTML=ps.map((p,i)=>`<tr>
+    <td class="name-cell">${p.nombre||p.user}</td>
+    <td style="font-size:11px;color:var(--text3)">${p.equipo||'—'}</td>
+    <td class="mono-cell" style="color:${p.band.color};font-weight:500">${p.avgPts.toFixed(1)}</td>
+    <td class="mono-cell">${p.avgTasks.toFixed(1)}</td>
+    <td class="mono-cell" style="color:var(--teal)">${p.avgIds.toFixed(0)}</td>
+    <td class="mono-cell" style="color:var(--text3)">${p.activeDays}</td>
+    <td><span class="badge ${p.band.css}">${p.band.label}</span></td>
+  </tr>`).join('');
 }
 
 // ═══════════════════════════════════════════════════════════
