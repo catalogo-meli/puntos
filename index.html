@@ -80,7 +80,7 @@ h1,h2,h3{font-family:'Syne',sans-serif}
 .table-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
 .table-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:600}
 table{width:100%;border-collapse:collapse;font-size:12px}
-th{text-align:left;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;padding:8px 13px;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none}
+th{text-align:left;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;padding:8px 13px;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none;position:sticky;top:0;background:var(--surface);z-index:2}
 th:hover{color:var(--text2)}
 td{padding:8px 13px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:middle}
 tr:last-child td{border-bottom:none}
@@ -260,19 +260,19 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <span class="upload-tag">Opcional</span>
       <div class="upload-icon">✅</div>
       <div class="upload-title">auditados.csv</div>
-      <div class="upload-sub" id="sub-auditados">Auditorías SdC · necesario para calcular calidad por colaborador</div>
+      <div class="upload-sub" id="sub-auditados">Auditorías SdC de MELI · necesario para calcular el componente de calidad</div>
       <input type="file" class="file-input" id="file-auditados" accept=".csv,.txt" onchange="handleFile(this,'auditados')">
     </div>
     <div class="upload-zone optional-zone" id="zone-mao" onclick="document.getElementById('file-mao').click()" ondragover="evDrag(event,'zone-mao')" ondragleave="evLeave('zone-mao')" ondrop="evDrop(event,'mao')">
       <span class="upload-tag">Opcional</span>
       <div class="upload-icon">🔍</div>
       <div class="upload-title">auditados_mao.csv</div>
-      <div class="upload-sub" id="sub-mao">Auditorías MAO · se combina con SdC para la calidad completa</div>
+      <div class="upload-sub" id="sub-mao">Auditorías MAO · se combina con SdC para tener la calidad completa del período</div>
       <input type="file" class="file-input" id="file-mao" accept=".csv,.txt" onchange="handleFile(this,'mao')">
     </div>
   </div>
   <div class="capabilities-box">
-    <div class="cap-title">Qué podés hacer según los archivos que cargaste</div>
+    <div class="cap-title">Qué funcionalidades se habilitan con cada archivo</div>
     <div class="cap-row"><div class="cap-dot off" id="cap-historico-dot"></div><span id="cap-historico-txt" style="color:var(--text3)">Análisis de productividad, ranking y calculadora 1:1 — requiere historico.csv</span></div>
     <div class="cap-row"><div class="cap-dot off" id="cap-equipo-dot"></div><span id="cap-equipo-txt" style="color:var(--text3)">Filtrar por equipo, separar roles y mostrar solo tu gente — requiere equipo_colaboradores.csv</span></div>
     <div class="cap-row"><div class="cap-dot off" id="cap-calidad-dot"></div><span id="cap-calidad-txt" style="color:var(--text3)">Calcular calidad real por colaborador y habilitar elegibilidad completa de incentivos — requiere auditados.csv</span></div>
@@ -288,7 +288,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 <div class="page" id="page-historico">
   <div class="page-header">
     <h2 class="page-title">Histórico de puntos</h2>
-    <p class="page-sub">Promedio diario de puntos ponderados por colaborador. Cada tarea vale según su flujo, iniciativa e incidencias. Filtrá por período o equipo para acotar el análisis.</p>
+    <p class="page-sub">Puntos ponderados promedio por día, por colaborador. Usá los filtros para ver un período o equipo en particular.</p>
   </div>
   <div id="hist-empty" class="empty-state">
     <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
@@ -312,7 +312,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
     </div>
     <div class="table-wrap">
       <div class="table-header"><span class="table-title">Detalle por colaborador</span></div>
-      <div style="overflow-x:auto;max-height:460px;overflow-y:auto">
+      <div id="hist-table-wrap" style="overflow-x:auto;max-height:460px;overflow-y:auto">
         <table><thead id="hist-thead"></thead><tbody id="hist-tbody"></tbody></table>
       </div>
     </div>
@@ -323,7 +323,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 <div class="page" id="page-ranking">
   <div class="page-header">
     <h2 class="page-title">Ranking del equipo</h2>
-    <p class="page-sub">Comparativa visual del equipo completo. Solo aparecen colaboradores con actividad en el período filtrado. El tooltip de cada barra muestra puntos, días activos e IDs/día.</p>
+    <p class="page-sub">Comparativa rápida del equipo. Cada barra muestra pts/día promedio del período. Pasá el mouse para ver más detalle.</p>
   </div>
   <div id="rank-empty" class="empty-state">
     <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
@@ -350,7 +350,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 <div class="page" id="page-calc">
   <div class="page-header">
     <h2 class="page-title">Calculadora 1:1</h2>
-    <p class="page-sub">Simulá cualquier combinación de tareas y ve al instante cuántos puntos genera y en qué banda queda. Ideal para el 1:1 con cada analista.</p>
+    <p class="page-sub">Armá el mix de tareas del día y ves al toque cuántos puntos genera. Perfecto para el 1:1 con cada analista.</p>
   </div>
   <div class="calc-grid">
     <div class="calc-box">
@@ -397,7 +397,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 <div class="page" id="page-incentivos">
   <div class="page-header">
     <h2 class="page-title">Simulador de incentivos</h2>
-    <p class="page-sub">Calculá el incentivo de cada persona en el período. El monto combina dos dimensiones — productividad (70%) y calidad (30%) — y se distribuye desde un único presupuesto configurado por vos.</p>
+    <p class="page-sub">Calculá cuánto le corresponde a cada persona en el período. El monto combina productividad (70%) y calidad (30%), todo dentro del presupuesto que definís vos.</p>
   </div>
 
   <div id="inc-missing-warn" class="alert-box alert-warn" style="display:none">
@@ -409,7 +409,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 
   <div class="inc-section">
     <div class="inc-section-title">Configuración del período y presupuesto</div>
-    <div class="inc-section-sub">Definí el período a evaluar y el presupuesto disponible. El sistema calcula automáticamente cuánto puede ganar cada persona según su performance real. Nadie paga de más: si el total supera el presupuesto, todos reciben proporcionalmente menos (salvaguarda automática).</div>
+    <div class="inc-section-sub">Elegí el período y el presupuesto disponible. El sistema hace todo el cálculo solo. Si el total supera el presupuesto, todos reciben proporcionalmente menos — nunca se paga de más.</div>
     <div class="budget-row">
       <span class="budget-label">Tipo de período</span>
       <select class="budget-select" id="inc-period-type" onchange="onPeriodTypeChange()">
@@ -455,7 +455,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 
   <div id="inc-content" style="display:none">
     <div class="inc-section">
-      <div class="inc-section-title">Resumen del período simulado</div>
+      <div class="inc-section-title">Resumen de la simulación</div>
       <div class="inc-result-grid" id="inc-summary-grid"></div>
       <div id="inc-scale-warn" class="scale-warn" style="display:none"></div>
     </div>
@@ -468,7 +468,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
     <!-- analistas -->
     <div class="inc-role-panel active" id="inc-panel-analistas">
       <div class="inc-section">
-        <div class="inc-section-title">Analistas — detalle por colaborador</div>
+        <div class="inc-section-title">Analistas — detalle individual</div>
         <div class="inc-criteria">
           <div class="crit-row"><div class="crit-dot" style="background:var(--red)"></div><strong style="color:var(--text)">Regla de oro:</strong> Calidad auditada menor a 90% → incentivo $0 ese período, sin excepción. La calidad no se negocia.</div>
           <div class="crit-row"><div class="crit-dot" style="background:var(--amber)"></div><strong style="color:var(--text)">Sin datos de auditoría:</strong> El colaborador queda en revisión manual. No queda excluido automáticamente — el PM valida el caso.</div>
@@ -497,7 +497,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
     <!-- CP -->
     <div class="inc-role-panel" id="inc-panel-cp">
       <div class="inc-section">
-        <div class="inc-section-title">Coordinadora Pedagógica — evaluada por la calidad transversal del equipo</div>
+        <div class="inc-section-title">Coordinadora Pedagógica — responde por la calidad de todo el equipo</div>
         <div class="inc-criteria">
           <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Métrica:</strong> calidad promedio ponderada de todos los analistas en el período. Si supera el 90%, es elegible.</div>
           <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Bandas de calidad:</strong> Base 90–93% · Sólido 93–97% · High Performer 97%+. Monto: el doble del tope analista de la banda.</div>
@@ -1037,7 +1037,7 @@ function isLiderRol(rol) {
     || r.includes('coordinador') || r.includes('project manager')
     || r.includes(' pm') || r === 'pm' || r.includes('lider');
 }
-function aggregatePersons(rows,equipoMap,equipoFilter){
+function _aggregatePersonsCore(rows,equipoMap,equipoFilter,filterLideres){
   const byUserDay={};
   rows.forEach(r=>{
     if(!byUserDay[r.user])byUserDay[r.user]={};
@@ -1046,7 +1046,6 @@ function aggregatePersons(rows,equipoMap,equipoFilter){
     byUserDay[r.user][r.dateStr].tasks++;
     byUserDay[r.user][r.dateStr].ids+=r.ids||0;
   });
-
   const persons=Object.entries(byUserDay).map(([user,days])=>{
     const info=equipoMap[user]||{nombre:user,rol:'',equipo:''};
     const dayArr=Object.values(days);
@@ -1065,18 +1064,26 @@ function aggregatePersons(rows,equipoMap,equipoFilter){
     });
     return{user,...info,activeDays,avgPts,avgTasks,avgIds,byMonth,band:getBand(avgPts)};
   });
-
-  // Add zero-activity users from equipoFilter — exclude leaders/PM
   if(equipoFilter){
     const active=new Set(persons.map(p=>p.user));
     equipoFilter.forEach(id=>{
-      if(!active.has(id)&&equipoMap[id]&&!isLiderRol(equipoMap[id].rol)){
+      if(!active.has(id)&&equipoMap[id]){
+        // En modo filtrado, no agregar líderes como inactivos
+        if(filterLideres&&isLiderRol(equipoMap[id].rol))return;
         persons.push({user:id,...equipoMap[id],activeDays:0,avgPts:0,avgTasks:0,avgIds:0,byMonth:{},band:getBand(0)});
       }
     });
   }
-  // Exclude leaders/PM from results (they appear in equipo but aren't analistas)
-  return persons.filter(p=>!isLiderRol(p.rol));
+  if(filterLideres)return persons.filter(p=>!isLiderRol(p.rol));
+  return persons;
+}
+// Para histórico y ranking — excluye líderes (TLs, CP, PM)
+function aggregatePersons(rows,equipoMap,equipoFilter){
+  return _aggregatePersonsCore(rows,equipoMap,equipoFilter,true);
+}
+// Para simulador de incentivos — incluye todos para poder separar roles
+function aggregatePersonsAll(rows,equipoMap,equipoFilter){
+  return _aggregatePersonsCore(rows,equipoMap,equipoFilter,false);
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1164,19 +1171,34 @@ function renderHistTable(){
   const search=(document.getElementById('search-hist')?.value||'').toLowerCase();
   const eqFilter=document.getElementById('h-equipo-filter')?.value||'';
   const allMonths=[...new Set(HIST_PERSONS.flatMap(p=>Object.keys(p.byMonth)))].sort();
+  const _sa=col=>HIST_SORT.col===col?(HIST_SORT.dir===-1?' ↓':' ↑'):'';
   document.getElementById('hist-thead').innerHTML=`<tr>
-    <th onclick="sortHist('nombre')">Colaborador</th><th onclick="sortHist('equipo')">Equipo</th>
-    ${allMonths.map(mk=>{const[y,m]=mk.split('-');return`<th>${MONTH_NAMES[+m-1]} ${y}<br><span style="font-weight:400;color:var(--text3)">pts/t/IDs</span></th>`}).join('')}
-    <th onclick="sortHist('avgPts')">Pts/día ▾</th><th onclick="sortHist('avgTasks')">T/día</th>
-    <th onclick="sortHist('avgIds')">IDs/día</th><th onclick="sortHist('activeDays')">Días</th><th>Banda</th></tr>`;
+    <th onclick="sortHist('nombre')">Colaborador${_sa('nombre')}</th>
+    <th onclick="sortHist('equipo')">Equipo${_sa('equipo')}</th>
+    ${allMonths.map(mk=>{const[y,m]=mk.split('-');return`<th onclick="sortHist('m_${mk}')">${MONTH_NAMES[+m-1]} ${y}${_sa('m_'+mk)}<br><span style="font-weight:400;color:var(--text3)">pts / tareas / IDs</span></th>`;}).join('')}
+    <th onclick="sortHist('avgPts')">Pts/día${_sa('avgPts')}</th>
+    <th onclick="sortHist('avgTasks')">Tareas/día${_sa('avgTasks')}</th>
+    <th onclick="sortHist('avgIds')">IDs/día${_sa('avgIds')}</th>
+    <th onclick="sortHist('activeDays')">Días activos${_sa('activeDays')}</th>
+    <th onclick="sortHist('bandIdx')">Banda${_sa('bandIdx')}</th></tr>`;
   let ps=[...HIST_PERSONS];
   if(eqFilter)ps=ps.filter(p=>p.equipo===eqFilter);
   if(search)ps=ps.filter(p=>(p.nombre||p.user).toLowerCase().includes(search)||p.equipo.toLowerCase().includes(search));
-  ps.sort((a,b)=>{let va=a[HIST_SORT.col],vb=b[HIST_SORT.col];if(typeof va==='string'){va=va.toLowerCase();vb=vb.toLowerCase();}return va<vb?HIST_SORT.dir:-HIST_SORT.dir;});
+  function getHistSortVal(p,col){
+    if(col.startsWith('m_')){const mk=col.slice(2);const m=p.byMonth[mk];return m?m.pts/m.days:-1;}
+    if(col==='bandIdx')return getBandIdx(p.avgPts);
+    return p[col]??'';
+  }
+  ps.sort((a,b)=>{
+    let va=getHistSortVal(a,HIST_SORT.col),vb=getHistSortVal(b,HIST_SORT.col);
+    if(typeof va==='string'){va=va.toLowerCase();vb=vb.toLowerCase();}
+    if(va===vb)return 0;
+    return va<vb?HIST_SORT.dir:-HIST_SORT.dir;
+  });
   document.getElementById('hist-tbody').innerHTML=ps.map(p=>{
     const mcells=allMonths.map(mk=>{const m=p.byMonth[mk];if(!m)return`<td style="color:var(--text3)">—</td>`;const b=getBand(m.pts/m.days);return`<td><span class="mono-cell" style="color:${b.color}">${(m.pts/m.days).toFixed(1)}</span><span style="color:var(--text3);font-size:10px"> / ${(m.tasks/m.days).toFixed(0)} / ${(m.ids/m.days).toFixed(0)}</span></td>`;});
     const inactiveStyle=p.activeDays===0?'opacity:.5':'';
-    return`<tr style="${inactiveStyle}"><td class="name-cell">${p.nombre||p.user}${p.activeDays===0?' <span style="font-size:10px;color:var(--text3)">(sin actividad)</span>':''}</td>
+    return`<tr style="${inactiveStyle}"><td class="name-cell">${p.nombre||p.user}${p.activeDays===0?' <span style="font-size:10px;color:var(--text3)">(sin tareas en el período)</span>':''}</td>
       <td style="font-size:11px;color:var(--text3)">${p.equipo||'—'}</td>${mcells.join('')}
       <td class="mono-cell" style="color:${p.band.color};font-weight:500">${p.avgPts>0?p.avgPts.toFixed(1):'—'}</td>
       <td class="mono-cell">${p.avgTasks>0?p.avgTasks.toFixed(1):'—'}</td>
@@ -1429,7 +1451,7 @@ function runIncentivos(){
     return{total:compProd+compCal,compProd,compCal,blocked:false};
   }
 
-  const persons=aggregatePersons(rows,PROC.equipoMap,PROC.equipoFilter);
+  const persons=aggregatePersonsAll(rows,PROC.equipoMap,PROC.equipoFilter);
 
   // Separate roles
   const analistas=persons.filter(p=>{const r=(p.rol||'').toLowerCase();return!r.includes('team leader')&&!r.includes('coordinador')&&!r.includes('tl');});
@@ -1461,7 +1483,7 @@ function runIncentivos(){
 
     // Sin datos → revisión manual (no bloquea pero no paga automáticamente)
     if(!hasCalidad||calStatus==='no_data'||calStatus==='insufficient'){
-      const manualReason=!hasCalidad?'Sin datos de auditoría cargados':calStatus==='no_data'?'Sin registros de auditoría en este período':`Solo ${calTotal} registro${calTotal===1?'':'s'} auditado${calTotal===1?'':'s'} — se necesitan al menos 5`;
+      const manualReason=!hasCalidad?'Sin datos de auditoría cargados':calStatus==='no_data'?'Sin registros de auditoría en el período en este período':`Solo ${calTotal} registro${calTotal===1?'':'s'} auditado${calTotal===1?'':'s'} — se necesitan al menos 5`;
       return{...p,incStatus:'manual',reason:manualReason,amount:0,amountFinal:0,compProd:0,compCal:0,compProdFinal:0,compCalFinal:0,calidad,calTotal,bandIdx:bi};
     }
 
@@ -1592,7 +1614,7 @@ function runIncentivos(){
         <td>${p.incStatus==='eligible'?`<span class="amount-tag">${fmtARS(p.amountFinal)}</span>${scaleApplied?` <span style="font-size:10px;color:var(--text3)">(×${scaleFactor.toFixed(2)})</span>`:''}`:'<span style="color:var(--text3)">—</span>'}</td>
       </tr>`).join('')}</tbody>
     </table></div>`;
-  document.getElementById('inc-notice-analistas').innerHTML=`<strong>Estos montos son estimados y no representan liquidación final.</strong> Productividad pesa ${Math.round(wprod*100)}% y calidad pesa ${Math.round(wcal*100)}%. Ambas curvas usan raíz cuadrada: la productividad arranca en ${piso} pts, la calidad arranca en 90% con un mínimo del 30%. Por debajo de 90% de calidad el incentivo es $0. Sin registros de auditoría el colaborador queda en revisión manual. Redondeo a $1.000.${!hasCalidad?' <strong>Tip: cargá auditados.csv para ver la elegibilidad completa.</strong>':''}`;
+  document.getElementById('inc-notice-analistas').innerHTML=`<strong>Estos montos son estimados y no representan liquidación final.</strong> Productividad pesa ${Math.round(wprod*100)}% y calidad pesa ${Math.round(wcal*100)}%. Ambas curvas usan raíz cuadrada: la productividad arranca en ${piso} pts, la calidad arranca en 90% con un mínimo del 30%. Por debajo de 90% de calidad el incentivo es $0. Sin registros de auditoría en el período el colaborador queda en revisión manual. Redondeo a $1.000.${!hasCalidad?' <strong>Tip: cargá auditados.csv para ver la elegibilidad completa.</strong>':''}`;
 
   // ── TABLA TLs ──
   document.getElementById('inc-table-tls').innerHTML=`
@@ -1665,26 +1687,48 @@ requestAnimationFrame(function(){
 
 // Tooltip positioning con position:fixed — evita recorte en sidebar con overflow
 (function(){
+  // Encuentra el tooltip-box asociado a un icon — soporta ambas estructuras
+  function findBox(icon){
+    // Caso 1: nextElementSibling es el box (sidebar, calc)
+    let b=icon.nextElementSibling;
+    if(b&&b.classList.contains('tooltip-box'))return b;
+    // Caso 2: el box está dentro del mismo tooltip-wrap (budget-label)
+    const wrap=icon.closest('.tooltip-wrap');
+    if(wrap){b=wrap.querySelector('.tooltip-box');if(b)return b;}
+    return null;
+  }
+  function positionBox(icon,box){
+    box.style.display='block';
+    const r=icon.getBoundingClientRect();
+    const bw=260;
+    let left=r.left+r.width/2-bw/2;
+    if(left+bw>window.innerWidth-12)left=window.innerWidth-bw-12;
+    if(left<12)left=12;
+    // Intentar arriba; si no hay espacio, ir abajo
+    const spaceAbove=r.top-8;
+    const boxH=80; // estimado
+    if(spaceAbove>boxH){
+      box.style.top=(r.top-8)+'px';
+      box.style.transform='translateY(-100%)';
+    } else {
+      box.style.top=(r.bottom+8)+'px';
+      box.style.transform='none';
+    }
+    box.style.left=left+'px';
+    box.style.width=bw+'px';
+  }
   document.addEventListener('mouseover',function(e){
     const icon=e.target.closest('.tooltip-icon');
     if(!icon)return;
-    const box=icon.nextElementSibling;
-    if(!box||!box.classList.contains('tooltip-box'))return;
-    box.style.display='block';
-    const r=icon.getBoundingClientRect();
-    const bw=240;
-    let left=r.left+r.width/2-bw/2;
-    if(left+bw>window.innerWidth-10)left=window.innerWidth-bw-10;
-    if(left<10)left=10;
-    box.style.left=left+'px';
-    box.style.top=(r.top-8)+'px';
-    box.style.transform='translateY(-100%)';
+    const box=findBox(icon);
+    if(!box)return;
+    positionBox(icon,box);
   });
   document.addEventListener('mouseout',function(e){
     const icon=e.target.closest('.tooltip-icon');
     if(!icon)return;
-    const box=icon.nextElementSibling;
-    if(box&&box.classList.contains('tooltip-box'))box.style.display='none';
+    const box=findBox(icon);
+    if(box)box.style.display='none';
   });
 })();
 </script>
