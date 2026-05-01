@@ -1032,10 +1032,16 @@ function computeAll(){
 // AGGREGATE PERSONS
 // ═══════════════════════════════════════════════════════════
 function isLiderRol(rol) {
-  const r = (rol || '').toLowerCase();
-  return r.includes('team leader') || r.includes(' tl') || r === 'tl'
-    || r.includes('coordinador') || r.includes('project manager')
-    || r.includes(' pm') || r === 'pm' || r.includes('lider');
+  const r = (rol || '').trim().toLowerCase();
+  return r === 'team leader'
+    || r === 'coordinadora pedagógica' || r === 'coordinadora pedagogica'
+    || r === 'coordinador pedagógico' || r === 'coordinador pedagogico'
+    || r === 'project manager'
+    || r === 'tl'
+    || r.startsWith('tl ')
+    || r.includes('team leader')
+    || r.includes('coordinador')
+    || r.includes('project manager');
 }
 function _aggregatePersonsCore(rows,equipoMap,equipoFilter,filterLideres){
   const byUserDay={};
@@ -1503,21 +1509,29 @@ function runIncentivos(){
     ?activeAnalistas.reduce((s,p)=>s+p.avgPts,0)/activeAnalistas.length:0;
 
   // TLs: obtener por rol desde persons (incluye líderes) y cruzar por equipo
-  const tlPersons=persons.filter(p=>{const r=(p.rol||'').toLowerCase();return r.includes('team leader')||r==='tl'||r.startsWith('tl ');});
-  // Si hay TLs en equipo_colaboradores, mostramos todos (aunque no tengan equipo activo)
-  // Si no hay TLs explícitos, derivamos de los equipos de los analistas
-  const tlNamesFromPersons=tlPersons.length
-    ?[...new Set(tlPersons.map(p=>p.nombre||p.user).filter(Boolean))]
-    :[];
-  const tlNamesFromEquipos=[...new Set(analistas.map(p=>p.equipo).filter(Boolean))];
-  // Usamos la unión: TLs del archivo + equipos de analistas que no tengan TL mapeado
-  const tlNames=[...new Set([...tlNamesFromPersons,...tlNamesFromEquipos])];
+  const tlPersons=persons.filter(p=>isLiderRol(p.rol)&&(p.rol||'').toLowerCase().includes('team leader'));
+  // tlNames: nombres de los TLs según equipo_colaboradores (fuente de verdad)
+  // Normalizamos para comparar con el campo Equipo de los analistas
+  const tlNamesFromPersons=[...new Set(tlPersons.map(p=>(p.nombre||p.user||'').trim()).filter(Boolean))];
+  // También capturar nombres de equipo únicos de los analistas (por si hay diferencias de tilde)
+  const tlNamesFromEquipos=[...new Set(analistas.map(p=>(p.equipo||'').trim()).filter(Boolean))];
+  // Unión deduplicada — normalizar tildes para evitar duplicados
+  const normStr=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+  const seen=new Set();
+  const tlNames=[];
+  // Preferir nombres exactos del CSV de equipo; agregar los de analistas si no están ya
+  [...tlNamesFromPersons,...tlNamesFromEquipos].forEach(n=>{
+    const k=normStr(n);
+    if(!seen.has(k)){seen.add(k);tlNames.push(n);}
+  });
   const incTl=tlNames.map(tlName=>{
     // Buscar el TL en persons para obtener su nombre real
-    const tlPerson=tlPersons.find(p=>(p.nombre||p.user)===tlName)||{nombre:tlName};
-    // Cruzar analistas por equipo: el campo equipo del analista puede ser el nombre del TL
-    // o el nombre del equipo — probamos ambos
-    const teamAll=analistas.filter(p=>p.equipo===tlName);
+    const _tn2=s=>(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().trim();
+    const tlPerson=tlPersons.find(p=>_tn2(p.nombre||p.user)===_tn2(tlName))||{nombre:tlName};
+    // Cruce normalizado: ignorar diferencias de tilde entre nombre TL y campo Equipo
+    const normStr2=s=>(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().trim();
+    const tlNorm=normStr2(tlName);
+    const teamAll=analistas.filter(p=>normStr2(p.equipo)===tlNorm);
     const team=teamAll.filter(p=>p.activeDays>0);
     if(!teamAll.length){
       // TL sin analistas asignados en este período
