@@ -427,15 +427,15 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <select class="budget-select" id="inc-year-sel"><option value="">— año —</option></select>
     </div>
     <div class="budget-row">
-      <span class="budget-label tooltip-wrap">Presupuesto total del período<span class="tooltip-icon">?</span><span class="tooltip-box">Monto total disponible para distribuir entre analistas, TLs y CP en este período. El sistema nunca supera este número gracias a la salvaguarda proporcional.</span></span>
+      <span class="budget-label">Presupuesto total del período</span><span class="tooltip-wrap"><span class="tooltip-icon">?</span><span class="tooltip-box">Monto total disponible para distribuir entre analistas, TLs y CP en este período. El sistema nunca supera este número gracias a la salvaguarda proporcional.</span></span>
       <input class="budget-input" type="number" id="inc-budget-total" placeholder="ej: 1.000.000" min="0" step="1000" style="width:140px">
-      <span class="budget-label tooltip-wrap">Headcount de referencia<span class="tooltip-icon">?</span><span class="tooltip-box">Número de analistas que se usa como base para calcular el tope Base. Tope Base = Presupuesto ÷ este número. Default 45. Actualizá cuando cambie el tamaño del equipo.</span></span>
+      <span class="budget-label">Headcount de referencia</span><span class="tooltip-wrap"><span class="tooltip-icon">?</span><span class="tooltip-box">Número de analistas que se usa como base para calcular el tope Base. Tope Base = Presupuesto ÷ este número. Default 45. Actualizá cuando cambie el tamaño del equipo.</span></span>
       <input class="budget-input" type="number" id="inc-headcount" value="45" min="1" max="200" step="1" style="width:70px">
-      <span class="budget-label tooltip-wrap">Piso mínimo (pts/día)<span class="tooltip-icon">?</span><span class="tooltip-box">A partir de cuántos puntos diarios promedio un analista entra a la curva de incentivo. Por debajo de este número el componente de productividad es $0, pero la calidad sigue sumando si supera 90%.</span></span>
+      <span class="budget-label">Piso mínimo (pts/día)</span><span class="tooltip-wrap"><span class="tooltip-icon">?</span><span class="tooltip-box">A partir de cuántos puntos diarios promedio un analista entra a la curva de incentivo. Por debajo de este número el componente de productividad es $0, pero la calidad sigue sumando si supera 90%.</span></span>
       <input class="budget-input" type="number" id="inc-piso" value="75" min="50" max="100" step="1" style="width:70px">
-      <span class="budget-label tooltip-wrap">Peso productividad (%)<span class="tooltip-icon">?</span><span class="tooltip-box">Qué porcentaje del monto total viene de la productividad (puntos diarios promedio). El resto viene de calidad. La suma de ambos debe ser 100%.</span></span>
+      <span class="budget-label">Peso productividad (%)</span><span class="tooltip-wrap"><span class="tooltip-icon">?</span><span class="tooltip-box">Qué porcentaje del monto total viene de la productividad (puntos diarios promedio). El resto viene de calidad. La suma de ambos debe ser 100%.</span></span>
       <input class="budget-input" type="number" id="inc-wprod" value="70" min="10" max="90" step="5" style="width:60px">
-      <span class="budget-label tooltip-wrap">Peso calidad (%)<span class="tooltip-icon">?</span><span class="tooltip-box">Qué porcentaje del monto total viene de la calidad auditada (SdC + MAO). Arranca en 30% del componente cuando la calidad es exactamente 90%, y llega al 100% con 100% de calidad.</span></span>
+      <span class="budget-label">Peso calidad (%)</span><span class="tooltip-wrap"><span class="tooltip-icon">?</span><span class="tooltip-box">Qué porcentaje del monto total viene de la calidad auditada (SdC + MAO). Arranca en 30% del componente cuando la calidad es exactamente 90%, y llega al 100% con 100% de calidad.</span></span>
       <input class="budget-input" type="number" id="inc-wcal" value="30" min="10" max="90" step="5" style="width:60px">
       <span class="budget-label" style="color:var(--text3);font-size:11px">el piso mínimo aplica también al umbral de elegibilidad de TLs</span>
     </div>
@@ -487,7 +487,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
         <div class="inc-criteria">
           <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Mínimo de entrada:</strong> el promedio de puntos del equipo tiene que superar el piso mínimo (default 75 pts). Si no llega, no hay incentivo ese período.</div>
           <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Banda según posición relativa:</strong> si el equipo está por encima del promedio general del período → Sólido. Más de 10% por encima → High Performer. Por debajo del promedio pero sobre el piso → Base.</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--purple)"></div><strong style="color:var(--text)">Monto:</strong> siempre el doble del tope de la misma banda para analistas. Si el equipo sube, el TL sube.</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--purple)"></div><strong style="color:var(--text)">Topes TL = doble del analista:</strong> Base ×2.0 · Sólido ×2.8 · HP ×3.6 · Elite ×4.8. El +20% sobre el promedio general desbloquea Elite.</div>
         </div>
         <div id="inc-table-tls"></div>
         <div class="inc-notice" id="inc-notice-tls"></div>
@@ -500,7 +500,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
         <div class="inc-section-title">Coordinadora Pedagógica — responde por la calidad de todo el equipo</div>
         <div class="inc-criteria">
           <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Métrica:</strong> calidad promedio ponderada de todos los analistas en el período. Si supera el 90%, es elegible.</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Bandas de calidad:</strong> Base 90–93% · Sólido 93–97% · High Performer 97%+. Monto: el doble del tope analista de la banda.</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Bandas CP:</strong> Base 90–93% · Sólido 93–97% · HP 97–99% · Elite ≥99%. Topes: doble del analista. Calidad perfecta o casi perfecta desbloquea Elite.</div>
           <div class="crit-row"><div class="crit-dot" style="background:var(--amber)"></div><strong style="color:var(--text)">Sin datos de auditoría:</strong> el resultado queda en revisión manual. Cargá auditados.csv para calcularlo automáticamente.</div>
         </div>
         <div id="inc-table-cp"></div>
@@ -605,6 +605,9 @@ let CHARTS={};
 let PROC=null;
 let QUALITY=null; // {userId -> {score, total, pct}}
 let HIST_SORT={col:'avgPts',dir:-1};
+let INC_SORT_A={col:'avgPts',dir:-1};
+let INC_SORT_TL={col:'avgTeam',dir:-1};
+let INC_SORT_CP={col:'calEq',dir:-1};
 let CALC_VALS={};
 let _modalMode='';
 
@@ -1215,6 +1218,42 @@ function renderHistTable(){
 }
 function sortHist(col){if(HIST_SORT.col===col)HIST_SORT.dir*=-1;else{HIST_SORT.col=col;HIST_SORT.dir=-1;}renderHistTable();}
 
+// Sort genérico para tablas de incentivos
+function sortIncTable(tableId,sortState,col,getData,renderFn){
+  if(sortState.col===col)sortState.dir*=-1;else{sortState.col=col;sortState.dir=-1;}
+  renderFn();
+}
+
+// Sort helpers para cada tabla de incentivos
+let _incAData=[],_incTlData=[],_incCpData=[];
+function sortIncA(col){
+  if(INC_SORT_A.col===col)INC_SORT_A.dir*=-1;else{INC_SORT_A.col=col;INC_SORT_A.dir=-1;}
+  _renderIncTableA(_incAData);
+}
+function sortIncTl(col){
+  if(INC_SORT_TL.col===col)INC_SORT_TL.dir*=-1;else{INC_SORT_TL.col=col;INC_SORT_TL.dir=-1;}
+  _renderIncTableTl(_incTlData);
+}
+
+function _getIncVal(p,col){
+  if(col==='bandIdx')return p.bandIdx??-1;
+  if(col==='calidad')return p.calidad??-1;
+  if(col==='incStatus'){const o={eligible:3,manual:2,no_eligible:1,inactive:0};return o[p.incStatus]??0;}
+  if(col==='amountFinal')return p.amountFinal??0;
+  if(col==='compProdFinal')return p.compProdFinal??0;
+  if(col==='compCalFinal')return p.compCalFinal??0;
+  return p[col]??'';
+}
+function _sortArr(arr,sortState){
+  return [...arr].sort((a,b)=>{
+    let va=_getIncVal(a,sortState.col),vb=_getIncVal(b,sortState.col);
+    if(typeof va==='string'){va=va.toLowerCase();vb=vb.toLowerCase();}
+    if(va===vb)return 0;
+    return va<vb?sortState.dir:-sortState.dir;
+  });
+}
+function _sa2(sortState,col){return sortState.col===col?(sortState.dir===-1?' ↓':' ↑'):'';}
+
 // ═══════════════════════════════════════════════════════════
 // RANKING
 // ═══════════════════════════════════════════════════════════
@@ -1438,7 +1477,7 @@ function runIncentivos(){
   const topeBase=budget/hc;
   const BAND_MULT_A={1:1.0,2:1.4,3:1.8,4:2.4};
   const BAND_MULT_TL={1:2.0,2:2.8,3:3.6};
-  const topesTL={1:topeBase*2.0,2:topeBase*2.8,3:topeBase*3.6};
+  const topesTL={1:topeBase*2.0,2:topeBase*2.8,3:topeBase*3.6,4:topeBase*4.8};
   const MAX_PTS=110, RANGO_PROD=MAX_PTS-piso;
   const MAX_CAL=100, PISO_CAL=90, RANGO_CAL=MAX_CAL-PISO_CAL;
 
@@ -1548,8 +1587,12 @@ function runIncentivos(){
       reason='Promedio equipo '+avgT.toFixed(1)+' pts < '+pisoTL+' (piso minimo)';
     } else {
       status='eligible';
+      const umbralElite=avgGeneral*1.2;
       const umbralHP=avgGeneral*1.1;
-      if(avgT>=umbralHP){
+      if(avgT>=umbralElite){
+        tlBandLabel='Elite';tlBandIdx=4;
+        reason=avgT.toFixed(1)+' pts > promedio general +20% ('+umbralElite.toFixed(1)+')';
+      } else if(avgT>=umbralHP){
         tlBandLabel='High Performer';tlBandIdx=3;
         reason=avgT.toFixed(1)+' pts > promedio general +10% ('+umbralHP.toFixed(1)+')';
       } else if(avgT>=avgGeneral){
@@ -1557,7 +1600,7 @@ function runIncentivos(){
         reason=avgT.toFixed(1)+' pts >= promedio general ('+avgGeneral.toFixed(1)+')';
       } else {
         tlBandLabel='Base';tlBandIdx=1;
-        reason=avgT.toFixed(1)+' pts entre 75 y promedio general ('+avgGeneral.toFixed(1)+')';
+        reason=avgT.toFixed(1)+' pts entre piso y promedio general ('+avgGeneral.toFixed(1)+')';
       }
     }
     const amount=status==='eligible'?topesTL[tlBandIdx]:0;
@@ -1582,7 +1625,8 @@ function runIncentivos(){
       else if(calEq<90){cpStatus='no_eligible';cpBandLabel='No elegible';reason=`Calidad equipo ${calEq.toFixed(1)}% < 90%`;}
       else{
         cpStatus='eligible';
-        if(calEq>=97){cpBandLabel='High Performer';cpAmount=topesTL[3];}
+        if(calEq>=99){cpBandLabel='Elite';cpAmount=topesTL[4];}
+        else if(calEq>=97){cpBandLabel='High Performer';cpAmount=topesTL[3];}
         else if(calEq>=93){cpBandLabel='Sólido';cpAmount=topesTL[2];}
         else{cpBandLabel='Base';cpAmount=topesTL[1];}
         cpAmount=roundK(cpAmount);
@@ -1633,42 +1677,79 @@ function runIncentivos(){
   else sw.style.display='none';
 
   // ── TABLA ANALISTAS ──
-  const sortedA=[...incA].sort((a,b)=>b.avgPts-a.avgPts);
-  document.getElementById('inc-table-analistas').innerHTML=`
-    <div class="inc-table-wrap" style="margin-top:10px"><table>
-      <thead><tr><th>Colaborador</th><th>Equipo</th><th>Pts/día</th><th>IDs/día</th><th>Días</th><th>Calidad</th><th>Banda</th><th>Estado</th><th>Comp. prod.</th><th>Comp. cal.</th><th>Total</th></tr></thead>
-      <tbody>${sortedA.map(p=>`<tr${p.activeDays===0?' style="opacity:.5"':''}>
-        <td class="name-cell">${p.nombre||p.user}</td>
-        <td style="font-size:11px;color:var(--text3)">${p.equipo||'—'}</td>
-        <td class="mono-cell" style="color:${p.band.color}">${p.avgPts>0?p.avgPts.toFixed(1):'—'}</td>
-        <td class="mono-cell" style="color:var(--teal)">${p.avgIds>0?p.avgIds.toFixed(0):'—'}</td>
-        <td class="mono-cell" style="color:var(--text3)">${p.activeDays}</td>
-        <td class="mono-cell">${p.calidad!==null?`<span style="color:${p.calidad>=90?'var(--green)':'var(--red)'}">${p.calidad.toFixed(1)}%</span> <span style="color:var(--text3);font-size:10px">(${p.calTotal})</span>`:'<span style="color:var(--text3)">—</span>'}</td>
-        <td>${p.activeDays>0?`<span class="badge ${p.band.css}">${p.band.label}</span>`:'—'}</td>
-        <td>${p.incStatus==='eligible'?'<span class="eligible-tag">Elegible</span>':p.incStatus==='manual'?'<span class="manual-tag">Revisión manual</span>':p.incStatus==='inactive'?'<span style="font-size:10px;color:var(--text3)">Sin tareas en el período</span>':'<span class="ineligible-tag">No elegible</span>'}</td>
-        <td>${p.incStatus==='eligible'?`<span class="amount-tag" style="font-size:11px">${fmtARS(p.compProdFinal||0)}</span>`:'<span style="color:var(--text3)">—</span>'}</td>
-        <td>${p.incStatus==='eligible'?`<span class="amount-tag" style="font-size:11px;color:var(--teal)">${fmtARS(p.compCalFinal||0)}</span>`:'<span style="color:var(--text3)">—</span>'}</td>
-        <td>${p.incStatus==='eligible'?`<span class="amount-tag">${fmtARS(p.amountFinal)}</span>${scaleApplied?` <span style="font-size:10px;color:var(--text3)">(×${scaleFactor.toFixed(2)})</span>`:''}`:'<span style="color:var(--text3)">—</span>'}</td>
-      </tr>`).join('')}</tbody>
-    </table></div>`;
+  _incAData=incA;
+  INC_SORT_A={col:'avgPts',dir:-1};
+  function _renderIncTableA(data){
+    const ss=INC_SORT_A;
+    const sorted=_sortArr(data,ss);
+    const _s=col=>_sa2(ss,col);
+    document.getElementById('inc-table-analistas').innerHTML=`
+      <div class="inc-table-wrap" style="margin-top:10px"><table>
+        <thead><tr>
+          <th onclick="sortIncA('nombre')">Colaborador${_s('nombre')}</th>
+          <th onclick="sortIncA('equipo')">Equipo${_s('equipo')}</th>
+          <th onclick="sortIncA('avgPts')">Pts/día${_s('avgPts')}</th>
+          <th onclick="sortIncA('avgIds')">IDs/día${_s('avgIds')}</th>
+          <th onclick="sortIncA('activeDays')">Días${_s('activeDays')}</th>
+          <th onclick="sortIncA('calidad')">Calidad${_s('calidad')}</th>
+          <th onclick="sortIncA('bandIdx')">Banda${_s('bandIdx')}</th>
+          <th onclick="sortIncA('incStatus')">Estado${_s('incStatus')}</th>
+          <th onclick="sortIncA('compProdFinal')">Comp. prod.${_s('compProdFinal')}</th>
+          <th onclick="sortIncA('compCalFinal')">Comp. cal.${_s('compCalFinal')}</th>
+          <th onclick="sortIncA('amountFinal')">Total${_s('amountFinal')}</th>
+        </tr></thead>
+        <tbody>${sorted.map(p=>`<tr${p.activeDays===0?' style="opacity:.5"':''}>
+          <td class="name-cell">${p.nombre||p.user}</td>
+          <td style="font-size:11px;color:var(--text3)">${p.equipo||'—'}</td>
+          <td class="mono-cell" style="color:${p.band.color}">${p.avgPts>0?p.avgPts.toFixed(1):'—'}</td>
+          <td class="mono-cell" style="color:var(--teal)">${p.avgIds>0?p.avgIds.toFixed(0):'—'}</td>
+          <td class="mono-cell" style="color:var(--text3)">${p.activeDays}</td>
+          <td class="mono-cell">${p.calidad!==null?`<span style="color:${p.calidad>=90?'var(--green)':'var(--red)'}">${p.calidad.toFixed(1)}%</span> <span style="color:var(--text3);font-size:10px">(${p.calTotal})</span>`:'<span style="color:var(--text3)">—</span>'}</td>
+          <td>${p.activeDays>0?`<span class="badge ${p.band.css}">${p.band.label}</span>`:'—'}</td>
+          <td>${p.incStatus==='eligible'?'<span class="eligible-tag">Elegible</span>':p.incStatus==='manual'?'<span class="manual-tag">Revisión manual</span>':p.incStatus==='inactive'?'<span style="font-size:10px;color:var(--text3)">Sin tareas en el período</span>':'<span class="ineligible-tag">No elegible</span>'}</td>
+          <td>${p.incStatus==='eligible'?`<span class="amount-tag" style="font-size:11px">${fmtARS(p.compProdFinal||0)}</span>`:'<span style="color:var(--text3)">—</span>'}</td>
+          <td>${p.incStatus==='eligible'?`<span class="amount-tag" style="font-size:11px;color:var(--teal)">${fmtARS(p.compCalFinal||0)}</span>`:'<span style="color:var(--text3)">—</span>'}</td>
+          <td>${p.incStatus==='eligible'?`<span class="amount-tag">${fmtARS(p.amountFinal)}</span>${scaleApplied?` <span style="font-size:10px;color:var(--text3)">(×${scaleFactor.toFixed(2)})</span>`:''}`:'<span style="color:var(--text3)">—</span>'}</td>
+        </tr>`).join('')}</tbody>
+      </table></div>`;
+  }
+  _renderIncTableA(incA);
   document.getElementById('inc-notice-analistas').innerHTML=`<strong>Estos montos son estimados y no representan liquidación final.</strong> Productividad pesa ${Math.round(wprod*100)}% y calidad pesa ${Math.round(wcal*100)}%. Ambas curvas usan raíz cuadrada: la productividad arranca en ${piso} pts, la calidad arranca en 90% con un mínimo del 30%. Por debajo de 90% de calidad el incentivo es $0. Sin registros de auditoría en el período el colaborador queda en revisión manual. Redondeo a $1.000.${!hasCalidad?' <strong>Tip: cargá auditados.csv para ver la elegibilidad completa.</strong>':''}`;
 
   // ── TABLA TLs ──
-  document.getElementById('inc-table-tls').innerHTML=`
-    <div class="inc-table-wrap" style="margin-top:10px"><table>
-      <thead><tr><th>Team Leader</th><th>Equipo</th><th>Prom. equipo</th><th>Prom. general</th><th>Banda TL</th><th>Estado</th><th>Tope</th><th>Incentivo</th></tr></thead>
-      <tbody>${incTl.map(p=>`<tr>
-        <td class="name-cell">${p.nombre||p.user||'—'}</td>
-        <td class="mono-cell" style="color:var(--text3)">${p.teamSize} pers.</td>
-        <td class="mono-cell" style="color:${getBand(p.avgTeam).color}">${p.avgTeam.toFixed(1)}</td>
-        <td class="mono-cell" style="color:var(--text3)">${p.avgGeneral?p.avgGeneral.toFixed(1)+' pts ref.':'—'}</td>
-        <td>${p.tlBandLabel?`<span class="badge ${p.tlBandLabel==='High Performer'?'bh':p.tlBandLabel==='Sólido'?'bs':'bb'}">${p.tlBandLabel}</span>`:'—'}</td>
-        <td>${p.incStatus==='eligible'?'<span class="eligible-tag">Elegible</span>':'<span class="ineligible-tag">No elegible</span>'}</td>
-        <td class="mono-cell" style="color:var(--text3)">${p.incStatus==='eligible'?fmtARS(roundK(p.amount)):'—'}</td>
-        <td>${p.incStatus==='eligible'?`<span class="amount-tag">${fmtARS(p.amountFinal)}</span>`:'<span style="color:var(--text3)">—</span>'}</td>
-      </tr>`).join('')}</tbody>
-    </table></div>`;
-  document.getElementById('inc-notice-tls').innerHTML=`El promedio general del equipo en este período es <strong>${avgGeneral.toFixed(1)} pts/día</strong>. Bandas: Base (${pisoTL}–${avgGeneral.toFixed(1)} pts) → ${fmtARS(roundK(topeBase*2))} · Sólido (≥${avgGeneral.toFixed(1)} pts) → ${fmtARS(roundK(topeBase*2.8))} · High Performer (>${(avgGeneral*1.1).toFixed(1)} pts, +10%) → ${fmtARS(roundK(topeBase*3.6))}. Por debajo de ${pisoTL} pts no hay incentivo.`;
+  _incTlData=incTl;
+  INC_SORT_TL={col:'avgTeam',dir:-1};
+  function _renderIncTableTl(data){
+    const ss=INC_SORT_TL;
+    const sorted=_sortArr(data,ss);
+    const _s=col=>_sa2(ss,col);
+    const tlBadgeCss=lbl=>lbl==='Elite'?'be':lbl==='High Performer'?'bh':lbl==='Sólido'?'bs':'bb';
+    document.getElementById('inc-table-tls').innerHTML=`
+      <div class="inc-table-wrap" style="margin-top:10px"><table>
+        <thead><tr>
+          <th onclick="sortIncTl('nombre')">Team Leader${_s('nombre')}</th>
+          <th onclick="sortIncTl('teamSize')">Equipo${_s('teamSize')}</th>
+          <th onclick="sortIncTl('avgTeam')">Prom. equipo${_s('avgTeam')}</th>
+          <th onclick="sortIncTl('avgGeneral')">Prom. general${_s('avgGeneral')}</th>
+          <th onclick="sortIncTl('tlBandIdx')">Banda TL${_s('tlBandIdx')}</th>
+          <th onclick="sortIncTl('incStatus')">Estado${_s('incStatus')}</th>
+          <th onclick="sortIncTl('amount')">Tope${_s('amount')}</th>
+          <th onclick="sortIncTl('amountFinal')">Incentivo${_s('amountFinal')}</th>
+        </tr></thead>
+        <tbody>${sorted.map(p=>`<tr>
+          <td class="name-cell">${p.nombre||p.user||'—'}</td>
+          <td class="mono-cell" style="color:var(--text3)">${p.teamSize} pers.</td>
+          <td class="mono-cell" style="color:${getBand(p.avgTeam).color}">${p.avgTeam.toFixed(1)}</td>
+          <td class="mono-cell" style="color:var(--text3)">${p.avgGeneral?p.avgGeneral.toFixed(1)+' pts ref.':'—'}</td>
+          <td>${p.tlBandLabel?`<span class="badge ${tlBadgeCss(p.tlBandLabel)}">${p.tlBandLabel}</span>`:'—'}</td>
+          <td>${p.incStatus==='eligible'?'<span class="eligible-tag">Elegible</span>':'<span class="ineligible-tag">No elegible</span>'}</td>
+          <td class="mono-cell" style="color:var(--text3)">${p.incStatus==='eligible'?fmtARS(roundK(p.amount)):'—'}</td>
+          <td>${p.incStatus==='eligible'?`<span class="amount-tag">${fmtARS(p.amountFinal)}</span>`:'<span style="color:var(--text3)">—</span>'}</td>
+        </tr>`).join('')}</tbody>
+      </table></div>`;
+  }
+  _renderIncTableTl(incTl);
+  document.getElementById('inc-notice-tls').innerHTML=`El promedio general del equipo en este período es <strong>${avgGeneral.toFixed(1)} pts/día</strong>. Bandas: Base (${pisoTL}–${avgGeneral.toFixed(1)} pts) → ${fmtARS(roundK(topeBase*2))} · Sólido (≥${avgGeneral.toFixed(1)} pts) → ${fmtARS(roundK(topeBase*2.8))} · High Performer (>${(avgGeneral*1.1).toFixed(1)} pts, +10%) → ${fmtARS(roundK(topeBase*3.6))} · Elite (>${(avgGeneral*1.2).toFixed(1)} pts, +20%) → ${fmtARS(roundK(topeBase*4.8))}. Por debajo de ${pisoTL} pts no hay incentivo.`;
 
   // ── CP ──
   document.getElementById('inc-table-cp').innerHTML=cpEntry?`
@@ -1684,7 +1765,7 @@ function runIncentivos(){
       </tr></tbody>
     </table></div>`
     :'<div style="font-size:12px;color:var(--text3);padding:12px">No se encontró ningún colaborador con rol de Coordinador/a en equipo_colaboradores.csv</div>';
-  document.getElementById('inc-notice-cp').innerHTML=`La calidad se calcula combinando todos los registros de auditoría SdC y MAO del equipo. Correcto = 1.0 punto · Desvío leve = 0.5 · Desvío grave = 0. Topes: Base (90–93%) → ${fmtARS(roundK(topeBase*2))} · Sólido (93–97%) → ${fmtARS(roundK(topeBase*2.8))} · High Performer (≥97%) → ${fmtARS(roundK(topeBase*3.6))}. ${!hasCalidad?'<strong>Cargá auditados.csv para calcular esto automáticamente.</strong>':''}`;
+  document.getElementById('inc-notice-cp').innerHTML=`La calidad se calcula combinando todos los registros de auditoría SdC y MAO del equipo. Correcto = 1.0 punto · Desvío leve = 0.5 · Desvío grave = 0. Topes: Base (90–93%) → ${fmtARS(roundK(topeBase*2))} · Sólido (93–97%) → ${fmtARS(roundK(topeBase*2.8))} · High Performer (97–99%) → ${fmtARS(roundK(topeBase*3.6))} · Elite (≥99%) → ${fmtARS(roundK(topeBase*4.8))}. ${!hasCalidad?'<strong>Cargá auditados.csv para calcular esto automáticamente.</strong>':''}`;
 
   document.getElementById('inc-empty').style.display='none';
   document.getElementById('inc-content').style.display='block';
