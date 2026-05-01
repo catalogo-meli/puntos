@@ -1504,15 +1504,29 @@ function runIncentivos(){
 
   // TLs: obtener por rol desde persons (incluye líderes) y cruzar por equipo
   const tlPersons=persons.filter(p=>{const r=(p.rol||'').toLowerCase();return r.includes('team leader')||r==='tl'||r.startsWith('tl ');});
-  // Si no hay TLs explícitos, usar nombres de equipo de los analistas
-  const tlNames=tlPersons.length
+  // Si hay TLs en equipo_colaboradores, mostramos todos (aunque no tengan equipo activo)
+  // Si no hay TLs explícitos, derivamos de los equipos de los analistas
+  const tlNamesFromPersons=tlPersons.length
     ?[...new Set(tlPersons.map(p=>p.nombre||p.user).filter(Boolean))]
-    :[...new Set(analistas.map(p=>p.equipo).filter(Boolean))];
+    :[];
+  const tlNamesFromEquipos=[...new Set(analistas.map(p=>p.equipo).filter(Boolean))];
+  // Usamos la unión: TLs del archivo + equipos de analistas que no tengan TL mapeado
+  const tlNames=[...new Set([...tlNamesFromPersons,...tlNamesFromEquipos])];
   const incTl=tlNames.map(tlName=>{
     // Buscar el TL en persons para obtener su nombre real
     const tlPerson=tlPersons.find(p=>(p.nombre||p.user)===tlName)||{nombre:tlName};
-    const team=analistas.filter(p=>p.equipo===tlName&&p.activeDays>0);
-    if(!team.length)return null;
+    // Cruzar analistas por equipo: el campo equipo del analista puede ser el nombre del TL
+    // o el nombre del equipo — probamos ambos
+    const teamAll=analistas.filter(p=>p.equipo===tlName);
+    const team=teamAll.filter(p=>p.activeDays>0);
+    if(!teamAll.length){
+      // TL sin analistas asignados en este período
+      return{nombre:tlPerson.nombre||tlName,user:tlPerson.user||tlName,avgTeam:0,avgGeneral,incStatus:'no_eligible',reason:'Sin analistas asignados en el período',tlBandLabel:'',tlBandIdx:0,amount:0,amountFinal:0,teamSize:0};
+    }
+    if(!team.length){
+      // TL con analistas pero todos sin actividad
+      return{nombre:tlPerson.nombre||tlName,user:tlPerson.user||tlName,avgTeam:0,avgGeneral,incStatus:'no_eligible',reason:'Ningún analista del equipo tuvo actividad en el período',tlBandLabel:'',tlBandIdx:0,amount:0,amountFinal:0,teamSize:teamAll.length};
+    }
     const avgT=team.reduce((s,p)=>s+p.avgPts,0)/team.length;
     let status='no_eligible',reason='',tlBandLabel='',tlBandIdx=0;
     if(avgT<pisoTL){
