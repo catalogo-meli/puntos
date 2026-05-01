@@ -1432,6 +1432,7 @@ function runIncentivos(){
   const topeBase=budget/hc;
   const BAND_MULT_A={1:1.0,2:1.4,3:1.8,4:2.4};
   const BAND_MULT_TL={1:2.0,2:2.8,3:3.6};
+  const topesTL={1:topeBase*2.0,2:topeBase*2.8,3:topeBase*3.6};
   const MAX_PTS=110, RANGO_PROD=MAX_PTS-piso;
   const MAX_CAL=100, PISO_CAL=90, RANGO_CAL=MAX_CAL-PISO_CAL;
 
@@ -1454,7 +1455,7 @@ function runIncentivos(){
   const persons=aggregatePersonsAll(rows,PROC.equipoMap,PROC.equipoFilter);
 
   // Separate roles
-  const analistas=persons.filter(p=>{const r=(p.rol||'').toLowerCase();return!r.includes('team leader')&&!r.includes('coordinador')&&!r.includes('tl');});
+  const analistas=persons.filter(p=>!isLiderRol(p.rol));
   const tls=persons.filter(p=>{const r=(p.rol||'').toLowerCase();return r.includes('team leader')||r.includes(' tl');});
   const cpList=persons.filter(p=>(p.rol||'').toLowerCase().includes('coordinador'));
 
@@ -1493,7 +1494,7 @@ function runIncentivos(){
     const cc=tBanda*factorCal(calidad)*wcal;
     const montoTotal=cp+cc;
     return{...p,incStatus:'eligible',reason:'',amount:montoTotal,amountFinal:montoTotal,compProd:cp,compCal:cc,compProdFinal:cp,compCalFinal:cc,calidad,calTotal,bandIdx:bi,prodBajoPiso};
-  });;
+  });
 
   // ── TLs — bandas relativas al promedio general del periodo ──
   // Promedio general: todos los analistas con al menos 1 dia activo
@@ -1501,8 +1502,15 @@ function runIncentivos(){
   const avgGeneral=activeAnalistas.length
     ?activeAnalistas.reduce((s,p)=>s+p.avgPts,0)/activeAnalistas.length:0;
 
-  const tlNames=[...new Set(analistas.map(p=>p.equipo).filter(Boolean))];
+  // TLs: obtener por rol desde persons (incluye líderes) y cruzar por equipo
+  const tlPersons=persons.filter(p=>{const r=(p.rol||'').toLowerCase();return r.includes('team leader')||r==='tl'||r.startsWith('tl ');});
+  // Si no hay TLs explícitos, usar nombres de equipo de los analistas
+  const tlNames=tlPersons.length
+    ?[...new Set(tlPersons.map(p=>p.nombre||p.user).filter(Boolean))]
+    :[...new Set(analistas.map(p=>p.equipo).filter(Boolean))];
   const incTl=tlNames.map(tlName=>{
+    // Buscar el TL en persons para obtener su nombre real
+    const tlPerson=tlPersons.find(p=>(p.nombre||p.user)===tlName)||{nombre:tlName};
     const team=analistas.filter(p=>p.equipo===tlName&&p.activeDays>0);
     if(!team.length)return null;
     const avgT=team.reduce((s,p)=>s+p.avgPts,0)/team.length;
@@ -1525,13 +1533,14 @@ function runIncentivos(){
       }
     }
     const amount=status==='eligible'?topesTL[tlBandIdx]:0;
-    return{nombre:tlName,avgTeam:avgT,avgGeneral,incStatus:status,reason,tlBandLabel,tlBandIdx,amount,teamSize:team.length};
+    return{nombre:tlPerson.nombre||tlName,user:tlPerson.user||tlName,avgTeam:avgT,avgGeneral,incStatus:status,reason,tlBandLabel,tlBandIdx,amount,amountFinal:0,teamSize:team.length};
   }).filter(Boolean);
 
   // ── CP ──
   let cpEntry=null;
-  if(cpList.length>0||persons.find(p=>(p.rol||'').toLowerCase().includes('coordinador'))){
-    const cpPerson=cpList[0]||{nombre:'Victoria Tofalo',user:'ext_vitofalo'};
+  const cpFromPersons=persons.find(p=>(p.rol||'').toLowerCase().includes('coordinador'));
+  if(cpList.length>0||cpFromPersons){
+    const cpPerson=cpList[0]||cpFromPersons||{nombre:'Victoria Tofalo',user:'ext_vitofalo'};
     if(hasCalidad){
       // Calidad de todos los analistas
       let totalScore=0,totalRecs=0;
@@ -1621,7 +1630,7 @@ function runIncentivos(){
     <div class="inc-table-wrap" style="margin-top:10px"><table>
       <thead><tr><th>Team Leader</th><th>Equipo</th><th>Prom. equipo</th><th>Prom. general</th><th>Banda TL</th><th>Estado</th><th>Tope</th><th>Incentivo</th></tr></thead>
       <tbody>${incTl.map(p=>`<tr>
-        <td class="name-cell">${p.nombre}</td>
+        <td class="name-cell">${p.nombre||p.user||'—'}</td>
         <td class="mono-cell" style="color:var(--text3)">${p.teamSize} pers.</td>
         <td class="mono-cell" style="color:${getBand(p.avgTeam).color}">${p.avgTeam.toFixed(1)}</td>
         <td class="mono-cell" style="color:var(--text3)">${p.avgGeneral?p.avgGeneral.toFixed(1)+' pts ref.':'—'}</td>
