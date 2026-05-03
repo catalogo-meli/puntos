@@ -216,6 +216,19 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 .collapse-panel-body{padding:12px 13px;border-top:1px solid var(--border)}
 .collapse-panel.is-collapsed .collapse-panel-body{display:none}
 .advanced-config{margin-top:4px}
+.settings-layout{display:grid;gap:14px}
+.settings-card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.rules-table{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--surface)}
+.rules-table table{font-size:12px}
+.rules-table th{position:static}
+.rules-table input[type=checkbox]{accent-color:var(--accent)}
+.rules-actions{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.summary-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px;margin-top:10px}
+.summary-pill{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:8px 10px;font-size:11px;color:var(--text2);line-height:1.4}
+.active-scenario-card{background:rgba(91,127,255,.06);border:1px solid rgba(91,127,255,.22);border-radius:var(--radius);padding:12px 14px;margin-bottom:10px}
+.active-scenario-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px}
+.active-scenario-copy{font-size:12px;color:var(--text2);line-height:1.55}
+.local-note{font-size:11px;color:var(--text3);margin-top:8px}
 @media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{position:static;height:auto}.calc-grid{grid-template-columns:1fr}.upload-grid{grid-template-columns:1fr}}
 @media(max-width:760px){.config-mini-grid,.config-mini-grid.three,.config-mini-grid.four,.compare-grid,.compare-values{grid-template-columns:1fr}.scenario-select{min-width:0}}
 </style>
@@ -247,54 +260,15 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
       Calculadora 1:1
     </button>
+    <button class="nav-item" onclick="showPage('config')">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6V20a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-.6 1.7 1.7 0 0 0-1.88.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1H4a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 .6-1 1.7 1.7 0 0 0-.34-1.88l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6V4a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 .6 1.7 1.7 0 0 0 1.88-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9c.2.34.4.67.6 1h.1a2 2 0 1 1 0 4H20a1.7 1.7 0 0 0-.6 1z"/></svg>
+      Configuración
+    </button>
     <button class="nav-item" onclick="showPage('incentivos')">
       <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
       Incentivos
     </button>
   </nav>
-
-  <!-- FLUJOS -->
-  <div class="cfg-section collapsed" id="section-flujos" data-default-open="false">
-    <div class="cfg-title">
-      <span style="display:flex;align-items:center;gap:5px;min-width:0">
-        <button class="cfg-toggle" onclick="toggleSection('section-flujos')" title="Plegar/desplegar">▾</button>
-        <span class="tooltip-wrap">⚙ Pesos por flujo<span class="tooltip-icon">?</span><span class="tooltip-box">Cuánto vale cada tipo de tarea. Demanda es la referencia (×1.0). Flujos más complejos tienen mayor peso. Hacé clic en Aplicar cambios para recalcular.</span></span>
-      </span>
-      <button onclick="openModal('flujo')" style="font-size:10px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;padding:0;flex-shrink:0">+ Agregar</button>
-    </div>
-    <div class="cfg-list"><div id="flujos-list"></div>
-    <button class="apply-btn" onclick="applyWeights()">Aplicar cambios →</button></div>
-  </div>
-
-  <!-- INICIATIVAS -->
-  <div class="cfg-section collapsed" id="section-iniciativas">
-    <div class="cfg-title">
-      <span style="display:flex;align-items:center;gap:5px;min-width:0">
-        <button class="cfg-toggle" onclick="toggleSection('section-iniciativas')" title="Plegar/desplegar">▾</button>
-        <span class="tooltip-wrap">◈ Bonus por iniciativa<span class="tooltip-icon">?</span><span class="tooltip-box">Puntos adicionales que suma cada tarea cuando pertenece a una iniciativa específica. Se suman directamente al peso del flujo — no multiplican.</span></span>
-      </span>
-      <button onclick="openModal('iniciativa')" style="font-size:10px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;padding:0;flex-shrink:0">+ Agregar</button>
-    </div>
-    <div class="cfg-list">
-      <div class="cfg-hint">Suma puntos fijos por cada tarea que lleva esa iniciativa. Ej: MAO = +0.15 pts/tarea trabajada.</div>
-      <div id="iniciativas-list"></div>
-    </div>
-  </div>
-
-  <!-- INCIDENCIAS -->
-  <div class="cfg-section collapsed" id="section-incidencias">
-    <div class="cfg-title">
-      <span style="display:flex;align-items:center;gap:5px;min-width:0">
-        <button class="cfg-toggle" onclick="toggleSection('section-incidencias')" title="Plegar/desplegar">▾</button>
-        <span class="tooltip-wrap">⚡ Puntos por incidencia<span class="tooltip-icon">?</span><span class="tooltip-box">Puntos adicionales por tareas que requirieron un paso extra. Se registran en la columna "Incidencias" del historico.csv. Bloqueantes externos como "Esperando respuesta" valen 0 — no penalizan ni suman.</span></span>
-      </span>
-      <button onclick="openModal('incidencia')" style="font-size:10px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;padding:0;flex-shrink:0">+ Agregar</button>
-    </div>
-    <div class="cfg-list">
-      <div class="cfg-hint">Suma puntos fijos cuando se registró esa incidencia en la tarea. 0 para bloqueantes externos como "Esperando respuesta".</div>
-      <div id="incidencias-list"></div>
-    </div>
-  </div>
 </aside>
 
 <!-- MAIN -->
@@ -367,8 +341,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <label>Desde</label><input type="date" class="sel" id="h-from" onchange="applyHistFilter()">
       <label>Hasta</label><input type="date" class="sel" id="h-to" onchange="applyHistFilter()">
       <label>Equipo</label><select class="sel" id="h-equipo-filter" onchange="applyHistFilter()"><option value="">Todos</option></select>
-      <input class="search-bar" id="search-hist" placeholder="Buscar colaborador…" oninput="renderHistTable()">
-      <button class="filter-btn" onclick="clearHistFilter()">✕ Limpiar</button>
+      <input class="search-bar" id="search-hist" placeholder="Buscar colaborador…" oninput="renderHistTable();updateFilterClearButtons()">
+      <button class="filter-btn" id="clear-hist-filters" onclick="clearHistFilter()" style="display:none">✕ Limpiar filtros</button>
     </div>
     <div class="stat-grid" id="hist-stats"></div>
     <div class="chart-wrap">
@@ -402,7 +376,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <label>Desde</label><input type="date" class="sel" id="r-from" onchange="applyRankFilter()">
       <label>Hasta</label><input type="date" class="sel" id="r-to" onchange="applyRankFilter()">
       <label>TL</label><select class="sel" id="r-equipo" onchange="applyRankFilter()"><option value="">Todos</option></select>
-      <button class="filter-btn" onclick="clearRankFilter()">✕ Limpiar</button>
+      <button class="filter-btn" id="clear-rank-filters" onclick="clearRankFilter()" style="display:none">✕ Limpiar filtros</button>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title-row"><span class="chart-title">Distribución por banda del ranking filtrado</span></div>
+      <div style="height:190px"><canvas id="chart-rank-bands"></canvas></div>
     </div>
     <div class="chart-wrap">
       <div class="chart-title-row"><span class="chart-title">Puntos ponderados promedio por colaborador</span></div>
@@ -428,7 +406,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
         <div id="ini-section" class="input-group" style="margin-bottom:7px">
           <div id="ini-note" style="display:none;font-size:10px;color:var(--amber);margin-bottom:5px;padding:4px 7px;background:rgba(246,166,35,.08);border-radius:5px;border:1px solid rgba(246,166,35,.2)"></div>
           <div class="input-label">
-            <span class="tooltip-wrap">Iniciativa<span class="tooltip-icon">?</span><span class="tooltip-box">Solo aplica a flujos marcados con "ini" en el sidebar (Enhancement y Soporte por defecto). Si el mix no incluye esos flujos, el bonus no tiene efecto.</span></span>
+            <span class="tooltip-wrap">Iniciativa<span class="tooltip-icon">?</span><span class="tooltip-box">Solo aplica a flujos marcados como "Acepta iniciativas" en Configuración. Si el mix no incluye esos flujos, el bonus no tiene efecto.</span></span>
             <span id="lbl-ini-bonus" style="color:var(--green)">+0.00 pts</span>
           </div>
           <select class="calc-sel" id="calc-iniciativa" onchange="if(!this.value){document.getElementById('pct-ini').value=0;document.getElementById('pct-ini-val').textContent='0%';}else if(+document.getElementById('pct-ini').value===0){document.getElementById('pct-ini').value=50;document.getElementById('pct-ini-val').textContent='50%';}updateCalc()" style="margin-bottom:5px"><option value="">Sin iniciativa</option></select>
@@ -477,6 +455,123 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
   <div id="scenarios-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px"></div>
 </div>
 
+<!-- CONFIGURACION -->
+<div class="page" id="page-config">
+  <div class="page-header">
+    <h2 class="page-title">Configuración</h2>
+    <p class="page-sub">Definí las reglas del sistema: puntos, elegibilidad, calidad, multiplicadores y escenarios.</p>
+  </div>
+  <div class="settings-layout">
+    <div class="inc-section">
+      <div class="inc-section-title">Reglas de puntos</div>
+      <div class="inc-section-sub">Estos valores afectan histórico, ranking, calculadora e incentivos. Se mantienen las mismas estructuras internas de flujos, iniciativas e incidencias.</div>
+      <div class="settings-card-grid">
+        <div class="config-card">
+          <div class="config-card-title">Pesos por flujo</div>
+          <div class="inc-section-sub">Cuánto vale cada tipo de tarea y si acepta iniciativas.</div>
+          <div id="flujos-list"></div>
+          <div class="rules-actions">
+            <button class="secondary-btn" onclick="openModal('flujo')">Agregar flujo</button>
+            <button class="inc-calc-btn" onclick="applyWeights()">Aplicar cambios</button>
+          </div>
+        </div>
+        <div class="config-card">
+          <div class="config-card-title">Bonus por iniciativa</div>
+          <div class="inc-section-sub">Puntos adicionales por tarea cuando aplica una iniciativa.</div>
+          <div id="iniciativas-list"></div>
+          <div class="rules-actions">
+            <button class="secondary-btn" onclick="openModal('iniciativa')">Agregar iniciativa</button>
+          </div>
+        </div>
+        <div class="config-card">
+          <div class="config-card-title">Puntos por incidencia</div>
+          <div class="inc-section-sub">Puntos adicionales por tareas con un paso extra o incidencia registrada.</div>
+          <div id="incidencias-list"></div>
+          <div class="rules-actions">
+            <button class="secondary-btn" onclick="openModal('incidencia')">Agregar incidencia</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="inc-section">
+      <div class="inc-section-title">Reglas de elegibilidad y desempeño</div>
+      <div class="inc-section-sub">Productividad, calidad y multiplicadores definen el escenario activo de incentivos.</div>
+      <div class="config-grid">
+        <div class="config-card">
+          <div class="config-card-title">Preset general de productividad</div>
+          <div class="config-field">
+            <label>Preset</label>
+            <select id="inc-prod-preset" onchange="onProdPresetChange()">
+              <option value="piloto">Piloto</option>
+              <option value="intermedio">Intermedio</option>
+              <option value="objetivo">Objetivo</option>
+              <option value="custom">Personalizado</option>
+            </select>
+          </div>
+          <div id="inc-prod-valid" class="config-valid"></div>
+        </div>
+        <div class="config-card">
+          <div class="config-card-title">Productividad</div>
+          <div class="config-mini-grid four">
+            <div class="config-field"><label>Base desde</label><input id="inc-band-base-min" type="number" step="0.1"></div>
+            <div class="config-field"><label>Sólido desde</label><input id="inc-band-solid-min" type="number" step="0.1"></div>
+            <div class="config-field"><label>HP desde</label><input id="inc-band-hp-min" type="number" step="0.1"></div>
+            <div class="config-field"><label>Elite desde</label><input id="inc-band-elite-min" type="number" step="0.1"></div>
+          </div>
+        </div>
+      </div>
+      <div class="config-grid">
+        <div class="config-card">
+          <div class="config-card-title">Calidad</div>
+          <div class="config-mini-grid four">
+            <div class="config-field"><label>Preset calidad</label><select id="inc-quality-preset" onchange="onQualityPresetChange()"><option value="90-100">90-100</option><option value="90-98">90-98</option><option value="90-97">90-97</option><option value="custom">Personalizado</option></select></div>
+            <div class="config-field"><label>Corte duro %</label><input id="inc-quality-cutoff" type="number" step="0.1"></div>
+            <div class="config-field"><label>Factor inicial %</label><input id="inc-quality-start-factor" type="number" step="1"></div>
+            <div class="config-field"><label>Calidad máxima %</label><input id="inc-quality-max" type="number" step="0.1"></div>
+          </div>
+          <div id="inc-quality-valid" class="config-valid"></div>
+        </div>
+        <div class="config-card">
+          <div class="config-card-title">Multiplicadores</div>
+          <div class="rules-table">
+            <table>
+              <thead><tr><th>Rol</th><th>Base</th><th>Sólido</th><th>HP</th><th>Elite</th></tr></thead>
+              <tbody>
+                <tr><td class="name-cell">Analistas</td><td><input class="budget-input" id="inc-mult-a-base" type="number" step="0.1"></td><td><input class="budget-input" id="inc-mult-a-solid" type="number" step="0.1"></td><td><input class="budget-input" id="inc-mult-a-hp" type="number" step="0.1"></td><td><input class="budget-input" id="inc-mult-a-elite" type="number" step="0.1"></td></tr>
+                <tr><td class="name-cell">TL/CP</td><td><input class="budget-input" id="inc-mult-l-base" type="number" step="0.1"></td><td><input class="budget-input" id="inc-mult-l-solid" type="number" step="0.1"></td><td><input class="budget-input" id="inc-mult-l-hp" type="number" step="0.1"></td><td><input class="budget-input" id="inc-mult-l-elite" type="number" step="0.1"></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="config-card">
+        <div class="config-card-title">Resumen dinámico de reglas activas</div>
+        <div id="config-rules-summary" class="summary-list"></div>
+        <div class="rules-actions">
+          <span class="local-note">Los pesos productividad/calidad se definen en Incentivos para cada simulación.</span>
+          <button class="secondary-btn danger-btn" onclick="restoreDefaultScenario()">Restaurar valores recomendados</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="inc-section" id="config-scenarios-section">
+      <div class="inc-section-title">Escenarios de simulación</div>
+      <div class="inc-section-sub">Guardá, cargá y compará combinaciones de reglas, presupuesto, pesos y flujos.</div>
+      <div class="scenario-row">
+        <select id="inc-scenario-select" class="scenario-select"><option value="">Sin escenarios guardados</option></select>
+        <input id="inc-scenario-name" class="budget-input" placeholder="Nombre del escenario" style="width:210px">
+        <button class="secondary-btn" onclick="saveCurrentScenario()">Guardar escenario actual</button>
+        <button class="secondary-btn" onclick="loadSelectedScenario()">Cargar escenario</button>
+        <button class="secondary-btn" onclick="compareSelectedScenario()">Comparar escenarios</button>
+        <button class="secondary-btn danger-btn" onclick="deleteSelectedScenario()">Eliminar escenario</button>
+      </div>
+      <div class="local-note">Guardado local en este navegador.</div>
+      <div id="inc-compare-output"></div>
+    </div>
+  </div>
+</div>
+
 <!-- INCENTIVOS -->
 <div class="page" id="page-incentivos">
   <div class="page-header">
@@ -492,8 +587,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
   </div>
 
   <div class="inc-section">
-    <div class="inc-section-title">Configuración del período y presupuesto</div>
-    <div class="inc-section-sub">Elegí el período y el presupuesto disponible. El sistema hace todo el cálculo solo. Si el total supera el presupuesto, todos reciben proporcionalmente menos — nunca se paga de más.</div>
+    <div class="inc-section-title">Configuración del período</div>
+    <div class="inc-section-sub">Elegí período, presupuesto y pesos de esta simulación. Si el total supera el presupuesto, se aplica la salvaguarda proporcional.</div>
     <div class="budget-row">
       <span class="budget-label">Tipo de período</span>
       <select class="budget-select" id="inc-period-type" onchange="onPeriodTypeChange()">
@@ -523,116 +618,27 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <input class="budget-input" type="number" id="inc-wcal" value="30" min="10" max="90" step="5" style="width:60px">
       <span class="budget-label" style="color:var(--text3);font-size:11px">el piso mínimo aplica también al umbral de elegibilidad de TLs</span>
     </div>
-    <div id="inc-topes-preview" style="display:none;background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius);padding:10px 14px;margin-bottom:9px">
-      <div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px">Resumen del escenario actual</div>
-      <div id="topes-content" style="display:grid;grid-template-columns:1fr 1fr;gap:4px 20px;font-size:12px"></div>
-    </div>
-    <div class="collapse-actions">
-      <button class="secondary-btn" onclick="expandAllConfigPanels()">Expandir todo</button>
-      <button class="secondary-btn" onclick="collapseAdvancedConfigPanels()">Contraer configuración avanzada</button>
-    </div>
-    <div class="config-grid advanced-config">
-      <div class="collapse-panel" id="panel-productivity" data-collapse-panel data-default-open="false">
-        <button class="collapse-panel-header" type="button" aria-expanded="false" aria-controls="panel-productivity-body">
-          <span><span class="collapse-panel-title">Productividad</span><span class="collapse-panel-desc">Presets, umbrales de bandas y validación de rangos.</span></span>
-          <span class="collapse-panel-indicator" aria-hidden="true">▸</span>
-        </button>
-        <div class="collapse-panel-body" id="panel-productivity-body">
-        <div class="config-field" style="margin-bottom:8px">
-          <label>Preset</label>
-          <select id="inc-prod-preset" onchange="onProdPresetChange()">
-            <option value="piloto">Piloto</option>
-            <option value="intermedio">Intermedio</option>
-            <option value="objetivo">Objetivo</option>
-            <option value="custom">Personalizado</option>
-          </select>
-        </div>
-        <div class="config-mini-grid four">
-          <div class="config-field"><label>Base desde</label><input id="inc-band-base-min" type="number" step="0.1"></div>
-          <div class="config-field"><label>Solido desde</label><input id="inc-band-solid-min" type="number" step="0.1"></div>
-          <div class="config-field"><label>HP desde</label><input id="inc-band-hp-min" type="number" step="0.1"></div>
-          <div class="config-field"><label>Elite desde</label><input id="inc-band-elite-min" type="number" step="0.1"></div>
-        </div>
-        <div id="inc-prod-valid" class="config-valid"></div>
+    <div class="active-scenario-card">
+      <div class="active-scenario-title">Escenario activo</div>
+      <div id="inc-active-scenario-copy" class="active-scenario-copy"></div>
+      <div id="inc-topes-preview" style="display:block;margin-top:9px">
+        <div id="topes-content" style="display:grid;grid-template-columns:1fr 1fr;gap:4px 20px;font-size:12px"></div>
       </div>
-      </div>
-      <div class="collapse-panel" id="panel-quality" data-collapse-panel data-default-open="false">
-        <button class="collapse-panel-header" type="button" aria-expanded="false" aria-controls="panel-quality-body">
-          <span><span class="collapse-panel-title">Calidad</span><span class="collapse-panel-desc">Corte duro, factor inicial y calidad máxima del componente.</span></span>
-          <span class="collapse-panel-indicator" aria-hidden="true">▸</span>
-        </button>
-        <div class="collapse-panel-body" id="panel-quality-body">
-        <div class="config-field" style="margin-bottom:8px">
-          <label>Preset</label>
-          <select id="inc-quality-preset" onchange="onQualityPresetChange()">
-            <option value="90-100">90-100</option>
-            <option value="90-98">90-98</option>
-            <option value="90-97">90-97</option>
-            <option value="custom">Personalizado</option>
-          </select>
-        </div>
-        <div class="config-mini-grid three">
-          <div class="config-field"><label>Corte duro %</label><input id="inc-quality-cutoff" type="number" step="0.1"></div>
-          <div class="config-field"><label>Factor inicial %</label><input id="inc-quality-start-factor" type="number" step="1"></div>
-          <div class="config-field"><label>Max calidad %</label><input id="inc-quality-max" type="number" step="0.1"></div>
-        </div>
-        <div id="inc-quality-valid" class="config-valid"></div>
-      </div>
+      <div class="rules-actions">
+        <button class="secondary-btn" onclick="goToConfigRules()">Editar reglas</button>
+        <button class="secondary-btn" onclick="goToConfigScenarios()">Guardar escenario</button>
+        <button class="secondary-btn" onclick="goToConfigScenarios()">Comparar escenarios</button>
       </div>
     </div>
-    <div class="collapse-panel" id="panel-multipliers" data-collapse-panel data-default-open="false">
-      <button class="collapse-panel-header" type="button" aria-expanded="false" aria-controls="panel-multipliers-body">
-        <span><span class="collapse-panel-title">Multiplicadores</span><span class="collapse-panel-desc">Topes relativos para analistas, TL y CP.</span></span>
-        <span class="collapse-panel-indicator" aria-hidden="true">▸</span>
-      </button>
-      <div class="collapse-panel-body" id="panel-multipliers-body">
-        <div class="config-grid" style="margin-bottom:0">
-          <div class="config-card">
-            <div class="config-card-title">Analistas</div>
-            <div class="config-mini-grid four">
-              <div class="config-field"><label>Base</label><input id="inc-mult-a-base" type="number" step="0.1"></div>
-              <div class="config-field"><label>Solido</label><input id="inc-mult-a-solid" type="number" step="0.1"></div>
-              <div class="config-field"><label>HP</label><input id="inc-mult-a-hp" type="number" step="0.1"></div>
-              <div class="config-field"><label>Elite</label><input id="inc-mult-a-elite" type="number" step="0.1"></div>
-            </div>
-          </div>
-          <div class="config-card">
-            <div class="config-card-title">TL/CP</div>
-            <div class="config-mini-grid four">
-              <div class="config-field"><label>Base</label><input id="inc-mult-l-base" type="number" step="0.1"></div>
-              <div class="config-field"><label>Solido</label><input id="inc-mult-l-solid" type="number" step="0.1"></div>
-              <div class="config-field"><label>HP</label><input id="inc-mult-l-hp" type="number" step="0.1"></div>
-              <div class="config-field"><label>Elite</label><input id="inc-mult-l-elite" type="number" step="0.1"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="collapse-panel" id="panel-scenarios" data-collapse-panel data-default-open="false">
-      <button class="collapse-panel-header" type="button" aria-expanded="false" aria-controls="panel-scenarios-body">
-        <span><span class="collapse-panel-title">Escenarios guardados y comparador</span><span class="collapse-panel-desc">Guardar, cargar y comparar escenarios desde localStorage.</span></span>
-        <span class="collapse-panel-indicator" aria-hidden="true">▸</span>
-      </button>
-      <div class="collapse-panel-body" id="panel-scenarios-body">
-      <div class="scenario-row">
-        <select id="inc-scenario-select" class="scenario-select"><option value="">Sin escenarios guardados</option></select>
-        <input id="inc-scenario-name" class="budget-input" placeholder="Nombre del escenario" style="width:210px">
-        <button class="secondary-btn" onclick="saveCurrentScenario()">Guardar</button>
-        <button class="secondary-btn" onclick="loadSelectedScenario()">Cargar</button>
-        <button class="secondary-btn" onclick="compareSelectedScenario()">Comparar</button>
-        <button class="secondary-btn danger-btn" onclick="restoreDefaultScenario()">Restaurar defaults</button>
-      </div>
-      <div id="inc-compare-output"></div>
-    </div>
-    </div>
+    <div class="alert-box alert-info">Los montos son estimaciones sujetas a validación de datos, revisión de casos manuales y aprobación final.</div>
     <div style="display:flex;justify-content:flex-end">
-      <button class="inc-calc-btn" onclick="runIncentivos()">Ver distribución del período →</button>
+      <button class="inc-calc-btn" onclick="runIncentivos()">Simular incentivos del período →</button>
     </div>
   </div>
 
   <div id="inc-empty" class="empty-state">
     <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-    <p>Cargá los archivos, configurá el presupuesto y presioná "Ver distribución del período"</p>
+    <p>Cargá los archivos, configurá el presupuesto y presioná "Simular incentivos del período"</p>
   </div>
 
   <div id="inc-content" style="display:none">
@@ -644,7 +650,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
     </div>
     <div class="collapse-panel" id="panel-communication" data-collapse-panel data-default-open="false">
       <button class="collapse-panel-header" type="button" aria-expanded="false" aria-controls="panel-communication-body">
-        <span><span class="collapse-panel-title">Modo comunicación</span><span class="collapse-panel-desc">Resumen dinámico para propuesta o comunicación al equipo.</span></span>
+        <span><span class="collapse-panel-title">Resumen para comunicar</span><span class="collapse-panel-desc">Salida dinámica para propuesta o comunicación al equipo.</span></span>
         <span class="collapse-panel-indicator" aria-hidden="true">▸</span>
       </button>
       <div class="collapse-panel-body" id="panel-communication-body">
@@ -980,41 +986,41 @@ let _modalMode='';
 // SIDEBAR RENDER
 // ═══════════════════════════════════════════════════════════
 function renderFlujosList(){
-  document.getElementById('flujos-list').innerHTML=FLUJOS.map((f,i)=>`
-    <div class="cfg-row" style="align-items:center">
-      <span class="cfg-label" title="${f.label}" style="flex:1;min-width:0">${f.label}</span>
-      <input class="cfg-input" type="number" step="0.05" min="0" max="20" value="${f.weight}"
-        id="fw-${i}" onchange="FLUJOS[${i}].weight=+(this.value)||0" style="width:46px">
-      <label title="¿Este flujo puede tener iniciativas?" style="display:flex;align-items:center;gap:3px;cursor:pointer;flex-shrink:0" onclick="event.stopPropagation()">
-        <input type="checkbox" ${f.acceptsIni?'checked':''} 
-          onchange="FLUJOS[${i}].acceptsIni=this.checked;_updateIniVisibility();syncCalcSelectors();if(PROC)computeAll();"
-          style="width:12px;height:12px;accent-color:var(--accent);cursor:pointer">
-        <span style="font-size:9px;color:var(--text3);white-space:nowrap">ini</span>
-      </label>
-      <button class="cfg-del" onclick="deleteFlujo(${i})" title="Eliminar">✕</button>
-    </div>`).join('');
+  const el=document.getElementById('flujos-list');if(!el)return;
+  el.innerHTML=`<div class="rules-table"><table>
+    <thead><tr><th>Flujo</th><th>Peso</th><th>Acepta iniciativas</th><th></th></tr></thead>
+    <tbody>${FLUJOS.map((f,i)=>`
+      <tr>
+        <td class="name-cell">${f.label}</td>
+        <td><input class="budget-input" type="number" step="0.05" min="0" max="20" value="${f.weight}" id="fw-${i}" onchange="FLUJOS[${i}].weight=+(this.value)||0" style="width:86px"></td>
+        <td><label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" ${f.acceptsIni?'checked':''} onchange="FLUJOS[${i}].acceptsIni=this.checked;_updateIniVisibility();syncCalcSelectors();if(PROC)computeAll();"> Sí</label></td>
+        <td><button class="cfg-del" onclick="deleteFlujo(${i})" title="Eliminar">✕</button></td>
+      </tr>`).join('')}</tbody>
+  </table></div>`;
 }
 function renderIniciativasList(){
   const keys=Object.keys(INICIATIVAS);
-  document.getElementById('iniciativas-list').innerHTML=keys.length?keys.map(k=>`
-    <div class="cfg-row">
-      <span class="cfg-label" title="${INICIATIVAS[k].label}">${INICIATIVAS[k].label}</span>
-      <input class="cfg-input" type="number" step="0.05" min="-1" max="5" value="${INICIATIVAS[k].bonus}"
-        onchange="INICIATIVAS['${k}'].bonus=+(this.value)||0;updateCalc()">
-      <button class="cfg-del" onclick="deleteIniciativa('${k}')">✕</button>
-    </div>`).join('')
-    :'<div style="font-size:11px;color:var(--text3)">Sin iniciativas</div>';
+  const el=document.getElementById('iniciativas-list');if(!el)return;
+  el.innerHTML=keys.length?`<div class="rules-table"><table>
+    <thead><tr><th>Iniciativa</th><th>Bonus por tarea</th><th></th></tr></thead>
+    <tbody>${keys.map(k=>`<tr>
+      <td class="name-cell">${INICIATIVAS[k].label}</td>
+      <td><input class="budget-input" type="number" step="0.05" min="-1" max="5" value="${INICIATIVAS[k].bonus}" onchange="INICIATIVAS['${k}'].bonus=+(this.value)||0;updateCalc()" style="width:86px"></td>
+      <td><button class="cfg-del" onclick="deleteIniciativa('${k}')">✕</button></td>
+    </tr>`).join('')}</tbody>
+  </table></div>`:'<div style="font-size:12px;color:var(--text3)">Sin iniciativas configuradas.</div>';
 }
 function renderIncidenciasList(){
   const keys=Object.keys(INCIDENCIAS);
-  document.getElementById('incidencias-list').innerHTML=keys.length?keys.map(k=>`
-    <div class="cfg-row">
-      <span class="cfg-label" title="${INCIDENCIAS[k].label}">${INCIDENCIAS[k].label}</span>
-      <input class="cfg-input" type="number" step="0.1" min="0" max="20" value="${INCIDENCIAS[k].pts}"
-        onchange="INCIDENCIAS['${k}'].pts=+(this.value)||0;updateCalc()">
-      <button class="cfg-del" onclick="deleteIncidencia('${k}')">✕</button>
-    </div>`).join('')
-    :'<div style="font-size:11px;color:var(--text3)">Sin incidencias</div>';
+  const el=document.getElementById('incidencias-list');if(!el)return;
+  el.innerHTML=keys.length?`<div class="rules-table"><table>
+    <thead><tr><th>Incidencia</th><th>Puntos</th><th></th></tr></thead>
+    <tbody>${keys.map(k=>`<tr>
+      <td class="name-cell">${INCIDENCIAS[k].label}</td>
+      <td><input class="budget-input" type="number" step="0.1" min="0" max="20" value="${INCIDENCIAS[k].pts}" onchange="INCIDENCIAS['${k}'].pts=+(this.value)||0;updateCalc()" style="width:86px"></td>
+      <td><button class="cfg-del" onclick="deleteIncidencia('${k}')">✕</button></td>
+    </tr>`).join('')}</tbody>
+  </table></div>`:'<div style="font-size:12px;color:var(--text3)">Sin incidencias configuradas.</div>';
 }
 function renderAllSidebar(){renderFlujosList();renderIniciativasList();renderIncidenciasList();syncCalcSelectors();}
 
@@ -1546,7 +1552,20 @@ function filterRows(rows,f){
     return true;
   });
 }
-function clearHistFilter(){['h-year','h-month','h-week'].forEach(id=>document.getElementById(id).value='');['h-from','h-to'].forEach(id=>document.getElementById(id).value='');applyHistFilter();}
+function hasHistFilters(){
+  return ['h-year','h-month','h-week','h-from','h-to','h-equipo-filter'].some(id=>!!document.getElementById(id)?.value)
+    || !!(document.getElementById('search-hist')?.value||'').trim();
+}
+function hasRankFilters(){
+  return ['r-year','r-month','r-week','r-from','r-to','r-equipo'].some(id=>!!document.getElementById(id)?.value);
+}
+function updateFilterClearButtons(){
+  const h=document.getElementById('clear-hist-filters');
+  if(h)h.style.display=hasHistFilters()?'inline-flex':'none';
+  const r=document.getElementById('clear-rank-filters');
+  if(r)r.style.display=hasRankFilters()?'inline-flex':'none';
+}
+function clearHistFilter(){['h-year','h-month','h-week','h-equipo-filter'].forEach(id=>document.getElementById(id).value='');['h-from','h-to'].forEach(id=>document.getElementById(id).value='');const s=document.getElementById('search-hist');if(s)s.value='';applyHistFilter();}
 function clearRankFilter(){['r-year','r-month','r-week'].forEach(id=>document.getElementById(id).value='');['r-from','r-to'].forEach(id=>document.getElementById(id).value='');document.getElementById('r-equipo').value='';applyRankFilter();}
 
 // ═══════════════════════════════════════════════════════════
@@ -1558,7 +1577,7 @@ function applyHistFilter(){
   const f=buildFilter('h');
   const filtered=filterRows(PROC.rawRows,f);
   HIST_PERSONS=aggregatePersons(filtered,PROC.equipoMap,PROC.equipoFilter);
-  renderHistStats(HIST_PERSONS);renderBandsChart(filtered);renderHistTable();
+  renderHistStats(HIST_PERSONS);renderBandsChart(filtered);renderHistTable();updateFilterClearButtons();
 }
 function renderHistStats(persons){
   const cfg=activeIncConfig();
@@ -1624,6 +1643,7 @@ function renderHistTable(){
       <td class="mono-cell" style="color:var(--text3)">${p.activeDays}</td>
       <td>${p.activeDays>0?`<span class="badge ${p.band.css}">${p.band.label}</span>`:'<span style="font-size:11px;color:var(--text3)">—</span>'}</td></tr>`;
   }).join('');
+  updateFilterClearButtons();
 }
 function sortHist(col){if(HIST_SORT.col===col)HIST_SORT.dir*=-1;else{HIST_SORT.col=col;HIST_SORT.dir=-1;}renderHistTable();}
 
@@ -1749,7 +1769,9 @@ function applyRankFilter(){
   const show=eqFilter?persons.filter(p=>p.equipo===eqFilter):persons;
   _rankPersons=show.filter(p=>p.activeDays>0);
   RANK_SORT={col:'avgPts',dir:-1};
+  renderRankBandsChart(_rankPersons);
   renderRankingTable();
+  updateFilterClearButtons();
 }
 function sortRank(col){
   if(RANK_SORT.col===col)RANK_SORT.dir*=-1;else{RANK_SORT.col=col;RANK_SORT.dir=-1;}
@@ -1759,8 +1781,22 @@ function getRankSortVal(p,col){
   if(col==='bandIdx')return getBandIdx(p.avgPts);
   return p[col]??'';
 }
+function renderRankBandsChart(persons){
+  const canvas=document.getElementById('chart-rank-bands');
+  if(!canvas||typeof Chart==='undefined')return;
+  const counts=new Array(BANDS.length).fill(0);
+  (persons||[]).forEach(p=>{const bi=getBandIdx(p.avgPts);if(bi>=0)counts[bi]++;});
+  const ctx=canvas.getContext('2d');
+  if(CHARTS.rankBands)CHARTS.rankBands.destroy();
+  CHARTS.rankBands=new Chart(ctx,{type:'bar',data:{labels:BANDS.map(b=>b.label),datasets:[{data:counts,backgroundColor:BANDS.map(b=>b.color+'88'),borderColor:BANDS.map(b=>b.color),borderWidth:1.5,borderRadius:6}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1c2030',titleColor:'#e8eaf2',bodyColor:'#8b91a8',borderColor:'#252a3a',borderWidth:1,callbacks:{label:c=>`${c.raw} colaboradores`}}},scales:{x:{grid:{color:'#252a3a'},ticks:{color:'#8b91a8',precision:0},beginAtZero:true},y:{grid:{display:false},ticks:{color:'#8b91a8',font:{size:11}}}}}});
+}
 function renderRankingTable(){
-  if(!_rankPersons.length)return;
+  if(!_rankPersons.length){
+    document.getElementById('rank-thead').innerHTML='';
+    document.getElementById('rank-tbody').innerHTML='<tr><td style="color:var(--text3);padding:16px">No hay colaboradores para los filtros seleccionados.</td></tr>';
+    return;
+  }
   const _sa=col=>RANK_SORT.col===col?(RANK_SORT.dir===-1?' ↓':' ↑'):'';
   const ps=[..._rankPersons].sort((a,b)=>{
     let va=getRankSortVal(a,RANK_SORT.col),vb=getRankSortVal(b,RANK_SORT.col);
@@ -2064,6 +2100,17 @@ function updateDynamicCopy(){
     <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Calidad:</strong> ${qualityText(cfg)}.</div>
     <div class="crit-row"><div class="crit-dot" style="background:var(--purple)"></div><strong style="color:var(--text)">Topes CP:</strong> Base ×${cfg.multipliers.leader.base} · Sólido ×${cfg.multipliers.leader.solid} · HP ×${cfg.multipliers.leader.hp} · Elite ×${cfg.multipliers.leader.elite}</div>
     <div class="crit-row"><div class="crit-dot" style="background:var(--amber)"></div><strong style="color:var(--text)">Sin datos de auditoría:</strong> el resultado queda en revisión manual. Cargá auditados.csv para calcularlo automáticamente.</div>`;
+  const summary=document.getElementById('config-rules-summary');
+  if(summary)summary.innerHTML=[
+    `Base inicia en ${cfg.productivityBands.base} pts.`,
+    `Sólido inicia en ${cfg.productivityBands.solid} pts.`,
+    `HP inicia en ${cfg.productivityBands.hp} pts.`,
+    `Elite inicia en ${cfg.productivityBands.elite} pts.`,
+    `Calidad bloquea por debajo de ${cfg.quality.cutoff}%.`,
+    `El componente calidad alcanza el máximo en ${cfg.quality.max}%.`,
+    `Productividad/calidad pesa ${wprod}/${wcal} en la simulación actual.`,
+  ].map(txt=>`<div class="summary-pill">${txt}</div>`).join('');
+  updateActiveScenarioCard();
 }
 function renderScenarioSelect(){
   const sel=document.getElementById('inc-scenario-select');
@@ -2128,6 +2175,7 @@ function loadSelectedScenario(){
   applyScenarioSnapshot(s);
 }
 function restoreDefaultScenario(){
+  if(!confirm('Esto reemplazará la configuración actual por los valores recomendados. ¿Continuar?'))return;
   INC_CONFIG=cloneObj(DEFAULT_INC_CONFIG);
   syncIncConfigUI();
   refreshBandsFromConfig();
@@ -2135,6 +2183,25 @@ function restoreDefaultScenario(){
   renderScenarios();
   updateTopesPreview();
   saveIncConfig();
+}
+function deleteSelectedScenario(){
+  const s=selectedScenario();
+  if(!s){alert('No hay escenario seleccionado.');return;}
+  if(!confirm(`¿Eliminar el escenario "${s.name}" de este navegador?`))return;
+  INC_SCENARIOS=INC_SCENARIOS.filter(item=>item.id!==s.id);
+  saveIncScenarios();
+  renderScenarioSelect();
+  const out=document.getElementById('inc-compare-output');
+  if(out)out.innerHTML='';
+}
+function goToConfigRules(){
+  showPage('config');
+  document.getElementById('inc-prod-preset')?.focus();
+}
+function goToConfigScenarios(){
+  showPage('config');
+  document.getElementById('config-scenarios-section')?.scrollIntoView({behavior:'smooth',block:'start'});
+  document.getElementById('inc-scenario-name')?.focus();
 }
 function compareSelectedScenario(){
   const saved=selectedScenario();
@@ -2268,6 +2335,17 @@ function onPeriodTypeChange(){
   document.getElementById('inc-from').style.display=type==='custom'?'block':'none';
   document.getElementById('inc-to').style.display=type==='custom'?'block':'none';
 }
+function updateActiveScenarioCard(){
+  const cfg=activeIncConfig();
+  const el=document.getElementById('inc-active-scenario-copy');
+  if(!el)return;
+  const wprod=getNumberInput('inc-wprod',70),wcal=getNumberInput('inc-wcal',30);
+  const preset=PRODUCTIVITY_PRESETS[cfg.productivityPreset]?.label||'Personalizado';
+  const qualityPreset=QUALITY_PRESETS[cfg.qualityPreset]?.label||`${cfg.quality.cutoff}-${cfg.quality.max}`;
+  el.innerHTML=`Escenario activo: <strong>${preset}</strong> · Calidad ${qualityPreset} · Productividad/calidad ${wprod}/${wcal}<br>
+    Base desde ${cfg.productivityBands.base} pts · Sólido desde ${cfg.productivityBands.solid} · HP desde ${cfg.productivityBands.hp} · Elite desde ${cfg.productivityBands.elite}<br>
+    Calidad: corte duro ${cfg.quality.cutoff}% · máximo componente ${cfg.quality.max}%`;
+}
 function updateTopesPreview(){
   readIncConfigFromUI();
   const cfg=activeIncConfig();
@@ -2275,13 +2353,15 @@ function updateTopesPreview(){
   const hc=+(document.getElementById('inc-headcount').value)||45;
   const wprod=+(document.getElementById('inc-wprod').value)/100||0.7;
   const wcal=+(document.getElementById('inc-wcal').value)/100||0.3;
-  if(!budget){document.getElementById('inc-topes-preview').style.display='none';return;}
+  updateActiveScenarioCard();
+  const topesEl=document.getElementById('topes-content');
+  if(!topesEl)return;
+  if(!budget){topesEl.innerHTML='<div style="color:var(--text3);font-size:11px">Ingresá presupuesto y headcount para estimar topes.</div>';return;}
   const base=budget/hc;
   const fmtARS=n=>'$'+Math.round(n).toLocaleString('es-AR');
-  document.getElementById('inc-topes-preview').style.display='block';
   const topeMaxA=(m)=>roundK(base*m);
   const topeMaxTL=(m)=>roundK(base*m);
-  document.getElementById('topes-content').innerHTML=`
+  topesEl.innerHTML=`
     <div style="color:var(--text2)">Analista Base: <span class="mono-cell" style="color:var(--accent)">${fmtARS(topeMaxA(cfg.multipliers.analyst.base))}</span></div>
     <div style="color:var(--text2)">TL/CP Base: <span class="mono-cell" style="color:var(--accent)">${fmtARS(topeMaxTL(cfg.multipliers.leader.base))}</span></div>
     <div style="color:var(--text2)">Analista Sólido: <span class="mono-cell" style="color:var(--green)">${fmtARS(topeMaxA(cfg.multipliers.analyst.solid))}</span></div>
@@ -2388,7 +2468,7 @@ function runIncentivos(options={}){
 
     // Sin datos → revisión manual (no bloquea pero no paga automáticamente)
     if(!hasCalidad||calStatus==='no_data'||calStatus==='insufficient'){
-      const manualReason=!hasCalidad?'Sin datos de auditoría cargados':calStatus==='no_data'?'Sin registros de auditoría en el período en este período':`Solo ${calTotal} registro${calTotal===1?'':'s'} auditado${calTotal===1?'':'s'} — se necesitan al menos 5`;
+      const manualReason=!hasCalidad?'Sin datos de auditoría cargados':calStatus==='no_data'?'Sin registros de auditoría en el período':`Solo ${calTotal} registro${calTotal===1?'':'s'} auditado${calTotal===1?'':'s'} — se necesitan al menos 5`;
       return{...p,incStatus:'manual',reason:manualReason,amount:0,amountFinal:0,compProd:0,compCal:0,compProdFinal:0,compCalFinal:0,calidad,calTotal,bandIdx:bi};
     }
 
@@ -2467,12 +2547,12 @@ function runIncentivos(options={}){
         if(cq.total>0){totalScore+=cq.pct/100*cq.total;totalRecs+=cq.total;}
       });
       const calEq=totalRecs>0?totalScore/totalRecs*100:null;
-      let cpBandLabel='',cpAmount=0,cpStatus='';
+      let cpBandLabel='',cpAmount=0,cpStatus='',cpReason='';
       const cpSolid=cfg.quality.cutoff+(cfg.quality.max-cfg.quality.cutoff)*0.3;
       const cpHp=cfg.quality.cutoff+(cfg.quality.max-cfg.quality.cutoff)*0.7;
       const cpElite=Math.max(cpHp,cfg.quality.max-1);
-      if(calEq===null){cpStatus='manual';cpBandLabel='Sin datos';}
-      else if(calEq<cfg.quality.cutoff){cpStatus='no_eligible';cpBandLabel='No elegible';reason=`Calidad equipo ${calEq.toFixed(1)}% < ${cfg.quality.cutoff}%`;}
+      if(calEq===null){cpStatus='manual';cpBandLabel='Sin datos';cpReason='Sin datos de auditoría en el período';}
+      else if(calEq<cfg.quality.cutoff){cpStatus='no_eligible';cpBandLabel='No elegible';cpReason=`Calidad equipo ${calEq.toFixed(1)}% < ${cfg.quality.cutoff}%`;}
       else{
         cpStatus='eligible';
         if(calEq>=cpElite){cpBandLabel='Elite';cpAmount=topesTL[4];}
@@ -2481,11 +2561,13 @@ function runIncentivos(options={}){
         else{cpBandLabel='Base';cpAmount=topesTL[1];}
         cpAmount=roundK(cpAmount);
       }
-      cpEntry={...cpPerson,calEq,cpStatus,incStatus:cpStatus,cpBandLabel,amount:cpAmount,amountFinal:cpAmount};
+      cpEntry={...cpPerson,calEq,cpStatus,incStatus:cpStatus,cpBandLabel,reason:cpReason,amount:cpAmount,amountFinal:cpAmount};
     } else {
-      cpEntry={...cpPerson,calEq:null,cpStatus:'manual',incStatus:'manual',cpBandLabel:'Sin datos calidad',amount:0,amountFinal:0};
+      cpEntry={...cpPerson,calEq:null,cpStatus:'manual',incStatus:'manual',cpBandLabel:'Sin datos calidad',reason:'Sin datos de auditoría cargados',amount:0,amountFinal:0};
     }
   }
+
+  _incCpData=cpEntry?[cpEntry]:[];
 
   // ── SALVAGUARDA ──
   const totalTopes=incA.filter(p=>p.incStatus==='eligible').reduce((s,p)=>s+p.amount,0)
@@ -2579,9 +2661,11 @@ function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById(`page-${id}`).classList.add('active');
-  const map={upload:0,historico:1,ranking:2,calc:3,incentivos:4};
+  const map={upload:0,historico:1,ranking:2,calc:3,config:4,incentivos:5};
   document.querySelectorAll('.nav-item')[map[id]]?.classList.add('active');
   if(id==='calc')renderCalcSliders();
+  if(id==='config'){renderAllSidebar();syncIncConfigUI();}
+  if(id==='incentivos')updateTopesPreview();
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -2596,6 +2680,7 @@ setupIncConfigListeners();
 refreshBandsFromConfig();
 setupCollapsiblePanels();
 setupSidebarCollapseSections();
+updateFilterClearButtons();
 // Diferir renders pesados al siguiente frame para no bloquear el file picker
 // setTimeout(0) cede el control al browser para el file picker
 // sin el overhead visual de requestAnimationFrame
