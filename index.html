@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Catálogo · Dashboard de Puntos + Incentivos</title>
+<link rel="icon" href="data:,">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -229,6 +230,12 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 .active-scenario-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px}
 .active-scenario-copy{font-size:12px;color:var(--text2);line-height:1.55}
 .local-note{font-size:11px;color:var(--text3);margin-top:8px}
+.compact-table{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--surface);margin-top:10px}
+.compact-table table{font-size:12px}
+.compact-table th{position:static}
+.scenario-read{font-size:12px;color:var(--text2);line-height:1.5;margin-top:10px;padding:9px 10px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius)}
+.chart-controls{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.empty-chart{font-size:12px;color:var(--text3);padding:16px 0;display:none}
 @media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{position:static;height:auto}.calc-grid{grid-template-columns:1fr}.upload-grid{grid-template-columns:1fr}}
 @media(max-width:760px){.config-mini-grid,.config-mini-grid.three,.config-mini-grid.four,.compare-grid,.compare-values{grid-template-columns:1fr}.scenario-select{min-width:0}}
 </style>
@@ -260,13 +267,13 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
       Calculadora 1:1
     </button>
-    <button class="nav-item" onclick="showPage('config')">
-      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6V20a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-.6 1.7 1.7 0 0 0-1.88.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1H4a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 .6-1 1.7 1.7 0 0 0-.34-1.88l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6V4a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 .6 1.7 1.7 0 0 0 1.88-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9c.2.34.4.67.6 1h.1a2 2 0 1 1 0 4H20a1.7 1.7 0 0 0-.6 1z"/></svg>
-      Configuración
-    </button>
     <button class="nav-item" onclick="showPage('incentivos')">
       <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
       Incentivos
+    </button>
+    <button class="nav-item" onclick="showPage('config')">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6V20a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-.6 1.7 1.7 0 0 0-1.88.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1H4a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 .6-1 1.7 1.7 0 0 0-.34-1.88l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6V4a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 .6 1.7 1.7 0 0 0 1.88-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9c.2.34.4.67.6 1h.1a2 2 0 1 1 0 4H20a1.7 1.7 0 0 0-.6 1z"/></svg>
+      Configuración
     </button>
   </nav>
 </aside>
@@ -350,7 +357,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <div style="height:190px"><canvas id="chart-bands"></canvas></div>
     </div>
     <div class="table-wrap">
-      <div class="table-header"><span class="table-title">Detalle por colaborador</span></div>
+      <div class="table-header"><span class="table-title">Detalle por colaborador</span><button class="secondary-btn" onclick="exportHistCSV()">Descargar CSV</button></div>
       <div id="hist-table-wrap" style="overflow-x:auto;max-height:460px;overflow-y:auto">
         <table><thead id="hist-thead"></thead><tbody id="hist-tbody"></tbody></table>
       </div>
@@ -379,11 +386,22 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <button class="filter-btn" id="clear-rank-filters" onclick="clearRankFilter()" style="display:none">✕ Limpiar filtros</button>
     </div>
     <div class="chart-wrap">
-      <div class="chart-title-row"><span class="chart-title">Distribución por banda del ranking filtrado</span></div>
-      <div style="height:190px"><canvas id="chart-rank-bands"></canvas></div>
+      <div class="chart-title-row">
+        <span class="chart-title">Top colaboradores por puntos promedio</span>
+        <div class="chart-controls">
+          <label style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">Mostrar</label>
+          <select class="sel" id="rank-top-limit" onchange="renderRankTopChart(_rankPersons)">
+            <option value="10">Top 10</option>
+            <option value="20" selected>Top 20</option>
+            <option value="all">Todos</option>
+          </select>
+        </div>
+      </div>
+      <div id="rank-top-empty" class="empty-chart">No hay colaboradores para graficar con los filtros seleccionados.</div>
+      <div style="height:260px"><canvas id="chart-rank-top"></canvas></div>
     </div>
     <div class="chart-wrap">
-      <div class="chart-title-row"><span class="chart-title">Puntos ponderados promedio por colaborador</span></div>
+      <div class="chart-title-row"><span class="chart-title">Puntos ponderados promedio por colaborador</span><button class="secondary-btn" onclick="exportRankCSV()">Descargar CSV</button></div>
       <div id="rank-table-wrap" style="overflow-x:auto;max-height:460px;overflow-y:auto">
         <table><thead id="rank-thead"></thead><tbody id="rank-tbody"></tbody></table>
       </div>
@@ -546,16 +564,17 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
         </div>
       </div>
       <div class="config-card">
-        <div class="config-card-title">Resumen dinámico de reglas activas</div>
+        <div class="config-card-title">Resumen del escenario activo</div>
         <div id="config-rules-summary" class="summary-list"></div>
         <div class="rules-actions">
           <span class="local-note">Los pesos productividad/calidad se definen en Incentivos para cada simulación.</span>
-          <button class="secondary-btn danger-btn" onclick="restoreDefaultScenario()">Restaurar valores recomendados</button>
+          <button class="secondary-btn danger-btn" onclick="restoreDefaultScenario()">Restaurar configuración objetivo</button>
         </div>
+        <div class="local-note">Vuelve a productividad Objetivo, calidad 90–98 y multiplicadores estándar. No modifica los CSV cargados.</div>
       </div>
     </div>
 
-    <div class="inc-section" id="config-scenarios-section">
+    <div class="inc-section" id="config-scenarios-section" hidden>
       <div class="inc-section-title">Escenarios de simulación</div>
       <div class="inc-section-sub">Guardá, cargá y compará combinaciones de reglas, presupuesto, pesos y flujos.</div>
       <div class="scenario-row">
@@ -608,7 +627,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
     <div class="budget-row">
       <span class="budget-label">Presupuesto total del período</span><span class="tooltip-wrap"><span class="tooltip-icon">?</span><span class="tooltip-box">Monto total disponible para distribuir entre analistas, TLs y CP en este período. El sistema nunca supera este número gracias a la salvaguarda proporcional.</span></span>
       <input class="budget-input" type="number" id="inc-budget-total" placeholder="ej: 1.000.000" min="0" step="1000" style="width:140px">
-      <span class="budget-label">Headcount de referencia</span><span class="tooltip-wrap"><span class="tooltip-icon">?</span><span class="tooltip-box">Número de analistas que se usa como base para calcular el tope Base. Tope Base = Presupuesto ÷ este número. Default 45. Actualizá cuando cambie el tamaño del equipo.</span></span>
+      <span class="budget-label">Headcount de referencia</span><span class="tooltip-wrap"><span class="tooltip-icon">?</span><span class="tooltip-box">Número de analistas que se usa como base para calcular el tope Base. Tope Base = Presupuesto ÷ este número. Valor inicial 45. Actualizá cuando cambie el tamaño del equipo.</span></span>
       <input class="budget-input" type="number" id="inc-headcount" value="45" min="1" max="200" step="1" style="width:70px">
       <span class="budget-label">Piso mínimo (pts/día)</span><span class="tooltip-wrap"><span class="tooltip-icon">?</span><span class="tooltip-box">A partir de cuántos puntos diarios promedio un analista entra a la curva de incentivo. Por debajo de este número el componente de productividad es $0, pero la calidad sigue sumando si supera el corte configurado.</span></span>
       <input class="budget-input" type="number" id="inc-piso" value="75" min="50" max="100" step="1" style="width:70px">
@@ -625,11 +644,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
         <div id="topes-content" style="display:grid;grid-template-columns:1fr 1fr;gap:4px 20px;font-size:12px"></div>
       </div>
       <div class="rules-actions">
-        <button class="secondary-btn" onclick="goToConfigRules()">Editar reglas</button>
-        <button class="secondary-btn" onclick="goToConfigScenarios()">Guardar escenario</button>
-        <button class="secondary-btn" onclick="goToConfigScenarios()">Comparar escenarios</button>
+        <button class="secondary-btn" onclick="goToConfigRules()">Ajustar reglas</button>
+        <button class="secondary-btn" onclick="comparePresetScenarios()">Comparar presets</button>
       </div>
     </div>
+    <div id="inc-preset-compare" class="compact-table" style="display:none"></div>
     <div class="alert-box alert-info">Los montos son estimaciones sujetas a validación de datos, revisión de casos manuales y aprobación final.</div>
     <div style="display:flex;justify-content:flex-end">
       <button class="inc-calc-btn" onclick="runIncentivos()">Simular incentivos del período →</button>
@@ -664,12 +683,13 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <button class="role-tab active" onclick="switchIncTab('analistas')">Analistas</button>
       <button class="role-tab" onclick="switchIncTab('tls')">Team Leaders</button>
       <button class="role-tab" onclick="switchIncTab('cp')">Coord. Pedagógica</button>
+      <button class="secondary-btn" onclick="exportIncentivosCSV('all')" style="margin-left:auto">Descargar equipo completo CSV</button>
     </div>
 
     <!-- analistas -->
     <div class="inc-role-panel active" id="inc-panel-analistas">
       <div class="inc-section">
-        <div class="inc-section-title">Analistas — detalle individual</div>
+        <div class="chart-title-row"><span class="inc-section-title">Analistas — detalle individual</span><button class="secondary-btn" onclick="exportIncentivosCSV('analistas')">Descargar CSV</button></div>
         <div class="inc-criteria" id="inc-criteria-analistas">
           <div class="crit-row"><div class="crit-dot" style="background:var(--red)"></div><strong style="color:var(--text)">Regla de oro:</strong> calidad auditada menor al corte configurado → incentivo $0 ese período, sin excepción.</div>
           <div class="crit-row"><div class="crit-dot" style="background:var(--amber)"></div><strong style="color:var(--text)">Sin datos de auditoría:</strong> El colaborador queda en revisión manual. No queda excluido automáticamente — el PM valida el caso.</div>
@@ -684,7 +704,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
     <!-- TLs -->
     <div class="inc-role-panel" id="inc-panel-tls">
       <div class="inc-section">
-        <div class="inc-section-title">Team Leaders — evaluados por el rendimiento de su equipo</div>
+        <div class="chart-title-row"><span class="inc-section-title">Team Leaders — evaluados por el rendimiento de su equipo</span><button class="secondary-btn" onclick="exportIncentivosCSV('tls')">Descargar CSV</button></div>
         <div class="inc-criteria" id="inc-criteria-tls">
           <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Mínimo de entrada:</strong> el promedio de puntos del equipo tiene que superar el piso mínimo configurado. Si no llega, no hay incentivo ese período.</div>
           <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Bandas:</strong> se actualizan según la configuración activa.</div>
@@ -698,7 +718,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
     <!-- CP -->
     <div class="inc-role-panel" id="inc-panel-cp">
       <div class="inc-section">
-        <div class="inc-section-title">Coordinadora Pedagógica — responde por la calidad de todo el equipo</div>
+        <div class="chart-title-row"><span class="inc-section-title">Coordinadora Pedagógica — responde por la calidad de todo el equipo</span><button class="secondary-btn" onclick="exportIncentivosCSV('cp')">Descargar CSV</button></div>
         <div class="inc-criteria" id="inc-criteria-cp">
           <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Métrica:</strong> calidad promedio ponderada de todos los analistas en el período (SdC + MAO unificados), con umbral configurable.</div>
           <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Calidad:</strong> se actualiza según el preset activo.</div>
@@ -1769,7 +1789,7 @@ function applyRankFilter(){
   const show=eqFilter?persons.filter(p=>p.equipo===eqFilter):persons;
   _rankPersons=show.filter(p=>p.activeDays>0);
   RANK_SORT={col:'avgPts',dir:-1};
-  renderRankBandsChart(_rankPersons);
+  renderRankTopChart(_rankPersons);
   renderRankingTable();
   updateFilterClearButtons();
 }
@@ -1781,15 +1801,22 @@ function getRankSortVal(p,col){
   if(col==='bandIdx')return getBandIdx(p.avgPts);
   return p[col]??'';
 }
-function renderRankBandsChart(persons){
-  const canvas=document.getElementById('chart-rank-bands');
+function renderRankTopChart(persons){
+  const canvas=document.getElementById('chart-rank-top');
   if(!canvas||typeof Chart==='undefined')return;
-  const counts=new Array(BANDS.length).fill(0);
-  (persons||[]).forEach(p=>{const bi=getBandIdx(p.avgPts);if(bi>=0)counts[bi]++;});
+  const empty=document.getElementById('rank-top-empty');
+  const limitVal=document.getElementById('rank-top-limit')?.value||'20';
+  const sorted=[...(persons||[])].filter(p=>p.activeDays>0).sort((a,b)=>b.avgPts-a.avgPts);
+  const top=limitVal==='all'?sorted:sorted.slice(0,+limitVal||20);
+  if(empty)empty.style.display=top.length?'none':'block';
+  canvas.style.display=top.length?'block':'none';
+  if(!top.length){if(CHARTS.rankTop){CHARTS.rankTop.destroy();CHARTS.rankTop=null;}return;}
   const ctx=canvas.getContext('2d');
-  if(CHARTS.rankBands)CHARTS.rankBands.destroy();
-  CHARTS.rankBands=new Chart(ctx,{type:'bar',data:{labels:BANDS.map(b=>b.label),datasets:[{data:counts,backgroundColor:BANDS.map(b=>b.color+'88'),borderColor:BANDS.map(b=>b.color),borderWidth:1.5,borderRadius:6}]},
-    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1c2030',titleColor:'#e8eaf2',bodyColor:'#8b91a8',borderColor:'#252a3a',borderWidth:1,callbacks:{label:c=>`${c.raw} colaboradores`}}},scales:{x:{grid:{color:'#252a3a'},ticks:{color:'#8b91a8',precision:0},beginAtZero:true},y:{grid:{display:false},ticks:{color:'#8b91a8',font:{size:11}}}}}});
+  if(CHARTS.rankTop)CHARTS.rankTop.destroy();
+  CHARTS.rankTop=new Chart(ctx,{type:'bar',data:{
+    labels:top.map(p=>p.nombre||p.user),
+    datasets:[{data:top.map(p=>+p.avgPts.toFixed(1)),backgroundColor:top.map(p=>getBand(p.avgPts).color+'88'),borderColor:top.map(p=>getBand(p.avgPts).color),borderWidth:1.5,borderRadius:6}]
+  },options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1c2030',titleColor:'#e8eaf2',bodyColor:'#8b91a8',borderColor:'#252a3a',borderWidth:1,callbacks:{label:c=>`${c.raw} pts/día`}}},scales:{x:{grid:{color:'#252a3a'},ticks:{color:'#8b91a8'},beginAtZero:true},y:{grid:{display:false},ticks:{color:'#8b91a8',font:{size:11}}}}}});
 }
 function renderRankingTable(){
   if(!_rankPersons.length){
@@ -2101,15 +2128,29 @@ function updateDynamicCopy(){
     <div class="crit-row"><div class="crit-dot" style="background:var(--purple)"></div><strong style="color:var(--text)">Topes CP:</strong> Base ×${cfg.multipliers.leader.base} · Sólido ×${cfg.multipliers.leader.solid} · HP ×${cfg.multipliers.leader.hp} · Elite ×${cfg.multipliers.leader.elite}</div>
     <div class="crit-row"><div class="crit-dot" style="background:var(--amber)"></div><strong style="color:var(--text)">Sin datos de auditoría:</strong> el resultado queda en revisión manual. Cargá auditados.csv para calcularlo automáticamente.</div>`;
   const summary=document.getElementById('config-rules-summary');
-  if(summary)summary.innerHTML=[
-    `Base inicia en ${cfg.productivityBands.base} pts.`,
-    `Sólido inicia en ${cfg.productivityBands.solid} pts.`,
-    `HP inicia en ${cfg.productivityBands.hp} pts.`,
-    `Elite inicia en ${cfg.productivityBands.elite} pts.`,
-    `Calidad bloquea por debajo de ${cfg.quality.cutoff}%.`,
-    `El componente calidad alcanza el máximo en ${cfg.quality.max}%.`,
-    `Productividad/calidad pesa ${wprod}/${wcal} en la simulación actual.`,
-  ].map(txt=>`<div class="summary-pill">${txt}</div>`).join('');
+  if(summary){
+    const prodPreset=PRODUCTIVITY_PRESETS[cfg.productivityPreset]?.label||'Personalizado';
+    const qualityPreset=QUALITY_PRESETS[cfg.qualityPreset]?.label||'Personalizado';
+    const intensity=cfg.productivityBands.base>=88?'exigente':cfg.productivityBands.base>=85?'intermedio':'piloto';
+    summary.className='compact-table';
+    summary.innerHTML=`
+      <table>
+        <tbody>
+          <tr><th>Preset activo</th><td>${prodPreset}</td></tr>
+          <tr><th>Calidad activa</th><td>${qualityPreset}</td></tr>
+          <tr><th>Productividad/calidad</th><td>${wprod}/${wcal}</td></tr>
+          <tr><th>Base</th><td>desde ${cfg.productivityBands.base} pts</td></tr>
+          <tr><th>Sólido</th><td>desde ${cfg.productivityBands.solid} pts</td></tr>
+          <tr><th>High Performer</th><td>desde ${cfg.productivityBands.hp} pts</td></tr>
+          <tr><th>Elite</th><td>desde ${cfg.productivityBands.elite} pts</td></tr>
+          <tr><th>Calidad bloqueante</th><td>menor a ${cfg.quality.cutoff}%</td></tr>
+          <tr><th>Máximo componente calidad</th><td>${cfg.quality.max}%</td></tr>
+          <tr><th>Multiplicador analista Elite</th><td>×${cfg.multipliers.analyst.elite}</td></tr>
+          <tr><th>Multiplicador TL/CP Elite</th><td>×${cfg.multipliers.leader.elite}</td></tr>
+        </tbody>
+      </table>
+      <div class="scenario-read">Este escenario es ${intensity} en productividad, mantiene calidad bloqueante en ${cfg.quality.cutoff}% y reconoce el máximo del componente de calidad desde ${cfg.quality.max}%.</div>`;
+  }
   updateActiveScenarioCard();
 }
 function renderScenarioSelect(){
@@ -2175,7 +2216,7 @@ function loadSelectedScenario(){
   applyScenarioSnapshot(s);
 }
 function restoreDefaultScenario(){
-  if(!confirm('Esto reemplazará la configuración actual por los valores recomendados. ¿Continuar?'))return;
+  if(!confirm('Esto restaurará bandas de productividad, calidad y multiplicadores a la configuración objetivo recomendada. No modificará los CSV cargados ni los datos del período. ¿Continuar?'))return;
   INC_CONFIG=cloneObj(DEFAULT_INC_CONFIG);
   syncIncConfigUI();
   refreshBandsFromConfig();
@@ -2248,6 +2289,64 @@ function renderComparison(current,saved,savedName){
       <div class="compare-label">Distribución por banda</div>
       <div style="font-size:11px;color:var(--text2);margin-top:5px">${Object.keys(current.bandDistribution).map(k=>`${k}: ${current.bandDistribution[k]||0} / ${saved.bandDistribution[k]||0}`).join(' · ')}</div>
     </div>`;
+}
+function presetComparisonConfig(presetKey){
+  const base=cloneObj(DEFAULT_INC_CONFIG);
+  base.productivityPreset=presetKey;
+  base.productivityBands={...PRODUCTIVITY_PRESETS[presetKey].bands};
+  base.qualityPreset='90-98';
+  base.quality={...QUALITY_PRESETS['90-98']};
+  base.multipliers=cloneObj(DEFAULT_INC_CONFIG.multipliers);
+  return base;
+}
+function renderPresetCompareMessage(message){
+  const el=document.getElementById('inc-preset-compare');
+  if(!el)return;
+  el.style.display='block';
+  el.innerHTML=`<div style="padding:12px;color:var(--text2);font-size:12px">${message}</div>`;
+}
+function comparePresetScenarios(){
+  const el=document.getElementById('inc-preset-compare');
+  if(!el)return;
+  if(!PROC||!PROC.rawRows.length){renderPresetCompareMessage('Cargá historico.csv para comparar presets.');return;}
+  if(!DATA.equipo){renderPresetCompareMessage('Cargá equipo_colaboradores.csv para comparar presets.');return;}
+  if(!getNumberInput('inc-budget-total',0)){renderPresetCompareMessage('Definí un presupuesto para comparar presets.');return;}
+  const current=captureScenarioSnapshot('Actual');
+  const candidates=[
+    ['Actual',activeIncConfig()],
+    ['Piloto',presetComparisonConfig('piloto')],
+    ['Intermedio',presetComparisonConfig('intermedio')],
+    ['Objetivo',presetComparisonConfig('objetivo')],
+  ];
+  const results=candidates.map(([label,config])=>{
+    INC_CONFIG=mergeIncConfig(config);
+    syncIncConfigUI();
+    const result=runIncentivos({skipPersist:true,forCompare:true});
+    return [label,result];
+  });
+  applyScenarioSnapshot(current,{persist:false});
+  const restored=runIncentivos({skipPersist:true,forCompare:true});
+  LAST_INC_RESULT=restored||LAST_INC_RESULT;
+  saveIncConfig();
+  const metrics=[
+    ['Elegibles','eligibleCount',v=>v??0],
+    ['Revisión manual','manualReviewCount',v=>v??0],
+    ['No elegibles','notEligibleCount',v=>v??0],
+    ['Total estimado','totalAssigned',v=>fmtARS(v||0)],
+    ['Promedio analista','avgAnalystIncentive',v=>fmtARS(v||0)],
+    ['Salvaguarda','safeguardApplied',v=>v?'Sí':'No'],
+    ['Factor escala','scaleFactor',v=>(v||0).toFixed(3)],
+  ];
+  el.style.display='block';
+  el.innerHTML=`
+    <div style="padding:10px 12px;border-bottom:1px solid var(--border)">
+      <div class="inc-section-title">Comparador de presets</div>
+      <div class="inc-section-sub">Usa el mismo período, presupuesto, headcount, pesos, piso mínimo y CSV cargados. No modifica la configuración activa.</div>
+    </div>
+    <table>
+      <thead><tr><th>Métrica</th>${results.map(([label])=>`<th>${label}</th>`).join('')}</tr></thead>
+      <tbody>${metrics.map(([label,key,fmt])=>`<tr><td>${label}</td>${results.map(([,r])=>`<td class="mono-cell">${r?fmt(r[key]):'—'}</td>`).join('')}</tr>`).join('')}</tbody>
+    </table>`;
 }
 function buildCommunicationSummary(result=LAST_INC_RESULT){
   const cfg=activeIncConfig();
@@ -2340,11 +2439,14 @@ function updateActiveScenarioCard(){
   const el=document.getElementById('inc-active-scenario-copy');
   if(!el)return;
   const wprod=getNumberInput('inc-wprod',70),wcal=getNumberInput('inc-wcal',30);
+  const budget=getNumberInput('inc-budget-total',0),hc=getNumberInput('inc-headcount',45);
+  const topeBase=hc?roundK(budget/hc):0;
   const preset=PRODUCTIVITY_PRESETS[cfg.productivityPreset]?.label||'Personalizado';
   const qualityPreset=QUALITY_PRESETS[cfg.qualityPreset]?.label||`${cfg.quality.cutoff}-${cfg.quality.max}`;
   el.innerHTML=`Escenario activo: <strong>${preset}</strong> · Calidad ${qualityPreset} · Productividad/calidad ${wprod}/${wcal}<br>
     Base desde ${cfg.productivityBands.base} pts · Sólido desde ${cfg.productivityBands.solid} · HP desde ${cfg.productivityBands.hp} · Elite desde ${cfg.productivityBands.elite}<br>
-    Calidad: corte duro ${cfg.quality.cutoff}% · máximo componente ${cfg.quality.max}%`;
+    Calidad: corte duro ${cfg.quality.cutoff}% · máximo componente ${cfg.quality.max}%<br>
+    Tope base estimado: <strong>${fmtARS(topeBase)}</strong>`;
 }
 function updateTopesPreview(){
   readIncConfigFromUI();
@@ -2393,6 +2495,151 @@ function getIncRows(){
     if(to){rows=rows.filter(r=>r.date<=new Date(to+' 23:59:59'));toDate=new Date(to+' 23:59:59');}
   }
   return{rows,fromDate,toDate};
+}
+function todayStamp(){return new Date().toISOString().slice(0,10);}
+function escapeCSVValue(value,separator=';'){
+  const raw=value===null||value===undefined?'':String(value);
+  const escaped=raw.replace(/"/g,'""');
+  return escaped.includes('"')||escaped.includes('\n')||escaped.includes('\r')||escaped.includes(separator)?`"${escaped}"`:escaped;
+}
+function toCSV(rows,separator=';'){
+  if(!rows||!rows.length)return '';
+  const headers=Object.keys(rows[0]);
+  return [headers.join(separator),...rows.map(row=>headers.map(h=>escapeCSVValue(row[h],separator)).join(separator))].join('\r\n');
+}
+function downloadCSV(filename,rows){
+  if(!rows||!rows.length){alert('No hay datos visibles para exportar.');return;}
+  const blob=new Blob(['\ufeff'+toCSV(rows,';')],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+function getHistExportSortVal(p,col){
+  if(col.startsWith('m_')){const mk=col.slice(2);const m=p.byMonth[mk];return m?m.pts/m.days:-1;}
+  if(col==='bandIdx')return getBandIdx(p.avgPts);
+  return p[col]??'';
+}
+function getVisibleHistPersons(){
+  const search=(document.getElementById('search-hist')?.value||'').toLowerCase();
+  const eqFilter=document.getElementById('h-equipo-filter')?.value||'';
+  return [...HIST_PERSONS].filter(p=>
+    (!search||`${p.nombre||''} ${p.user||''}`.toLowerCase().includes(search))&&
+    (!eqFilter||p.equipo===eqFilter)
+  ).sort((a,b)=>{
+    let va=getHistExportSortVal(a,HIST_SORT.col),vb=getHistExportSortVal(b,HIST_SORT.col);
+    if(typeof va==='string'){va=va.toLowerCase();vb=vb.toLowerCase();}
+    if(va===vb)return 0;
+    return va<vb?HIST_SORT.dir:-HIST_SORT.dir;
+  });
+}
+function exportHistCSV(){
+  const allMonths=[...new Set(HIST_PERSONS.flatMap(p=>Object.keys(p.byMonth)))].sort();
+  const rows=getVisibleHistPersons().map(p=>{
+    const row={
+      colaborador:p.nombre||p.user,
+      usuario:p.user,
+      equipo:p.equipo||'',
+      pts_dia:+(p.avgPts||0).toFixed(2),
+      tareas_dia:+(p.avgTasks||0).toFixed(2),
+      ids_dia:+(p.avgIds||0).toFixed(2),
+      dias_activos:p.activeDays||0,
+      banda:getBand(p.avgPts||0).label.replace(/✓|⭐/g,'').trim(),
+    };
+    allMonths.forEach(mk=>{
+      const m=p.byMonth[mk];
+      row[`pts_dia_${mk}`]=m?+(m.pts/m.days).toFixed(2):'';
+      row[`tareas_dia_${mk}`]=m?+(m.tasks/m.days).toFixed(2):'';
+      row[`ids_dia_${mk}`]=m?+(m.ids/m.days).toFixed(2):'';
+    });
+    return row;
+  });
+  downloadCSV(`historico_colaboradores_${todayStamp()}.csv`,rows);
+}
+function getVisibleRankPersons(){
+  return [..._rankPersons].sort((a,b)=>{
+    let va=getRankSortVal(a,RANK_SORT.col),vb=getRankSortVal(b,RANK_SORT.col);
+    if(typeof va==='string'){va=va.toLowerCase();vb=vb.toLowerCase();}
+    if(va===vb)return 0;
+    return va<vb?RANK_SORT.dir:-RANK_SORT.dir;
+  });
+}
+function exportRankCSV(){
+  const rows=getVisibleRankPersons().map((p,i)=>({
+    posicion:i+1,
+    colaborador:p.nombre||p.user,
+    usuario:p.user,
+    equipo:p.equipo||'',
+    pts_dia:+(p.avgPts||0).toFixed(2),
+    tareas_dia:+(p.avgTasks||0).toFixed(2),
+    ids_dia:+(p.avgIds||0).toFixed(2),
+    dias_activos:p.activeDays||0,
+    banda:getBand(p.avgPts||0).label.replace(/✓|⭐/g,'').trim(),
+  }));
+  downloadCSV(`ranking_colaboradores_${todayStamp()}.csv`,rows);
+}
+function incentivePeriodLabel(){
+  const type=document.getElementById('inc-period-type')?.value||'';
+  if(type==='month')return `${document.getElementById('inc-month-sel')?.value||''}/${document.getElementById('inc-year-sel')?.value||''}`;
+  if(type==='quarter')return `Q${document.getElementById('inc-quarter-sel')?.value||''}/${document.getElementById('inc-year-sel')?.value||''}`;
+  return `${document.getElementById('inc-from')?.value||''} a ${document.getElementById('inc-to')?.value||''}`;
+}
+function incExportContext(){
+  const cfg=activeIncConfig();
+  return {
+    periodo:incentivePeriodLabel(),
+    presupuesto:getNumberInput('inc-budget-total',0),
+    headcount:getNumberInput('inc-headcount',45),
+    peso_productividad:getNumberInput('inc-wprod',70),
+    peso_calidad:getNumberInput('inc-wcal',30),
+    preset_productividad:PRODUCTIVITY_PRESETS[cfg.productivityPreset]?.label||'Personalizado',
+    preset_calidad:QUALITY_PRESETS[cfg.qualityPreset]?.label||'Personalizado',
+    corte_calidad:cfg.quality.cutoff,
+    calidad_maxima:cfg.quality.max,
+  };
+}
+function mapIncentiveRow(p,tipo,ctx){
+  return {
+    tipo_perfil:tipo,
+    nombre:p.nombre||p.user||'',
+    usuario:p.user||'',
+    equipo:p.equipo||'',
+    rol:p.rol||tipo,
+    pts_dia:+((p.avgPts??p.avgTeam??p.avgGeneral??0)).toFixed(2),
+    ids_dia:p.avgIds!==undefined?+(p.avgIds||0).toFixed(2):'',
+    dias_activos:p.activeDays??'',
+    calidad:p.calidad!==undefined&&p.calidad!==null?+p.calidad.toFixed(2):(p.calEq!==undefined&&p.calEq!==null?+p.calEq.toFixed(2):''),
+    registros_auditoria:p.calTotal??'',
+    banda:p.bandLabel||p.tlBandLabel||p.cpBandLabel||'',
+    estado:p.incStatus||p.cpStatus||'',
+    motivo:p.reason||'',
+    componente_productividad:p.compProdFinal??p.compProd??'',
+    componente_calidad:p.compCalFinal??p.compCal??'',
+    incentivo_estimado:p.amountFinal??p.amount??0,
+    ...ctx,
+  };
+}
+function incentiveRowsForExport(kind){
+  if(!LAST_INC_RESULT)return null;
+  const ctx=incExportContext();
+  if(kind==='analistas')return _sortArr(_incAData,INC_SORT_A).map(p=>mapIncentiveRow(p,'Analista',ctx));
+  if(kind==='tls')return _sortArr(_incTlData,INC_SORT_TL).map(p=>mapIncentiveRow(p,'Team Leader',ctx));
+  if(kind==='cp')return _incCpData.map(p=>mapIncentiveRow(p,'Coordinación Pedagógica',ctx));
+  return [
+    ..._sortArr(_incAData,INC_SORT_A).map(p=>mapIncentiveRow(p,'Analista',ctx)),
+    ..._sortArr(_incTlData,INC_SORT_TL).map(p=>mapIncentiveRow(p,'Team Leader',ctx)),
+    ..._incCpData.map(p=>mapIncentiveRow(p,'Coordinación Pedagógica',ctx)),
+  ];
+}
+function exportIncentivosCSV(kind){
+  const rows=incentiveRowsForExport(kind);
+  if(!rows){alert('Primero simulá incentivos del período.');return;}
+  const fileMap={analistas:'incentivos_analistas',tls:'incentivos_tls',cp:'incentivos_cp',all:'incentivos_equipo_completo'};
+  downloadCSV(`${fileMap[kind]||fileMap.all}_${todayStamp()}.csv`,rows);
 }
 function fmtARS(n){return'$'+Math.round(n).toLocaleString('es-AR');}
 function roundK(n){return Math.round(n/1000)*1000;}
@@ -2661,7 +2908,7 @@ function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById(`page-${id}`).classList.add('active');
-  const map={upload:0,historico:1,ranking:2,calc:3,config:4,incentivos:5};
+  const map={upload:0,historico:1,ranking:2,calc:3,incentivos:4,config:5};
   document.querySelectorAll('.nav-item')[map[id]]?.classList.add('active');
   if(id==='calc')renderCalcSliders();
   if(id==='config'){renderAllSidebar();syncIncConfigUI();}
