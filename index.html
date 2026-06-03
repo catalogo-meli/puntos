@@ -182,9 +182,12 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 .ineligible-tag{font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;background:rgba(255,95,87,.15);color:var(--red)}
 .amount-tag{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--teal)}
 .scale-warn{font-size:10px;background:rgba(246,166,35,.1);border:1px solid rgba(246,166,35,.3);border-radius:6px;padding:6px 10px;color:var(--amber);margin-top:8px}
-.config-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-bottom:10px}
-.config-card{background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius);padding:12px}
-.config-card-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:600;margin-bottom:8px;color:var(--text)}
+.config-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:12px}
+.config-grid.eligibility-grid{grid-template-columns:minmax(240px,.8fr) minmax(360px,1.2fr) minmax(300px,1fr);align-items:stretch}
+.config-grid.rules-grid{grid-template-columns:minmax(320px,1fr) minmax(420px,1.25fr)}
+.config-card{background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius);padding:14px;min-width:0}
+.config-card-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:600;margin-bottom:4px;color:var(--text)}
+.config-card-copy{font-size:11px;color:var(--text3);line-height:1.45;margin-bottom:12px}
 .config-mini-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
 .config-mini-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
 .config-mini-grid.four{grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -192,9 +195,21 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 .config-field input,.config-field select{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-family:'DM Mono',monospace;font-size:12px;padding:5px 7px}
 .config-field select{font-family:'DM Sans',sans-serif;color:var(--text2)}
 .config-field input:focus,.config-field select:focus{outline:none;border-color:var(--accent)}
-.config-valid{font-size:11px;line-height:1.5;margin-top:8px}
-.config-valid.ok{color:var(--green)}
+.config-valid{font-size:11px;line-height:1.45;margin-top:10px;padding:8px 10px;border-radius:8px;background:rgba(91,127,255,.06);border:1px solid rgba(91,127,255,.16);color:var(--text2)}
+.config-valid.ok{color:var(--text2)}
 .config-valid.bad{color:var(--red)}
+.band-ref-list{display:grid;gap:6px;margin-top:12px}
+.band-ref-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 9px;background:var(--surface);border:1px solid var(--border);border-radius:8px}
+.band-ref-range{font-family:'DM Mono',monospace;font-size:11px;color:var(--text2);text-align:right;white-space:nowrap}
+.multiplier-grid{display:grid;grid-template-columns:minmax(86px,.8fr) repeat(4,minmax(72px,1fr));gap:8px;align-items:end}
+.multiplier-head{font-size:9px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.08em;padding:0 2px}
+.multiplier-role{font-size:12px;color:var(--text);font-weight:600;padding-bottom:8px}
+.multiplier-grid .budget-input{width:100%;min-width:0}
+.summary-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-top:12px}
+.summary-metric{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:10px 11px;min-width:0}
+.summary-metric-label{font-size:9px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.summary-metric-value{font-family:'DM Mono',monospace;font-size:12px;color:var(--text);line-height:1.35}
+.summary-note{font-size:11px;color:var(--text2);line-height:1.5;margin-top:10px;padding:9px 10px;background:rgba(91,127,255,.06);border:1px solid rgba(91,127,255,.16);border-radius:9px}
 .scenario-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .scenario-select{min-width:220px;flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:7px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 8px}
 .secondary-btn{padding:6px 10px;background:none;color:var(--text2);border:1px solid var(--border2);border-radius:7px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer}
@@ -237,7 +252,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 .chart-controls{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 .empty-chart{font-size:12px;color:var(--text3);padding:16px 0;display:none}
 @media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{position:static;height:auto}.calc-grid{grid-template-columns:1fr}.upload-grid{grid-template-columns:1fr}}
-@media(max-width:760px){.config-mini-grid,.config-mini-grid.three,.config-mini-grid.four,.compare-grid,.compare-values{grid-template-columns:1fr}.scenario-select{min-width:0}}
+@media(max-width:1100px){.config-grid.eligibility-grid,.config-grid.rules-grid{grid-template-columns:1fr}.multiplier-grid{grid-template-columns:minmax(86px,.8fr) repeat(4,minmax(64px,1fr))}}
+@media(max-width:760px){.config-mini-grid,.config-mini-grid.three,.config-mini-grid.four,.compare-grid,.compare-values,.multiplier-grid{grid-template-columns:1fr}.scenario-select{min-width:0}.multiplier-head{display:none}.multiplier-role{padding-bottom:0}.band-ref-row{align-items:flex-start;flex-direction:column}.band-ref-range{text-align:left}}
 </style>
 </head>
 <body>
@@ -465,16 +481,16 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 <div class="page" id="page-config">
   <div class="page-header">
     <h2 class="page-title">Configuración</h2>
-    <p class="page-sub">Definí las reglas del sistema: puntos, elegibilidad, calidad, multiplicadores y escenarios.</p>
+    <p class="page-sub">Ajustá el modelo de productividad, calidad y topes antes de simular incentivos.</p>
   </div>
   <div class="settings-layout">
     <div class="inc-section">
-      <div class="inc-section-title">Reglas de puntos</div>
-      <div class="inc-section-sub">Estos valores afectan histórico, ranking, calculadora e incentivos. Las incidencias se bonifican por cantidad diaria y la iniciativa queda solo como dato del CSV.</div>
+      <div class="inc-section-title">Modelo de puntos</div>
+      <div class="inc-section-sub">Cada tarea DONE suma el peso del flujo. Las incidencias reales suman un bonus diario por cantidad; iniciativa queda disponible para análisis, sin sumar puntos.</div>
       <div class="settings-card-grid">
         <div class="config-card">
           <div class="config-card-title">Pesos por flujo</div>
-          <div class="inc-section-sub">Cuánto vale cada tipo de tarea terminada. Soporte usa bandas separadas por cantidad diaria.</div>
+          <div class="config-card-copy">Definí cuánto aporta cada flujo terminado. Los días con mayoría Soporte usan bandas propias.</div>
           <div id="flujos-list"></div>
           <div class="rules-actions">
             <button class="secondary-btn" onclick="openModal('flujo')">Agregar flujo</button>
@@ -485,11 +501,12 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
     </div>
 
     <div class="inc-section">
-      <div class="inc-section-title">Reglas de elegibilidad y desempeño</div>
-      <div class="inc-section-sub">Productividad, calidad y multiplicadores definen el escenario activo de incentivos.</div>
-      <div class="config-grid">
+      <div class="inc-section-title">Elegibilidad e incentivos</div>
+      <div class="inc-section-sub">Elegí el ciclo, revisá las bandas y calibrá calidad y topes. Estos valores definen el escenario activo.</div>
+      <div class="config-grid eligibility-grid">
         <div class="config-card">
-          <div class="config-card-title">Preset general de productividad</div>
+          <div class="config-card-title">Ciclo de productividad</div>
+          <div class="config-card-copy">C1 y C2 cambian umbrales de Mixto y Soporte.</div>
           <div class="config-field">
             <label>Ciclo</label>
             <select id="inc-prod-preset" onchange="onProdPresetChange()">
@@ -500,22 +517,26 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
           <div id="inc-prod-valid" class="config-valid"></div>
         </div>
         <div class="config-card">
-          <div class="config-card-title">Bandas mixto</div>
+          <div class="config-card-title">Bandas Mixto</div>
+          <div class="config-card-copy">Umbrales por puntos ponderados diarios.</div>
           <div class="config-mini-grid four">
             <div class="config-field"><label>Base desde</label><input id="inc-band-base-min" type="number" step="0.1"></div>
             <div class="config-field"><label>Sólido desde</label><input id="inc-band-solid-min" type="number" step="0.1"></div>
             <div class="config-field"><label>HP desde</label><input id="inc-band-hp-min" type="number" step="0.1"></div>
             <div class="config-field"><label>Elite desde</label><input id="inc-band-elite-min" type="number" step="0.1"></div>
           </div>
+          <div id="mixed-bands-ref" class="band-ref-list"></div>
         </div>
         <div class="config-card">
           <div class="config-card-title">Bandas Soporte</div>
-          <div id="support-bands-ref" class="summary-list"></div>
+          <div class="config-card-copy">Umbrales por tareas DONE de Soporte por día.</div>
+          <div id="support-bands-ref" class="band-ref-list"></div>
         </div>
       </div>
-      <div class="config-grid">
+      <div class="config-grid rules-grid">
         <div class="config-card">
           <div class="config-card-title">Calidad</div>
+          <div class="config-card-copy">El corte duro bloquea el incentivo automático cuando no se alcanza.</div>
           <div class="config-mini-grid four">
             <div class="config-field"><label>Preset calidad</label><select id="inc-quality-preset" onchange="onQualityPresetChange()"><option value="90-100">90-100</option><option value="90-98">90-98</option><option value="90-97">90-97</option><option value="custom">Personalizado</option></select></div>
             <div class="config-field"><label>Corte duro %</label><input id="inc-quality-cutoff" type="number" step="0.1"></div>
@@ -526,22 +547,27 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
         </div>
         <div class="config-card">
           <div class="config-card-title">Multiplicadores</div>
-          <div class="rules-table">
-            <table>
-              <thead><tr><th>Rol</th><th>Base</th><th>Sólido</th><th>HP</th><th>Elite</th></tr></thead>
-              <tbody>
-                <tr><td class="name-cell">Analistas</td><td><input class="budget-input" id="inc-mult-a-base" type="number" step="0.1"></td><td><input class="budget-input" id="inc-mult-a-solid" type="number" step="0.1"></td><td><input class="budget-input" id="inc-mult-a-hp" type="number" step="0.1"></td><td><input class="budget-input" id="inc-mult-a-elite" type="number" step="0.1"></td></tr>
-                <tr><td class="name-cell">TL/CP</td><td><input class="budget-input" id="inc-mult-l-base" type="number" step="0.1"></td><td><input class="budget-input" id="inc-mult-l-solid" type="number" step="0.1"></td><td><input class="budget-input" id="inc-mult-l-hp" type="number" step="0.1"></td><td><input class="budget-input" id="inc-mult-l-elite" type="number" step="0.1"></td></tr>
-              </tbody>
-            </table>
+          <div class="config-card-copy">Multiplicá el tope base por banda y rol.</div>
+          <div class="multiplier-grid">
+            <div class="multiplier-head">Rol</div><div class="multiplier-head">Base</div><div class="multiplier-head">Sólido</div><div class="multiplier-head">HP</div><div class="multiplier-head">Elite</div>
+            <div class="multiplier-role">Analistas</div>
+            <input class="budget-input" id="inc-mult-a-base" type="number" step="0.1" aria-label="Multiplicador Base analistas">
+            <input class="budget-input" id="inc-mult-a-solid" type="number" step="0.1" aria-label="Multiplicador Sólido analistas">
+            <input class="budget-input" id="inc-mult-a-hp" type="number" step="0.1" aria-label="Multiplicador HP analistas">
+            <input class="budget-input" id="inc-mult-a-elite" type="number" step="0.1" aria-label="Multiplicador Elite analistas">
+            <div class="multiplier-role">TL/CP</div>
+            <input class="budget-input" id="inc-mult-l-base" type="number" step="0.1" aria-label="Multiplicador Base TL y CP">
+            <input class="budget-input" id="inc-mult-l-solid" type="number" step="0.1" aria-label="Multiplicador Sólido TL y CP">
+            <input class="budget-input" id="inc-mult-l-hp" type="number" step="0.1" aria-label="Multiplicador HP TL y CP">
+            <input class="budget-input" id="inc-mult-l-elite" type="number" step="0.1" aria-label="Multiplicador Elite TL y CP">
           </div>
         </div>
       </div>
       <div class="config-card">
         <div class="config-card-title">Resumen del escenario activo</div>
-        <div id="config-rules-summary" class="summary-list"></div>
+        <div id="config-rules-summary"></div>
         <div class="rules-actions">
-          <span class="local-note">Los pesos productividad/calidad se definen en Incentivos para cada simulación.</span>
+          <span class="local-note">El presupuesto y los pesos productividad/calidad se definen en el simulador.</span>
           <button class="secondary-btn danger-btn" onclick="restoreDefaultScenario()">Restaurar Ciclo 1</button>
         </div>
         <div class="local-note">Vuelve a Ciclo 1, calidad 90–98 y multiplicadores estándar. No modifica los CSV cargados.</div>
@@ -669,10 +695,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <div class="inc-section">
         <div class="chart-title-row"><span class="inc-section-title">Analistas — detalle individual</span><button class="secondary-btn" onclick="exportIncentivosCSV('analistas')">Descargar CSV</button></div>
         <div class="inc-criteria" id="inc-criteria-analistas">
-          <div class="crit-row"><div class="crit-dot" style="background:var(--red)"></div><strong style="color:var(--text)">Regla de oro:</strong> calidad auditada menor al corte configurado → incentivo $0 ese período, sin excepción.</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--amber)"></div><strong style="color:var(--text)">Sin datos de auditoría:</strong> El colaborador queda en revisión manual. No queda excluido automáticamente — el PM valida el caso.</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Cómo se calculan los puntos:</strong> cada tarea suma peso del flujo; las incidencias reales suman un bonus diario por cantidad.</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Monto = productividad + calidad:</strong> dos curvas independientes que suman, con pesos y cortes ajustables.</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--red)"></div><strong style="color:var(--text)">Bloqueo:</strong> calidad por debajo del corte deja el incentivo en $0.</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--amber)"></div><strong style="color:var(--text)">Sin auditoría:</strong> queda en revisión manual para validación PM.</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Productividad:</strong> Mixto usa puntos; Soporte usa tareas DONE del día.</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Monto:</strong> productividad y calidad suman con pesos configurables.</div>
         </div>
         <div id="inc-table-analistas"></div>
         <div class="inc-notice" id="inc-notice-analistas"></div>
@@ -684,7 +710,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <div class="inc-section">
         <div class="chart-title-row"><span class="inc-section-title">Team Leaders — evaluados por el rendimiento de su equipo</span><button class="secondary-btn" onclick="exportIncentivosCSV('tls')">Descargar CSV</button></div>
         <div class="inc-criteria" id="inc-criteria-tls">
-          <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Mínimo de entrada:</strong> el promedio de puntos del equipo tiene que superar el piso mínimo configurado. Si no llega, no hay incentivo ese período.</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Mínimo:</strong> el promedio del equipo debe superar el piso configurado.</div>
           <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Bandas:</strong> se actualizan según la configuración activa.</div>
           <div class="crit-row"><div class="crit-dot" style="background:var(--purple)"></div><strong style="color:var(--text)">Topes TL:</strong> se calculan con los multiplicadores configurados.</div>
         </div>
@@ -913,14 +939,21 @@ function buildProductivityBands(cfg=activeIncConfig(),dayType='mixed'){
   ];
 }
 function refreshBandsFromConfig(){BANDS=buildProductivityBands();}
+function cleanBandLabel(label){
+  return String(label||'').replace(/ ✓✓✓| ✓✓| ✓|⭐/g,'').trim();
+}
+function fmtBandNumber(value){
+  return Number(value)%1===0?String(Number(value).toFixed(0)):Number(value).toFixed(1);
+}
 function bandRangeLabel(b){
   const max=b.max>=1e9?'∞':(Math.max(b.min,b.max-0.1)).toFixed(1);
   return `${Number(b.min).toFixed(1)}-${max} pts`;
 }
 function bandRangeLabelForType(b,type='mixed'){
   const suffix=type==='support'?' tareas':' pts';
-  const max=b.max>=1e9?'∞':(Math.max(b.min,b.max-0.1)).toFixed(1);
-  return `${Number(b.min).toFixed(1)}-${max}${suffix}`;
+  if(b.max>=1e9)return `${fmtBandNumber(b.min)}+${suffix}`;
+  if(type==='support')return `${fmtBandNumber(b.min)}-${fmtBandNumber(b.max-1)}${suffix}`;
+  return `${fmtBandNumber(b.min)}-${fmtBandNumber(b.max)}${suffix}`;
 }
 function getBand(pts,type='mixed',cycle=(activeIncConfig().productivityCycle||'c1')){
   const bands=buildProductivityBands({productivityCycle:cycle,productivityBands:bandSetFor(cycle,'mixed')},type);
@@ -1832,17 +1865,17 @@ function renderBandsRef(){
   const el=document.getElementById('bands-ref');if(!el)return;
   const cycle=cycleFromSelect('inc-cycle',cycleFromSelect('h-cycle',activeIncConfig().productivityCycle||'c1'));
   const bands=buildProductivityBands({productivityCycle:cycle,productivityBands:bandSetFor(cycle,'mixed')},'mixed');
-  el.innerHTML=bands.map(b=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border)">
-    <span class="badge ${b.css}">${b.label}</span>
-    <span class="mono-cell" style="font-size:10px;color:var(--text3)">${b.max>=1e9?`${b.min}+ pts`:bandRangeLabelForType(b,'mixed')}</span>
+  const renderRows=(items,type)=>items.map(b=>`<div class="band-ref-row">
+    <span class="badge ${b.css}">${cleanBandLabel(b.label)}</span>
+    <span class="band-ref-range">${bandRangeLabelForType(b,type)}</span>
   </div>`).join('');
+  el.innerHTML=renderRows(bands,'mixed');
+  const mixedEl=document.getElementById('mixed-bands-ref');
+  if(mixedEl)mixedEl.innerHTML=renderRows(bands,'mixed');
   const supportEl=document.getElementById('support-bands-ref');
   if(supportEl){
     const supportBands=buildProductivityBands({productivityCycle:cycle,productivityBands:bandSetFor(cycle,'mixed')},'support');
-    supportEl.innerHTML=supportBands.map(b=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border)">
-      <span class="badge ${b.css}">${b.label}</span>
-      <span class="mono-cell" style="font-size:10px;color:var(--text3)">${b.max>=1e9?`${b.min}+ tareas`:bandRangeLabelForType(b,'support')}</span>
-    </div>`).join('');
+    supportEl.innerHTML=renderRows(supportBands,'support');
   }
 }
 function renderScenarios(){
@@ -1997,32 +2030,32 @@ function setupIncConfigListeners(){
 function prodBandsText(cfg=activeIncConfig()){
   const mixed=buildProductivityBands(cfg,'mixed').slice(1);
   const support=buildProductivityBands(cfg,'support').slice(1);
-  return `Mixto: ${mixed.map(x=>`${x.label.replace(/ ✓|✓|⭐/g,'').trim()} ${bandRangeLabelForType(x,'mixed')}`).join(' · ')} | Soporte: ${support.map(x=>`${x.label.replace(/ ✓|✓|⭐/g,'').trim()} ${bandRangeLabelForType(x,'support')}`).join(' · ')}`;
+  return `Mixto: ${mixed.map(x=>`${cleanBandLabel(x.label)} ${bandRangeLabelForType(x,'mixed')}`).join(' · ')}. Soporte: ${support.map(x=>`${cleanBandLabel(x.label)} ${bandRangeLabelForType(x,'support')}`).join(' · ')}`;
 }
 function qualityText(cfg=activeIncConfig()){
   const q=cfg.quality;
-  return `corte ${q.cutoff}% · factor inicial ${Math.round(q.startFactor*100)}% · max ${q.max}%`;
+  return `Corte ${q.cutoff}% · arranque ${Math.round(q.startFactor*100)}% · máximo ${q.max}%`;
 }
 function updateDynamicCopy(){
   const cfg=activeIncConfig();
   const pErr=validateProductivityConfig(cfg);
   const qErr=validateQualityConfig(cfg);
   const prodEl=document.getElementById('inc-prod-valid');
-  if(prodEl){prodEl.className='config-valid '+(pErr?'bad':'ok');prodEl.textContent=pErr||`Rangos activos: ${prodBandsText(cfg)}`;}
+  if(prodEl){prodEl.className='config-valid '+(pErr?'bad':'ok');prodEl.textContent=pErr||`${PRODUCTIVITY_CYCLES[cfg.productivityCycle]?.label||'Ciclo 1'} activo. Mixto se mide en puntos; Soporte, en tareas DONE.`;}
   const qEl=document.getElementById('inc-quality-valid');
-  if(qEl){qEl.className='config-valid '+(qErr?'bad':'ok');qEl.textContent=qErr||`Calidad activa: ${qualityText(cfg)}`;}
+  if(qEl){qEl.className='config-valid '+(qErr?'bad':'ok');qEl.textContent=qErr||qualityText(cfg);}
   const wprod=getNumberInput('inc-wprod',70),wcal=getNumberInput('inc-wcal',30),piso=getNumberInput('inc-piso',75);
   const pageSub=document.getElementById('inc-page-sub');
-  if(pageSub)pageSub.textContent=`Calculá cuánto le corresponde a cada persona en el período. El monto combina productividad (${wprod}%) y calidad (${wcal}%), con bandas ${PRODUCTIVITY_CYCLES[cfg.productivityCycle]?.label||'C1'} y corte de calidad ${cfg.quality.cutoff}%.`;
+  if(pageSub)pageSub.textContent=`Simulá incentivos con ${PRODUCTIVITY_CYCLES[cfg.productivityCycle]?.label||'Ciclo 1'}, productividad ${wprod}% y calidad ${wcal}%.`;
   const a=document.getElementById('inc-criteria-analistas');
   if(a)a.innerHTML=`
-    <div class="crit-row"><div class="crit-dot" style="background:var(--red)"></div><strong style="color:var(--text)">Regla de oro:</strong> Calidad auditada menor a ${cfg.quality.cutoff}% → incentivo $0 ese período, sin excepción.</div>
-    <div class="crit-row"><div class="crit-dot" style="background:var(--amber)"></div><strong style="color:var(--text)">Sin datos de auditoría:</strong> El colaborador queda en revisión manual. No queda excluido automáticamente — el PM valida el caso.</div>
+    <div class="crit-row"><div class="crit-dot" style="background:var(--red)"></div><strong style="color:var(--text)">Bloqueo:</strong> calidad menor a ${cfg.quality.cutoff}% deja el incentivo en $0.</div>
+    <div class="crit-row"><div class="crit-dot" style="background:var(--amber)"></div><strong style="color:var(--text)">Sin auditoría:</strong> queda en revisión manual para validación PM.</div>
     <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Bandas:</strong> ${prodBandsText(cfg)}.</div>
-    <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Monto = productividad + calidad:</strong> productividad pesa ${wprod}% y arranca en ${piso} pts; calidad pesa ${wcal}% y arranca en ${cfg.quality.cutoff}% con factor inicial ${Math.round(cfg.quality.startFactor*100)}%, llegando al 100% del componente en ${cfg.quality.max}%.</div>`;
+    <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Monto:</strong> productividad ${wprod}% desde ${piso}; calidad ${wcal}% desde ${cfg.quality.cutoff}%.</div>`;
   const t=document.getElementById('inc-criteria-tls');
   if(t)t.innerHTML=`
-    <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Mínimo de entrada:</strong> el promedio de puntos del equipo tiene que superar ${piso} pts.</div>
+    <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Mínimo:</strong> el promedio del equipo debe superar ${piso}.</div>
     <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Bandas:</strong> ${prodBandsText(cfg)}.</div>
     <div class="crit-row"><div class="crit-dot" style="background:var(--purple)"></div><strong style="color:var(--text)">Topes TL:</strong> Base ×${cfg.multipliers.leader.base} · Sólido ×${cfg.multipliers.leader.solid} · HP ×${cfg.multipliers.leader.hp} · Elite ×${cfg.multipliers.leader.elite}</div>`;
   const c=document.getElementById('inc-criteria-cp');
@@ -2035,24 +2068,18 @@ function updateDynamicCopy(){
   if(summary){
     const prodPreset=PRODUCTIVITY_CYCLES[cfg.productivityCycle]?.label||'Ciclo 1';
     const qualityPreset=QUALITY_PRESETS[cfg.qualityPreset]?.label||'Personalizado';
-    summary.className='compact-table';
+    const support=bandSetFor(cfg.productivityCycle,'support');
+    summary.className='';
     summary.innerHTML=`
-      <table>
-        <tbody>
-          <tr><th>Ciclo activo</th><td>${prodPreset}</td></tr>
-          <tr><th>Calidad activa</th><td>${qualityPreset}</td></tr>
-          <tr><th>Productividad/calidad</th><td>${wprod}/${wcal}</td></tr>
-          <tr><th>Base</th><td>desde ${cfg.productivityBands.base} pts</td></tr>
-          <tr><th>Sólido</th><td>desde ${cfg.productivityBands.solid} pts</td></tr>
-          <tr><th>High Performer</th><td>desde ${cfg.productivityBands.hp} pts</td></tr>
-          <tr><th>Elite</th><td>desde ${cfg.productivityBands.elite} pts</td></tr>
-          <tr><th>Calidad bloqueante</th><td>menor a ${cfg.quality.cutoff}%</td></tr>
-          <tr><th>Máximo componente calidad</th><td>${cfg.quality.max}%</td></tr>
-          <tr><th>Multiplicador analista Elite</th><td>×${cfg.multipliers.analyst.elite}</td></tr>
-          <tr><th>Multiplicador TL/CP Elite</th><td>×${cfg.multipliers.leader.elite}</td></tr>
-        </tbody>
-      </table>
-      <div class="scenario-read">Este escenario usa bandas ${prodPreset}, mantiene calidad bloqueante en ${cfg.quality.cutoff}% y reconoce el máximo del componente de calidad desde ${cfg.quality.max}%.</div>`;
+      <div class="summary-metrics">
+        <div class="summary-metric"><div class="summary-metric-label">Ciclo</div><div class="summary-metric-value">${prodPreset}</div></div>
+        <div class="summary-metric"><div class="summary-metric-label">Mixto</div><div class="summary-metric-value">Base ${cfg.productivityBands.base} · Elite ${cfg.productivityBands.elite}</div></div>
+        <div class="summary-metric"><div class="summary-metric-label">Soporte</div><div class="summary-metric-value">Base ${support.base} · Elite ${support.elite}</div></div>
+        <div class="summary-metric"><div class="summary-metric-label">Calidad</div><div class="summary-metric-value">${qualityPreset} · corte ${cfg.quality.cutoff}%</div></div>
+        <div class="summary-metric"><div class="summary-metric-label">Peso modelo</div><div class="summary-metric-value">${wprod}/${wcal}</div></div>
+        <div class="summary-metric"><div class="summary-metric-label">Elite</div><div class="summary-metric-value">Analista ×${cfg.multipliers.analyst.elite} · TL/CP ×${cfg.multipliers.leader.elite}</div></div>
+      </div>
+      <div class="summary-note">El escenario combina bandas por tipo de día, calidad bloqueante y multiplicadores por rol. Los CSV cargados no se modifican.</div>`;
   }
   updateActiveScenarioCard();
 }
@@ -2346,10 +2373,11 @@ function updateActiveScenarioCard(){
   const topeBase=hc?roundK(budget/hc):0;
   const preset=PRODUCTIVITY_CYCLES[cfg.productivityCycle]?.label||'Ciclo 1';
   const qualityPreset=QUALITY_PRESETS[cfg.qualityPreset]?.label||`${cfg.quality.cutoff}-${cfg.quality.max}`;
-  el.innerHTML=`Escenario activo: <strong>${preset}</strong> · Calidad ${qualityPreset} · Productividad/calidad ${wprod}/${wcal}<br>
-    ${prodBandsText(cfg)}<br>
-    Calidad: corte duro ${cfg.quality.cutoff}% · máximo componente ${cfg.quality.max}%<br>
-    Tope base estimado: <strong>${fmtARS(topeBase)}</strong>`;
+  const support=bandSetFor(cfg.productivityCycle,'support');
+  el.innerHTML=`
+    <div><strong>${preset}</strong> · Calidad ${qualityPreset} · Peso ${wprod}/${wcal}</div>
+    <div>Mixto Base ${cfg.productivityBands.base} / Elite ${cfg.productivityBands.elite} · Soporte Base ${support.base} / Elite ${support.elite}</div>
+    <div>Corte calidad ${cfg.quality.cutoff}% · Tope base estimado <strong>${fmtARS(topeBase)}</strong></div>`;
 }
 function updateTopesPreview(){
   readIncConfigFromUI();
@@ -2375,7 +2403,7 @@ function updateTopesPreview(){
     <div style="color:var(--text2)">TL/CP HP: <span class="mono-cell" style="color:var(--purple)">${fmtARS(topeMaxTL(cfg.multipliers.leader.hp))}</span></div>
     <div style="color:var(--text2)">Analista Elite ⭐: <span class="mono-cell" style="color:var(--amber)">${fmtARS(topeMaxA(cfg.multipliers.analyst.elite))}</span></div>
     <div style="color:var(--text2)">TL/CP Elite ⭐: <span class="mono-cell" style="color:var(--amber)">${fmtARS(topeMaxTL(cfg.multipliers.leader.elite))}</span></div>
-    <div style="color:var(--text3);font-size:11px">Pesos: prod ${Math.round(wprod*100)}% / cal ${Math.round(wcal*100)} · ${prodBandsText(cfg)} · ${qualityText(cfg)}</div>`;
+    <div style="color:var(--text3);font-size:11px;grid-column:1/-1">Prod ${Math.round(wprod*100)}% / cal ${Math.round(wcal*100)}% · ${PRODUCTIVITY_CYCLES[cfg.productivityCycle]?.label||'Ciclo 1'} · ${qualityText(cfg)}</div>`;
 }
 function getIncRows(){
   if(!PROC)return{rows:[],fromDate:null,toDate:null};
