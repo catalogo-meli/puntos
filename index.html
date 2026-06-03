@@ -348,6 +348,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <label>Desde</label><input type="date" class="sel" id="h-from" onchange="applyHistFilter()">
       <label>Hasta</label><input type="date" class="sel" id="h-to" onchange="applyHistFilter()">
       <label>Equipo</label><select class="sel" id="h-equipo-filter" onchange="applyHistFilter()"><option value="">Todos</option></select>
+      <label>Ciclo</label><select class="sel" id="h-cycle" onchange="applyHistFilter();renderBandsRef()"><option value="c1">C1</option><option value="c2">C2</option></select>
       <input class="search-bar" id="search-hist" placeholder="Buscar colaborador…" oninput="renderHistTable();updateFilterClearButtons()">
       <button class="filter-btn" id="clear-hist-filters" onclick="clearHistFilter()" style="display:none">✕ Limpiar filtros</button>
     </div>
@@ -369,7 +370,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 <div class="page" id="page-ranking">
   <div class="page-header">
     <h2 class="page-title">Ranking del equipo</h2>
-    <p class="page-sub">Comparativa rápida del equipo. Cada barra muestra pts/día promedio del período. Pasá el mouse para ver más detalle.</p>
+    <p class="page-sub">Comparativa rápida del equipo. Cada barra muestra la métrica diaria promedio del período según tipo de día y ciclo.</p>
   </div>
   <div id="rank-empty" class="empty-state">
     <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
@@ -383,6 +384,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <label>Desde</label><input type="date" class="sel" id="r-from" onchange="applyRankFilter()">
       <label>Hasta</label><input type="date" class="sel" id="r-to" onchange="applyRankFilter()">
       <label>TL</label><select class="sel" id="r-equipo" onchange="applyRankFilter()"><option value="">Todos</option></select>
+      <label>Ciclo</label><select class="sel" id="r-cycle" onchange="applyRankFilter()"><option value="c1">C1</option><option value="c2">C2</option></select>
       <button class="filter-btn" id="clear-rank-filters" onclick="clearRankFilter()" style="display:none">✕ Limpiar filtros</button>
     </div>
     <div class="chart-wrap">
@@ -420,30 +422,16 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:600;margin-bottom:12px">Mix de tareas del día</div>
       <div id="calc-sliders"></div>
       <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px">
-        <div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">¿Tenía iniciativa o incidencia? (opcional)</div>
-        <div id="ini-section" class="input-group" style="margin-bottom:7px">
-          <div id="ini-note" style="display:none;font-size:10px;color:var(--amber);margin-bottom:5px;padding:4px 7px;background:rgba(246,166,35,.08);border-radius:5px;border:1px solid rgba(246,166,35,.2)"></div>
-          <div class="input-label">
-            <span class="tooltip-wrap">Iniciativa<span class="tooltip-icon">?</span><span class="tooltip-box">Solo aplica a flujos marcados como "Acepta iniciativas" en Configuración. Si el mix no incluye esos flujos, el bonus no tiene efecto.</span></span>
-            <span id="lbl-ini-bonus" style="color:var(--green)">+0.00 pts</span>
-          </div>
-          <select class="calc-sel" id="calc-iniciativa" onchange="if(!this.value){document.getElementById('pct-ini').value=0;document.getElementById('pct-ini-val').textContent='0%';}else if(+document.getElementById('pct-ini').value===0){document.getElementById('pct-ini').value=50;document.getElementById('pct-ini-val').textContent='50%';}updateCalc()" style="margin-bottom:5px"><option value="">Sin iniciativa</option></select>
-          <div style="display:flex;align-items:center;gap:8px;margin-top:2px">
-            <span style="font-size:10px;color:var(--text3);white-space:nowrap">% de tareas con esta iniciativa</span>
-            <input type="range" id="pct-ini" min="0" max="100" step="5" value="0" oninput="document.getElementById('pct-ini-val').textContent=this.value+'%';updateCalc()" style="flex:1;-webkit-appearance:none;height:3px;border-radius:2px;background:var(--border2);outline:none">
-            <span id="pct-ini-val" style="font-size:11px;font-family:'DM Mono',monospace;color:var(--text);min-width:32px;text-align:right">0%</span>
-          </div>
-        </div>
+        <div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Bonus diario por incidencias reales</div>
         <div class="input-group">
           <div class="input-label">
-            <span class="tooltip-wrap">Incidencia<span class="tooltip-icon">?</span><span class="tooltip-box">Seleccioná el tipo de incidencia y ajustá qué % de las tareas del día la tuvieron. Si solo 1 de 70 tareas tuvo una incidencia, poné ~1%.</span></span>
+            <span class="tooltip-wrap">Incidencias del día<span class="tooltip-icon">?</span><span class="tooltip-box">Cantidad total de incidencias reales del día. PPMC en espera y Esperando respuesta son bloqueantes y no cuentan para este bonus.</span></span>
             <span id="lbl-inc-bonus" style="color:var(--teal)">+0.00 pts</span>
           </div>
-          <select class="calc-sel" id="calc-incidencia" onchange="if(!this.value){document.getElementById('pct-inc').value=0;document.getElementById('pct-inc-val').textContent='0%';}else if(+document.getElementById('pct-inc').value===0){document.getElementById('pct-inc').value=10;document.getElementById('pct-inc-val').textContent='10%';}updateCalc()" style="margin-bottom:5px"><option value="">Sin incidencia</option></select>
           <div style="display:flex;align-items:center;gap:8px;margin-top:2px">
-            <span style="font-size:10px;color:var(--text3);white-space:nowrap">% de tareas con esta incidencia</span>
-            <input type="range" id="pct-inc" min="0" max="100" step="5" value="0" oninput="document.getElementById('pct-inc-val').textContent=this.value+'%';updateCalc()" style="flex:1;-webkit-appearance:none;height:3px;border-radius:2px;background:var(--border2);outline:none">
-            <span id="pct-inc-val" style="font-size:11px;font-family:'DM Mono',monospace;color:var(--text);min-width:32px;text-align:right">0%</span>
+            <span style="font-size:10px;color:var(--text3);white-space:nowrap">Cantidad</span>
+            <input type="range" id="calc-inc-count" min="0" max="20" step="1" value="0" oninput="document.getElementById('calc-inc-count-val').textContent=this.value;updateCalc()" style="flex:1;-webkit-appearance:none;height:3px;border-radius:2px;background:var(--border2);outline:none">
+            <span id="calc-inc-count-val" style="font-size:11px;font-family:'DM Mono',monospace;color:var(--text);min-width:32px;text-align:right">0</span>
           </div>
         </div>
       </div>
@@ -482,31 +470,15 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
   <div class="settings-layout">
     <div class="inc-section">
       <div class="inc-section-title">Reglas de puntos</div>
-      <div class="inc-section-sub">Estos valores afectan histórico, ranking, calculadora e incentivos. Se mantienen las mismas estructuras internas de flujos, iniciativas e incidencias.</div>
+      <div class="inc-section-sub">Estos valores afectan histórico, ranking, calculadora e incentivos. Las incidencias se bonifican por cantidad diaria y la iniciativa queda solo como dato del CSV.</div>
       <div class="settings-card-grid">
         <div class="config-card">
           <div class="config-card-title">Pesos por flujo</div>
-          <div class="inc-section-sub">Cuánto vale cada tipo de tarea y si acepta iniciativas.</div>
+          <div class="inc-section-sub">Cuánto vale cada tipo de tarea terminada. Soporte usa bandas separadas por cantidad diaria.</div>
           <div id="flujos-list"></div>
           <div class="rules-actions">
             <button class="secondary-btn" onclick="openModal('flujo')">Agregar flujo</button>
             <button class="inc-calc-btn" onclick="applyWeights()">Aplicar cambios</button>
-          </div>
-        </div>
-        <div class="config-card">
-          <div class="config-card-title">Bonus por iniciativa</div>
-          <div class="inc-section-sub">Puntos adicionales por tarea cuando aplica una iniciativa.</div>
-          <div id="iniciativas-list"></div>
-          <div class="rules-actions">
-            <button class="secondary-btn" onclick="openModal('iniciativa')">Agregar iniciativa</button>
-          </div>
-        </div>
-        <div class="config-card">
-          <div class="config-card-title">Puntos por incidencia</div>
-          <div class="inc-section-sub">Puntos adicionales por tareas con un paso extra o incidencia registrada.</div>
-          <div id="incidencias-list"></div>
-          <div class="rules-actions">
-            <button class="secondary-btn" onclick="openModal('incidencia')">Agregar incidencia</button>
           </div>
         </div>
       </div>
@@ -519,24 +491,26 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
         <div class="config-card">
           <div class="config-card-title">Preset general de productividad</div>
           <div class="config-field">
-            <label>Preset</label>
+            <label>Ciclo</label>
             <select id="inc-prod-preset" onchange="onProdPresetChange()">
-              <option value="piloto">Piloto</option>
-              <option value="intermedio">Intermedio</option>
-              <option value="objetivo">Objetivo</option>
-              <option value="custom">Personalizado</option>
+              <option value="c1">Ciclo 1</option>
+              <option value="c2">Ciclo 2</option>
             </select>
           </div>
           <div id="inc-prod-valid" class="config-valid"></div>
         </div>
         <div class="config-card">
-          <div class="config-card-title">Productividad</div>
+          <div class="config-card-title">Bandas mixto</div>
           <div class="config-mini-grid four">
             <div class="config-field"><label>Base desde</label><input id="inc-band-base-min" type="number" step="0.1"></div>
             <div class="config-field"><label>Sólido desde</label><input id="inc-band-solid-min" type="number" step="0.1"></div>
             <div class="config-field"><label>HP desde</label><input id="inc-band-hp-min" type="number" step="0.1"></div>
             <div class="config-field"><label>Elite desde</label><input id="inc-band-elite-min" type="number" step="0.1"></div>
           </div>
+        </div>
+        <div class="config-card">
+          <div class="config-card-title">Bandas Soporte</div>
+          <div id="support-bands-ref" class="summary-list"></div>
         </div>
       </div>
       <div class="config-grid">
@@ -568,9 +542,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
         <div id="config-rules-summary" class="summary-list"></div>
         <div class="rules-actions">
           <span class="local-note">Los pesos productividad/calidad se definen en Incentivos para cada simulación.</span>
-          <button class="secondary-btn danger-btn" onclick="restoreDefaultScenario()">Restaurar configuración objetivo</button>
+          <button class="secondary-btn danger-btn" onclick="restoreDefaultScenario()">Restaurar Ciclo 1</button>
         </div>
-        <div class="local-note">Vuelve a productividad Objetivo, calidad 90–98 y multiplicadores estándar. No modifica los CSV cargados.</div>
+        <div class="local-note">Vuelve a Ciclo 1, calidad 90–98 y multiplicadores estándar. No modifica los CSV cargados.</div>
       </div>
     </div>
 
@@ -615,6 +589,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
         <option value="quarter">Trimestral</option>
         <option value="custom">Rango personalizado</option>
       </select>
+      <select class="budget-select" id="inc-cycle" onchange="onCycleChange()">
+        <option value="c1">Ciclo 1</option>
+        <option value="c2">Ciclo 2</option>
+      </select>
       <select class="budget-select" id="inc-month-sel" style="display:none"><option value="">— mes —</option></select>
       <select class="budget-select" id="inc-quarter-sel" style="display:none">
         <option value="1">Q1 (Ene–Mar)</option><option value="2">Q2 (Abr–Jun)</option>
@@ -629,9 +607,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <input class="budget-input" type="number" id="inc-budget-total" placeholder="ej: 1.000.000" min="0" step="1000" style="width:140px">
       <span class="budget-label">Headcount de referencia</span><span class="tooltip-wrap"><span class="tooltip-icon">?</span><span class="tooltip-box">Número de analistas que se usa como base para calcular el tope Base. Tope Base = Presupuesto ÷ este número. Valor inicial 45. Actualizá cuando cambie el tamaño del equipo.</span></span>
       <input class="budget-input" type="number" id="inc-headcount" value="45" min="1" max="200" step="1" style="width:70px">
-      <span class="budget-label">Piso mínimo (pts/día)</span><span class="tooltip-wrap"><span class="tooltip-icon">?</span><span class="tooltip-box">A partir de cuántos puntos diarios promedio un analista entra a la curva de incentivo. Por debajo de este número el componente de productividad es $0, pero la calidad sigue sumando si supera el corte configurado.</span></span>
+      <span class="budget-label">Piso mínimo</span><span class="tooltip-wrap"><span class="tooltip-icon">?</span><span class="tooltip-box">A partir de qué métrica diaria promedio un analista entra a la curva de incentivo. En días Mixto son puntos; en días Soporte son tareas de Soporte.</span></span>
       <input class="budget-input" type="number" id="inc-piso" value="75" min="50" max="100" step="1" style="width:70px">
-      <span class="budget-label">Peso productividad (%)</span><span class="tooltip-wrap"><span class="tooltip-icon">?</span><span class="tooltip-box">Qué porcentaje del monto total viene de la productividad (puntos diarios promedio). El resto viene de calidad. La suma de ambos debe ser 100%.</span></span>
+      <span class="budget-label">Peso productividad (%)</span><span class="tooltip-wrap"><span class="tooltip-icon">?</span><span class="tooltip-box">Qué porcentaje del monto total viene de la productividad diaria. En Mixto usa puntos; en Soporte usa tareas de Soporte. El resto viene de calidad.</span></span>
       <input class="budget-input" type="number" id="inc-wprod" value="70" min="10" max="90" step="5" style="width:60px">
       <span class="budget-label">Peso calidad (%)</span><span class="tooltip-wrap"><span class="tooltip-icon">?</span><span class="tooltip-box">Qué porcentaje del monto total viene de la calidad auditada (SdC + MAO). Usa el corte, factor inicial y calidad máxima configurados.</span></span>
       <input class="budget-input" type="number" id="inc-wcal" value="30" min="10" max="90" step="5" style="width:60px">
@@ -693,7 +671,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
         <div class="inc-criteria" id="inc-criteria-analistas">
           <div class="crit-row"><div class="crit-dot" style="background:var(--red)"></div><strong style="color:var(--text)">Regla de oro:</strong> calidad auditada menor al corte configurado → incentivo $0 ese período, sin excepción.</div>
           <div class="crit-row"><div class="crit-dot" style="background:var(--amber)"></div><strong style="color:var(--text)">Sin datos de auditoría:</strong> El colaborador queda en revisión manual. No queda excluido automáticamente — el PM valida el caso.</div>
-          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Cómo se calculan los puntos:</strong> cada tarea suma peso del flujo + bonus de iniciativa + puntos por incidencia</div>
+          <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Cómo se calculan los puntos:</strong> cada tarea suma peso del flujo; las incidencias reales suman un bonus diario por cantidad.</div>
           <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Monto = productividad + calidad:</strong> dos curvas independientes que suman, con pesos y cortes ajustables.</div>
         </div>
         <div id="inc-table-analistas"></div>
@@ -756,84 +734,55 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 let DATA = { hist:null, equipo:null, auditados:null, mao:null };
 
 let FLUJOS = [
-  { id:'Demanda',          label:'Demanda',         weight:1.0,  acceptsIni:false },
-  { id:'Enhanced Content', label:'Enhanced Content', weight:0.95, acceptsIni:false },
-  { id:'Enhancement',      label:'Enhancement',      weight:1.3,  acceptsIni:true  },
-  { id:'Validación',       label:'Validación',       weight:0.95, acceptsIni:true  },
-  { id:'Soporte',          label:'Soporte',          weight:4.0,  acceptsIni:true  },
-  { id:'Fallos',           label:'Fallos',           weight:1.1,  acceptsIni:false },
-  { id:'Known Values',     label:'Known Values',     weight:1.0,  acceptsIni:false },
+  { id:'Demanda',          label:'Demanda',         weight:1.0 },
+  { id:'Enhanced Content', label:'Enhanced Content', weight:0.95 },
+  { id:'Enhancement',      label:'Enhancement',      weight:1.3 },
+  { id:'Validación',       label:'Validación',       weight:0.95 },
+  { id:'Soporte',          label:'Soporte',          weight:4.0 },
+  { id:'Fallos',           label:'Fallos',           weight:1.1 },
+  { id:'Known Values',     label:'Known Values',     weight:1.0 },
 ];
 
-let INICIATIVAS = {
-  // +0.20
-  'unificación de familias':   {label:'Unificación de familias',  bonus:0.20},
-  'separación de familias':    {label:'Separación de familias',   bonus:0.20},
-  // +0.15
-  'mao':                       {label:'MAO',                      bonus:0.15},
-  'merge':                     {label:'Merge',                    bonus:0.15},
-  'merge (cluster)':           {label:'Merge (Cluster)',           bonus:0.15},
-  // +0.10
-  'forzado optin':             {label:'Forzado Optin',            bonus:0.10},
-  'creación prod':             {label:'Creación Prod',            bonus:0.10},
-  'merge_auto_audit':          {label:'MERGE_AUTO_AUDIT',         bonus:0.10},
-  'denuncias bpp':             {label:'Denuncias BPP',            bonus:0.10},
-  'sin gtin (lie) ii':         {label:'Sin GTIN (LIE) II',        bonus:0.10},
-  'bbflex':                    {label:'BBFlex',                   bonus:0.10},
-  // +0.05
-  'sugerencias de corrección': {label:'Sugerencias de corrección',bonus:0.05},
-  // merge: 'Sugerencias de Corrección' → misma clave normalizada
-  'sugerencias de creación':   {label:'Sugerencias de Creación',  bonus:0.05},
-  'inf. oportunidad de mejora':{label:'Inf. Oportunidad de mejora',bonus:0.05},
-  // merge: 'Inf. Oportunidad de Mejora' → misma clave normalizada
-  'ao':                        {label:'AO',                       bonus:0.05},
-  'kv':                        {label:'KV',                       bonus:0.05},
-  'iniciativa kvs':            {label:'Iniciativa KVS',           bonus:0.05},
-  'ad hoc':                    {label:'AD HOC',                   bonus:0.05},
+const PRODUCTIVITY_CYCLES={
+  c1:{
+    label:'Ciclo 1',
+    mixed:{base:83,solid:90,hp:98,elite:108},
+    support:{base:8,solid:15,hp:22,elite:30},
+  },
+  c2:{
+    label:'Ciclo 2',
+    mixed:{base:86,solid:93,hp:101,elite:110},
+    support:{base:10,solid:17,hp:24,elite:32},
+  },
 };
-
-let INCIDENCIAS = {
-  // +0.5
-  'mutante irrecuperable':   {label:'Mutante Irrecuperable',  pts:0.5},
-  'fallo impacto manual':    {label:'Fallo Impacto Manual',   pts:0.5},
-  'activar':                 {label:'Activar',                pts:0.5},
-  'error de siblings':       {label:'Error de Siblings',      pts:0.5},
-  'soporte':                 {label:'Soporte',                pts:0.5},
-  'inactivar':               {label:'Inactivar',              pts:0.5},
-  'indefinido irrecuperable':{label:'Indefinido Irrecuperable',pts:0.5},
-  'unificación/separación':  {label:'Unificación/Separación', pts:0.5},
-  'merge':                   {label:'Merge',                  pts:0.5},
-  'impacto bc/cms':          {label:'Impacto BC/CMS',         pts:0.5},
-  'modificacion de producto':{label:'Modificacion de producto',pts:0.5},
-  // +0.4
-  'impacto cms':             {label:'Impacto CMS',            pts:0.4},
-  // +0.3
-  'mutante recuperable':     {label:'Mutante Recuperable',    pts:0.3},
-  'herramientas':            {label:'Herramientas',           pts:0.3},
-  'duplicado':               {label:'Duplicado',              pts:0.3},
-  // merge: 'duplicado' (minúscula) → misma clave normalizada
-  'indefinido recuperable':  {label:'Indefinido Recuperable', pts:0.3},
-  // 0 — bloqueantes externos
-  'ppmc en espera':          {label:'PPMC en espera',         pts:0.0},
-  'esperando respuesta':     {label:'Esperando respuesta',    pts:0.0},
-};
+function bonusIncDia(n){
+  const count=Math.max(0,Number(n)||0);
+  if(count===0)return 0;
+  if(count<=3)return 1.5;
+  if(count<=6)return 3.0;
+  if(count<=10)return 5.0;
+  return 8.0;
+}
+function isIncidenciaBloqueante(value){
+  const k=_normKey(value);
+  return k==='ppmc en espera'||k==='esperando respuesta';
+}
+function isIncidenciaReal(value){
+  return !!(value||'').trim()&&!isIncidenciaBloqueante(value);
+}
 
 const INC_STORAGE_KEY='catalogo.incentives.simulator.config.v2';
 const INC_SCENARIOS_KEY='catalogo.incentives.simulator.scenarios.v2';
 const COLLAPSE_STORAGE_KEY='catalogo.incentives.simulator.collapse.v1';
-const PRODUCTIVITY_PRESETS={
-  piloto:{label:'Piloto',bands:{base:80,solid:90,hp:100,elite:110}},
-  intermedio:{label:'Intermedio',bands:{base:85,solid:93,hp:102,elite:110}},
-  objetivo:{label:'Objetivo',bands:{base:88,solid:95,hp:103,elite:110}},
-};
 const QUALITY_PRESETS={
   '90-100':{label:'90-100',cutoff:90,startFactor:0.30,max:100},
   '90-98':{label:'90-98',cutoff:90,startFactor:0.30,max:98},
   '90-97':{label:'90-97',cutoff:90,startFactor:0.30,max:97},
 };
 const DEFAULT_INC_CONFIG={
-  productivityPreset:'objetivo',
-  productivityBands:{base:88,solid:95,hp:103,elite:110},
+  productivityPreset:'c1',
+  productivityCycle:'c1',
+  productivityBands:{...PRODUCTIVITY_CYCLES.c1.mixed},
   qualityPreset:'90-98',
   quality:{cutoff:90,startFactor:0.30,max:98},
   multipliers:{
@@ -850,10 +799,15 @@ function cloneObj(value){return JSON.parse(JSON.stringify(value));}
 function mergeIncConfig(raw){
   const base=cloneObj(DEFAULT_INC_CONFIG);
   if(!raw||typeof raw!=='object')return base;
+  const cycle=raw.productivityCycle||raw.productivityPreset||base.productivityCycle;
+  const validCycle=PRODUCTIVITY_CYCLES[cycle]?cycle:base.productivityCycle;
+  const defaultBands=PRODUCTIVITY_CYCLES[validCycle].mixed;
   return {
     ...base,
     ...raw,
-    productivityBands:{...base.productivityBands,...(raw.productivityBands||{})},
+    productivityPreset:validCycle,
+    productivityCycle:validCycle,
+    productivityBands:{...defaultBands,...(raw.productivityBands||{})},
     quality:{...base.quality,...(raw.quality||{})},
     multipliers:{
       analyst:{...base.multipliers.analyst,...(raw.multipliers?.analyst||{})},
@@ -925,7 +879,7 @@ function setSidebarSectionOpen(id,isOpen,{persist=true}={}){
 }
 function setupSidebarCollapseSections(){
   const prefs=getCollapsePrefs();
-  ['section-flujos','section-iniciativas','section-incidencias'].forEach(id=>{
+  ['section-flujos'].forEach(id=>{
     const sec=document.getElementById(id);
     if(!sec)return;
     const defaultOpen=sec.dataset.defaultOpen==='true'||!sec.classList.contains('collapsed');
@@ -935,21 +889,27 @@ function setupSidebarCollapseSections(){
 }
 function expandAllConfigPanels(){
   document.querySelectorAll('#page-incentivos [data-collapse-panel]').forEach(panel=>setCollapsePanelOpen(panel,true));
-  ['section-flujos','section-iniciativas','section-incidencias'].forEach(id=>setSidebarSectionOpen(id,true));
+  ['section-flujos'].forEach(id=>setSidebarSectionOpen(id,true));
 }
 function collapseAdvancedConfigPanels(){
   document.querySelectorAll('#page-incentivos [data-collapse-panel]').forEach(panel=>setCollapsePanelOpen(panel,false));
-  ['section-flujos','section-iniciativas','section-incidencias'].forEach(id=>setSidebarSectionOpen(id,false));
+  ['section-flujos'].forEach(id=>setSidebarSectionOpen(id,false));
 }
 function activeIncConfig(){return mergeIncConfig(INC_CONFIG);}
-function buildProductivityBands(cfg=activeIncConfig()){
-  const p=cfg.productivityBands;
+function cycleKeyFrom(value){return PRODUCTIVITY_CYCLES[value]?value:'c1';}
+function cycleFromSelect(id,fallback='c1'){return cycleKeyFrom(document.getElementById(id)?.value||fallback);}
+function bandSetFor(cycle='c1',dayType='mixed'){
+  return PRODUCTIVITY_CYCLES[cycleKeyFrom(cycle)]?.[dayType==='support'?'support':'mixed']||PRODUCTIVITY_CYCLES.c1.mixed;
+}
+function buildProductivityBands(cfg=activeIncConfig(),dayType='mixed'){
+  const cycle=cycleKeyFrom(cfg.productivityCycle||cfg.productivityPreset);
+  const p=dayType==='support'?bandSetFor(cycle,'support'):cfg.productivityBands;
   return [
     {key:'progress',min:0,max:p.base,css:'bp',label:'En progreso',color:'#ff5f57',desc:'Trabajar con TL · plan específico'},
-    {key:'base',min:p.base,max:p.solid,css:'bb',label:'Base ✓',color:'#5b7fff',desc:'Objetivo mínimo cumplido'},
+    {key:'base',min:p.base,max:p.solid,css:'bb',label:'Base ✓',color:'#5b7fff',desc:'Mínimo esperado cumplido'},
     {key:'solid',min:p.solid,max:p.hp,css:'bs',label:'Sólido ✓✓',color:'#3ecf8e',desc:'Por encima del piso Base'},
     {key:'hp',min:p.hp,max:p.elite,css:'bh',label:'High Performer ✓✓✓',color:'#a78bfa',desc:'Rendimiento destacado'},
-    {key:'elite',min:p.elite,max:1e9,css:'be',label:'Elite ⭐',color:'#f6a623',desc:'Objetivo alcanzado'},
+    {key:'elite',min:p.elite,max:1e9,css:'be',label:'Elite ⭐',color:'#f6a623',desc:'Banda máxima alcanzada'},
   ];
 }
 function refreshBandsFromConfig(){BANDS=buildProductivityBands();}
@@ -957,8 +917,19 @@ function bandRangeLabel(b){
   const max=b.max>=1e9?'∞':(Math.max(b.min,b.max-0.1)).toFixed(1);
   return `${Number(b.min).toFixed(1)}-${max} pts`;
 }
-function getBand(pts){return BANDS.find(b=>pts>=b.min&&pts<b.max)||BANDS[0];}
-function getBandIdx(pts){return BANDS.findIndex(b=>pts>=b.min&&pts<b.max);}
+function bandRangeLabelForType(b,type='mixed'){
+  const suffix=type==='support'?' tareas':' pts';
+  const max=b.max>=1e9?'∞':(Math.max(b.min,b.max-0.1)).toFixed(1);
+  return `${Number(b.min).toFixed(1)}-${max}${suffix}`;
+}
+function getBand(pts,type='mixed',cycle=(activeIncConfig().productivityCycle||'c1')){
+  const bands=buildProductivityBands({productivityCycle:cycle,productivityBands:bandSetFor(cycle,'mixed')},type);
+  return bands.find(b=>pts>=b.min&&pts<b.max)||bands[0];
+}
+function getBandIdx(pts,type='mixed',cycle=(activeIncConfig().productivityCycle||'c1')){
+  const bands=buildProductivityBands({productivityCycle:cycle,productivityBands:bandSetFor(cycle,'mixed')},type);
+  return bands.findIndex(b=>pts>=b.min&&pts<b.max);
+}
 function getBandMultiplier(group,idx,cfg=activeIncConfig()){
   const keys=[null,'base','solid','hp','elite'];
   return cfg.multipliers[group]?.[keys[idx]]||0;
@@ -1008,41 +979,16 @@ let _modalMode='';
 function renderFlujosList(){
   const el=document.getElementById('flujos-list');if(!el)return;
   el.innerHTML=`<div class="rules-table"><table>
-    <thead><tr><th>Flujo</th><th>Peso</th><th>Acepta iniciativas</th><th></th></tr></thead>
+    <thead><tr><th>Flujo</th><th>Peso</th><th></th></tr></thead>
     <tbody>${FLUJOS.map((f,i)=>`
       <tr>
         <td class="name-cell">${f.label}</td>
         <td><input class="budget-input" type="number" step="0.05" min="0" max="20" value="${f.weight}" id="fw-${i}" onchange="FLUJOS[${i}].weight=+(this.value)||0" style="width:86px"></td>
-        <td><label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" ${f.acceptsIni?'checked':''} onchange="FLUJOS[${i}].acceptsIni=this.checked;_updateIniVisibility();syncCalcSelectors();if(PROC)computeAll();"> Sí</label></td>
         <td><button class="cfg-del" onclick="deleteFlujo(${i})" title="Eliminar">✕</button></td>
       </tr>`).join('')}</tbody>
   </table></div>`;
 }
-function renderIniciativasList(){
-  const keys=Object.keys(INICIATIVAS);
-  const el=document.getElementById('iniciativas-list');if(!el)return;
-  el.innerHTML=keys.length?`<div class="rules-table"><table>
-    <thead><tr><th>Iniciativa</th><th>Bonus por tarea</th><th></th></tr></thead>
-    <tbody>${keys.map(k=>`<tr>
-      <td class="name-cell">${INICIATIVAS[k].label}</td>
-      <td><input class="budget-input" type="number" step="0.05" min="-1" max="5" value="${INICIATIVAS[k].bonus}" onchange="INICIATIVAS['${k}'].bonus=+(this.value)||0;updateCalc()" style="width:86px"></td>
-      <td><button class="cfg-del" onclick="deleteIniciativa('${k}')">✕</button></td>
-    </tr>`).join('')}</tbody>
-  </table></div>`:'<div style="font-size:12px;color:var(--text3)">Sin iniciativas configuradas.</div>';
-}
-function renderIncidenciasList(){
-  const keys=Object.keys(INCIDENCIAS);
-  const el=document.getElementById('incidencias-list');if(!el)return;
-  el.innerHTML=keys.length?`<div class="rules-table"><table>
-    <thead><tr><th>Incidencia</th><th>Puntos</th><th></th></tr></thead>
-    <tbody>${keys.map(k=>`<tr>
-      <td class="name-cell">${INCIDENCIAS[k].label}</td>
-      <td><input class="budget-input" type="number" step="0.1" min="0" max="20" value="${INCIDENCIAS[k].pts}" onchange="INCIDENCIAS['${k}'].pts=+(this.value)||0;updateCalc()" style="width:86px"></td>
-      <td><button class="cfg-del" onclick="deleteIncidencia('${k}')">✕</button></td>
-    </tr>`).join('')}</tbody>
-  </table></div>`:'<div style="font-size:12px;color:var(--text3)">Sin incidencias configuradas.</div>';
-}
-function renderAllSidebar(){renderFlujosList();renderIniciativasList();renderIncidenciasList();syncCalcSelectors();}
+function renderAllSidebar(){renderFlujosList();syncCalcSelectors();}
 
 function toggleSection(id){
   const sec=document.getElementById(id);
@@ -1055,8 +1001,6 @@ function deleteFlujo(i){
   if(!confirm(`¿Eliminar "${FLUJOS[i].label}"?`))return;
   FLUJOS.splice(i,1);renderFlujosList();renderCalcSliders();if(PROC)computeAll();
 }
-function deleteIniciativa(k){delete INICIATIVAS[k];renderIniciativasList();syncCalcSelectors();if(PROC)computeAll();}
-function deleteIncidencia(k){delete INCIDENCIAS[k];renderIncidenciasList();syncCalcSelectors();updateCalc();}
 
 // ═══════════════════════════════════════════════════════════
 // MODAL
@@ -1069,17 +1013,8 @@ function openModal(mode){
       <input id="m-name" type="text" placeholder="Ej: Enhancement Plus, KV Especial..." style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:6px 9px;font-family:'DM Sans',sans-serif"></div>
       <div><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Peso por tarea (Demanda = 1.0)</div>
       <input id="m-val" type="number" step="0.05" min="0" max="20" value="1.0" style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:6px 9px;font-family:'DM Mono',monospace"></div>`},
-    iniciativa:{title:'Nueva iniciativa',body:`
-      <div style="margin-bottom:10px"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">¿Cómo se llama?</div>
-      <input id="m-name" type="text" placeholder="Ej: Campaña Navidad, Proyecto MAO 2..." style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:6px 9px;font-family:'DM Sans',sans-serif"></div>
-      <div><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Puntos extra por tarea (ej: 0.15 = +0.15 pts/tarea)</div>
-      <input id="m-val" type="number" step="0.05" min="-1" max="5" value="0.1" style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:6px 9px;font-family:'DM Mono',monospace"></div>`},
-    incidencia:{title:'Nueva incidencia',body:`
-      <div style="margin-bottom:10px"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Nombre</div>
-      <input id="m-name" type="text" placeholder="Ej: Esperando respuesta interna, Merge complejo..." style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:6px 9px;font-family:'DM Sans',sans-serif"></div>
-      <div><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Puntos extra que suma esta incidencia</div>
-      <input id="m-val" type="number" step="0.1" min="0" max="20" value="0.5" style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-size:13px;padding:6px 9px;font-family:'DM Mono',monospace"></div>`},
   };
+  if(!cfg[mode])return;
   document.getElementById('modal-title').textContent=cfg[mode].title;
   document.getElementById('modal-body').innerHTML=cfg[mode].body;
   const ov=document.getElementById('modal-overlay');ov.style.display='flex';ov.style.pointerEvents='auto';
@@ -1096,16 +1031,6 @@ function confirmModal(){
     if(FLUJOS.find(f=>f.id.toLowerCase()===name.toLowerCase())){alert('Ya existe.');return;}
     FLUJOS.push({id:name,label:name,weight:val||1});
     closeModal();renderFlujosList();renderCalcSliders();
-  } else if(_modalMode==='iniciativa'){
-    const k=name.toLowerCase();
-    if(INICIATIVAS[k]){alert('Ya existe.');return;}
-    INICIATIVAS[k]={label:name,bonus:val};
-    closeModal();renderIniciativasList();syncCalcSelectors();
-  } else if(_modalMode==='incidencia'){
-    const k=name.toLowerCase();
-    if(INCIDENCIAS[k]){alert('Ya existe.');return;}
-    INCIDENCIAS[k]={label:name,pts:val};
-    closeModal();renderIncidenciasList();syncCalcSelectors();
   }
 }
 
@@ -1324,36 +1249,18 @@ function getQualityForPeriod(user,fromDate,toDate){
 // POINT CALCULATION
 // ═══════════════════════════════════════════════════════════
 // Cache de lookup normalizado — se reconstruye al llamar buildLookupCache()
-let _iniCache={}, _incCache={};
 function _normKey(s){
   return(s||'').trim().toLowerCase()
     .replace(/á/g,'a').replace(/é/g,'e').replace(/í/g,'i')
     .replace(/ó/g,'o').replace(/ú/g,'u').replace(/ü/g,'u');
 }
-function buildLookupCache(){
-  // Para cada iniciativa/incidencia, registrar todas las variantes posibles
-  _iniCache={};
-  Object.entries(INICIATIVAS).forEach(([k,v])=>{
-    _iniCache[k]=v;              // clave exacta
-    _iniCache[_normKey(k)]=v;   // clave normalizada
-  });
-  _incCache={};
-  Object.entries(INCIDENCIAS).forEach(([k,v])=>{
-    _incCache[k]=v;
-    _incCache[_normKey(k)]=v;
-  });
-}
+function buildLookupCache(){}
 
 function calcRowPts(flujoId,status,iniRaw,incRaw){
   if(status!=='DONE')return 0;
   const pesoFlujo=(FLUJOS.find(f=>f.id===flujoId)||{weight:1.0}).weight;
-  const iniKey=(iniRaw||'').trim().toLowerCase();
-  const iniObj=_iniCache[iniKey]||_iniCache[_normKey(iniRaw)];
-  const iniBonus=iniObj?iniObj.bonus:0;
-  const incKey=(incRaw||'').trim().toLowerCase();
-  const incObj=_incCache[incKey]||_incCache[_normKey(incRaw)];
-  const incPts=incObj?incObj.pts:0;
-  return pesoFlujo+iniBonus+incPts;
+  const incPts=0;
+  return pesoFlujo+incPts;
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1361,7 +1268,7 @@ function calcRowPts(flujoId,status,iniRaw,incRaw){
 // ═══════════════════════════════════════════════════════════
 function computeAll(){
   if(!DATA.hist||!DATA.hist.length)return;
-  buildLookupCache(); // precalcular lookup de iniciativas/incidencias
+  buildLookupCache();
   const sample=DATA.hist[0];
   const COL={
     fecha:    findCol(sample,['Fecha','fecha','Date','date']),
@@ -1395,16 +1302,13 @@ function computeAll(){
     });
   }
 
-  // Las iniciativas e incidencias están definidas en el objeto JS — no se auto-detectan
-  // para evitar que valores de texto libre del CSV contaminen las listas.
+  // Iniciativa e incidencia siguen parseadas para filtros/analisis, pero no definen catalogos de puntos.
   const changed=false;
 
   // Precalcular mapas de flujos para O(1) lookup
   const flujoWeightMap={};
-  const flujoAcceptsIniMap={};
   FLUJOS.forEach(f=>{
     flujoWeightMap[f.id]=f.weight;
-    flujoAcceptsIniMap[f.id]=f.acceptsIni??true;
   });
 
   // Parse rows — only DONE, only users in equipoFilter if available
@@ -1421,14 +1325,10 @@ function computeAll(){
     const inc=COL.incidencia?(r[COL.incidencia]||'').trim():'';
     const ids=COL.ids?(+(r[COL.ids]||0)||0):1;
     const pesoFlujo=flujoWeightMap[flujo]??1.0;
-    const flujoAcceptsIni=flujoAcceptsIniMap[flujo]??true;
-    const iniKey=(ini||'').trim().toLowerCase();
-    const iniObj=flujoAcceptsIni?(_iniCache[iniKey]||_iniCache[_normKey(ini)]||{bonus:0}):{bonus:0};
-    const incKey=(inc||'').trim().toLowerCase();
-    const incObj=_incCache[incKey]||_incCache[_normKey(inc)]||{pts:0};
-    const pts=pesoFlujo+iniObj.bonus+incObj.pts;
+    const pts=pesoFlujo;
+    const incReal=isIncidenciaReal(inc)?1:0;
     const wk=isoWeek(date);
-    rawRows.push({user,flujo,pts,ids,date,dateStr:r[COL.fecha].trim(),
+    rawRows.push({user,flujo,iniciativa:ini,incidencia:inc,incReal,pts,ids,date,dateStr:r[COL.fecha].trim(),
       year:date.getFullYear(),month:date.getMonth()+1,
       week:wk.week,weekYear:wk.year,
       monthKey:`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}`});
@@ -1480,32 +1380,50 @@ function isLiderRol(rol) {
     || r.includes('coordinador')
     || r.includes('project manager');
 }
-function _aggregatePersonsCore(rows,equipoMap,equipoFilter,filterLideres){
+function _aggregatePersonsCore(rows,equipoMap,equipoFilter,filterLideres,cycle='c1'){
   const byUserDay={};
   rows.forEach(r=>{
     if(!byUserDay[r.user])byUserDay[r.user]={};
-    if(!byUserDay[r.user][r.dateStr])byUserDay[r.user][r.dateStr]={pts:0,tasks:0,ids:0,monthKey:r.monthKey};
+    if(!byUserDay[r.user][r.dateStr])byUserDay[r.user][r.dateStr]={pts:0,tasks:0,supportTasks:0,ids:0,incCount:0,monthKey:r.monthKey};
     byUserDay[r.user][r.dateStr].pts+=r.pts;
     byUserDay[r.user][r.dateStr].tasks++;
+    if(_normKey(r.flujo)==='soporte')byUserDay[r.user][r.dateStr].supportTasks++;
     byUserDay[r.user][r.dateStr].ids+=r.ids||0;
+    byUserDay[r.user][r.dateStr].incCount+=r.incReal||0;
   });
   const persons=Object.entries(byUserDay).map(([user,days])=>{
     const info=equipoMap[user]||{nombre:user,rol:'',equipo:''};
-    const dayArr=Object.values(days);
+    const dayArr=Object.values(days).map(d=>{
+      const dayType=d.supportTasks>d.tasks/2?'support':'mixed';
+      const baseScore=dayType==='support'?d.supportTasks:d.pts;
+      const incBonus=bonusIncDia(d.incCount);
+      return {...d,dayType,score:baseScore+incBonus,incBonus};
+    });
     const activeDays=dayArr.length;
-    const totalPts=dayArr.reduce((s,d)=>s+d.pts,0);
+    const supportDays=dayArr.filter(d=>d.dayType==='support');
+    const mixedDays=dayArr.filter(d=>d.dayType!=='support');
+    const dayType=supportDays.length>mixedDays.length?'support':'mixed';
+    const metricDays=dayType==='support'?supportDays:mixedDays;
+    const totalPts=metricDays.reduce((s,d)=>s+d.score,0);
     const totalTasks=dayArr.reduce((s,d)=>s+d.tasks,0);
     const totalIds=dayArr.reduce((s,d)=>s+d.ids,0);
-    const avgPts=activeDays?totalPts/activeDays:0;
+    const avgPts=metricDays.length?totalPts/metricDays.length:0;
     const avgTasks=activeDays?totalTasks/activeDays:0;
     const avgIds=activeDays?totalIds/activeDays:0;
     const byMonth={};
     dayArr.forEach(d=>{
-      if(!byMonth[d.monthKey])byMonth[d.monthKey]={pts:0,tasks:0,ids:0,days:0};
-      byMonth[d.monthKey].pts+=d.pts;byMonth[d.monthKey].tasks+=d.tasks;
+      if(!byMonth[d.monthKey])byMonth[d.monthKey]={pts:0,tasks:0,ids:0,days:0,supportDays:0,mixedDays:0,supportPts:0,mixedPts:0};
+      byMonth[d.monthKey].pts+=d.score;byMonth[d.monthKey].tasks+=d.tasks;
       byMonth[d.monthKey].ids+=d.ids;byMonth[d.monthKey].days++;
+      if(d.dayType==='support'){byMonth[d.monthKey].supportDays++;byMonth[d.monthKey].supportPts+=d.score;}
+      else{byMonth[d.monthKey].mixedDays++;byMonth[d.monthKey].mixedPts+=d.score;}
     });
-    return{user,...info,activeDays,avgPts,avgTasks,avgIds,byMonth,band:getBand(avgPts)};
+    Object.values(byMonth).forEach(m=>{
+      m.dayType=m.supportDays>m.mixedDays?'support':'mixed';
+      m.metricPts=m.dayType==='support'?m.supportPts:m.mixedPts;
+      m.metricDays=m.dayType==='support'?m.supportDays:m.mixedDays;
+    });
+    return{user,...info,activeDays,avgPts,avgTasks,avgIds,byMonth,dayType,band:getBand(avgPts,dayType,cycle)};
   });
   if(equipoFilter){
     const active=new Set(persons.map(p=>p.user));
@@ -1513,7 +1431,7 @@ function _aggregatePersonsCore(rows,equipoMap,equipoFilter,filterLideres){
       if(!active.has(id)&&equipoMap[id]){
         // En modo filtrado, no agregar líderes como inactivos
         if(filterLideres&&isLiderRol(equipoMap[id].rol))return;
-        persons.push({user:id,...equipoMap[id],activeDays:0,avgPts:0,avgTasks:0,avgIds:0,byMonth:{},band:getBand(0)});
+        persons.push({user:id,...equipoMap[id],activeDays:0,avgPts:0,avgTasks:0,avgIds:0,byMonth:{},dayType:'mixed',band:getBand(0,'mixed',cycle)});
       }
     });
   }
@@ -1521,12 +1439,12 @@ function _aggregatePersonsCore(rows,equipoMap,equipoFilter,filterLideres){
   return persons;
 }
 // Para histórico y ranking — excluye líderes (TLs, CP, PM)
-function aggregatePersons(rows,equipoMap,equipoFilter){
-  return _aggregatePersonsCore(rows,equipoMap,equipoFilter,true);
+function aggregatePersons(rows,equipoMap,equipoFilter,cycle='c1'){
+  return _aggregatePersonsCore(rows,equipoMap,equipoFilter,true,cycle);
 }
 // Para simulador de incentivos — incluye todos para poder separar roles
-function aggregatePersonsAll(rows,equipoMap,equipoFilter){
-  return _aggregatePersonsCore(rows,equipoMap,equipoFilter,false);
+function aggregatePersonsAll(rows,equipoMap,equipoFilter,cycle='c1'){
+  return _aggregatePersonsCore(rows,equipoMap,equipoFilter,false,cycle);
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1595,35 +1513,34 @@ let HIST_PERSONS=[];
 function applyHistFilter(){
   if(!PROC)return;
   const f=buildFilter('h');
+  const cycle=cycleFromSelect('h-cycle','c1');
   const filtered=filterRows(PROC.rawRows,f);
-  HIST_PERSONS=aggregatePersons(filtered,PROC.equipoMap,PROC.equipoFilter);
-  renderHistStats(HIST_PERSONS);renderBandsChart(filtered);renderHistTable();updateFilterClearButtons();
+  HIST_PERSONS=aggregatePersons(filtered,PROC.equipoMap,PROC.equipoFilter,cycle);
+  renderHistStats(HIST_PERSONS,cycle);renderBandsChart(HIST_PERSONS,cycle);renderHistTable(cycle);updateFilterClearButtons();
 }
-function renderHistStats(persons){
-  const cfg=activeIncConfig();
+function renderHistStats(persons,cycle='c1'){
+  const mixed=bandSetFor(cycle,'mixed');
   const active=persons.filter(p=>p.avgPts>0);
   const avg=active.length?active.reduce((s,p)=>s+p.avgPts,0)/active.length:0;
-  const aboveBase=active.filter(p=>p.avgPts>=cfg.productivityBands.base).length;
-  const elite=active.filter(p=>p.avgPts>=cfg.productivityBands.elite).length;
-  const risk=active.filter(p=>p.avgPts<cfg.productivityBands.base).length;
+  const aboveBase=active.filter(p=>p.band&&p.band.key!=='progress').length;
+  const elite=active.filter(p=>p.band?.key==='elite').length;
   const inactive=persons.filter(p=>p.activeDays===0).length;
   document.getElementById('hist-stats').innerHTML=`
-    <div class="stat-card acc"><div class="stat-label">Promedio equipo (pts)</div><div class="stat-value">${avg.toFixed(1)}</div><div class="stat-sub">período seleccionado</div></div>
+    <div class="stat-card acc"><div class="stat-label">Promedio equipo</div><div class="stat-value">${avg.toFixed(1)}</div><div class="stat-sub">${PRODUCTIVITY_CYCLES[cycle].label} · métrica prevalente</div></div>
     <div class="stat-card grn"><div class="stat-label">Base o superior</div><div class="stat-value">${aboveBase}</div><div class="stat-sub">de ${active.length} activos</div></div>
-    <div class="stat-card amb"><div class="stat-label">Elite</div><div class="stat-value">${elite}</div><div class="stat-sub">objetivo alcanzado</div></div>
+    <div class="stat-card amb"><div class="stat-label">Elite</div><div class="stat-value">${elite}</div><div class="stat-sub">banda máxima</div></div>
     <div class="stat-card redd"><div class="stat-label">Sin actividad</div><div class="stat-value">${inactive}</div><div class="stat-sub">en el período</div></div>`;
 }
-function renderBandsChart(rows){
-  const byUser={};
-  rows.forEach(r=>{if(!byUser[r.user])byUser[r.user]={pts:0,days:new Set()};byUser[r.user].pts+=r.pts;byUser[r.user].days.add(r.dateStr);});
-  const counts=new Array(BANDS.length).fill(0);
-  Object.values(byUser).forEach(u=>{const avg=u.pts/u.days.size;const bi=BANDS.findIndex(b=>avg>=b.min&&avg<b.max);if(bi>=0)counts[bi]++;});
+function renderBandsChart(persons,cycle='c1'){
+  const bands=buildProductivityBands({productivityCycle:cycle,productivityBands:bandSetFor(cycle,'mixed')},'mixed');
+  const counts=new Array(bands.length).fill(0);
+  persons.filter(p=>p.activeDays>0).forEach(p=>{const bi=bands.findIndex(b=>b.key===p.band?.key);if(bi>=0)counts[bi]++;});
   const ctx=document.getElementById('chart-bands').getContext('2d');
   if(CHARTS.bands)CHARTS.bands.destroy();
-  CHARTS.bands=new Chart(ctx,{type:'bar',data:{labels:BANDS.map(b=>b.label),datasets:[{data:counts,backgroundColor:BANDS.map(b=>b.color+'88'),borderColor:BANDS.map(b=>b.color),borderWidth:1.5,borderRadius:6}]},
+  CHARTS.bands=new Chart(ctx,{type:'bar',data:{labels:bands.map(b=>b.label),datasets:[{data:counts,backgroundColor:bands.map(b=>b.color+'88'),borderColor:bands.map(b=>b.color),borderWidth:1.5,borderRadius:6}]},
     options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1c2030',titleColor:'#e8eaf2',bodyColor:'#8b91a8',borderColor:'#252a3a',borderWidth:1,callbacks:{label:c=>`${c.raw} colaboradores`}}},scales:{x:{grid:{color:'#252a3a'},ticks:{color:'#8b91a8',precision:0},beginAtZero:true},y:{grid:{display:false},ticks:{color:'#8b91a8',font:{size:11}}}}}});
 }
-function renderHistTable(){
+function renderHistTable(cycle=cycleFromSelect('h-cycle','c1')){
   if(!HIST_PERSONS.length)return;
   const search=(document.getElementById('search-hist')?.value||'').toLowerCase();
   const eqFilter=document.getElementById('h-equipo-filter')?.value||'';
@@ -1632,8 +1549,8 @@ function renderHistTable(){
   document.getElementById('hist-thead').innerHTML=`<tr>
     <th onclick="sortHist('nombre')">Colaborador${_sa('nombre')}</th>
     <th onclick="sortHist('equipo')">Equipo${_sa('equipo')}</th>
-    ${allMonths.map(mk=>{const[y,m]=mk.split('-');return`<th onclick="sortHist('m_${mk}')">${MONTH_NAMES[+m-1]} ${y}${_sa('m_'+mk)}<br><span style="font-weight:400;color:var(--text3)">pts / tareas / IDs</span></th>`;}).join('')}
-    <th onclick="sortHist('avgPts')">Pts/día${_sa('avgPts')}</th>
+    ${allMonths.map(mk=>{const[y,m]=mk.split('-');return`<th onclick="sortHist('m_${mk}')">${MONTH_NAMES[+m-1]} ${y}${_sa('m_'+mk)}<br><span style="font-weight:400;color:var(--text3)">métrica / tareas / IDs</span></th>`;}).join('')}
+    <th onclick="sortHist('avgPts')">Métrica/día${_sa('avgPts')}</th>
     <th onclick="sortHist('avgTasks')">Tareas/día${_sa('avgTasks')}</th>
     <th onclick="sortHist('avgIds')">IDs/día${_sa('avgIds')}</th>
     <th onclick="sortHist('activeDays')">Días activos${_sa('activeDays')}</th>
@@ -1642,8 +1559,8 @@ function renderHistTable(){
   if(eqFilter)ps=ps.filter(p=>p.equipo===eqFilter);
   if(search)ps=ps.filter(p=>(p.nombre||p.user).toLowerCase().includes(search)||p.equipo.toLowerCase().includes(search));
   function getHistSortVal(p,col){
-    if(col.startsWith('m_')){const mk=col.slice(2);const m=p.byMonth[mk];return m?m.pts/m.days:-1;}
-    if(col==='bandIdx')return getBandIdx(p.avgPts);
+    if(col.startsWith('m_')){const mk=col.slice(2);const m=p.byMonth[mk];return m&&m.metricDays?m.metricPts/m.metricDays:-1;}
+    if(col==='bandIdx')return getBandIdx(p.avgPts,p.dayType,cycle);
     return p[col]??'';
   }
   ps.sort((a,b)=>{
@@ -1653,7 +1570,7 @@ function renderHistTable(){
     return va<vb?HIST_SORT.dir:-HIST_SORT.dir;
   });
   document.getElementById('hist-tbody').innerHTML=ps.map(p=>{
-    const mcells=allMonths.map(mk=>{const m=p.byMonth[mk];if(!m)return`<td style="color:var(--text3)">—</td>`;const b=getBand(m.pts/m.days);return`<td><span class="mono-cell" style="color:${b.color}">${(m.pts/m.days).toFixed(1)}</span><span style="color:var(--text3);font-size:10px"> / ${(m.tasks/m.days).toFixed(0)} / ${(m.ids/m.days).toFixed(0)}</span></td>`;});
+  const mcells=allMonths.map(mk=>{const m=p.byMonth[mk];if(!m||!m.metricDays)return`<td style="color:var(--text3)">—</td>`;const avg=m.metricPts/m.metricDays;const b=getBand(avg,m.dayType,cycle);return`<td><span class="mono-cell" style="color:${b.color}">${avg.toFixed(1)}</span><span style="color:var(--text3);font-size:10px"> / ${(m.tasks/m.days).toFixed(0)} / ${(m.ids/m.days).toFixed(0)}</span></td>`;});
     const inactiveStyle=p.activeDays===0?'opacity:.5':'';
     return`<tr style="${inactiveStyle}"><td class="name-cell">${p.nombre||p.user}${p.activeDays===0?' <span style="font-size:10px;color:var(--text3)">(sin tareas en el período)</span>':''}</td>
       <td style="font-size:11px;color:var(--text3)">${p.equipo||'—'}</td>${mcells.join('')}
@@ -1690,7 +1607,7 @@ function _renderIncTableA(){
       <thead><tr>
         <th onclick="sortIncA('nombre')">Colaborador${_s('nombre')}</th>
         <th onclick="sortIncA('equipo')">Equipo${_s('equipo')}</th>
-        <th onclick="sortIncA('avgPts')">Pts/día${_s('avgPts')}</th>
+        <th onclick="sortIncA('avgPts')">Métrica/día${_s('avgPts')}</th>
         <th onclick="sortIncA('avgIds')">IDs/día${_s('avgIds')}</th>
         <th onclick="sortIncA('activeDays')">Días${_s('activeDays')}</th>
         <th onclick="sortIncA('calidad')">Calidad${_s('calidad')}</th>
@@ -1738,8 +1655,8 @@ function _renderIncTableTl(){
       <tbody>${sorted.map(p=>`<tr>
         <td class="name-cell">${p.nombre||p.user||'—'}</td>
         <td class="mono-cell" style="color:var(--text3)">${p.teamSize} pers.</td>
-        <td class="mono-cell" style="color:${getBand(p.avgTeam).color}">${p.avgTeam.toFixed(1)}</td>
-        <td class="mono-cell" style="color:var(--text3)">${p.avgGeneral?p.avgGeneral.toFixed(1)+' pts ref.':'—'}</td>
+        <td class="mono-cell" style="color:${getBand(p.avgTeam,'mixed',activeIncConfig().productivityCycle||'c1').color}">${p.avgTeam.toFixed(1)}</td>
+        <td class="mono-cell" style="color:var(--text3)">${p.avgGeneral?p.avgGeneral.toFixed(1)+' ref.':'—'}</td>
         <td>${p.tlBandLabel?`<span class="badge ${tlBadgeCss(p.tlBandLabel)}">${p.tlBandLabel}</span>`:'—'}</td>
         <td>${p.incStatus==='eligible'?'<span class="eligible-tag">Elegible</span>':'<span class="ineligible-tag">No elegible</span>'}</td>
         <td class="mono-cell" style="color:var(--text3)">${p.incStatus==='eligible'?fmtARS(roundK(p.amount)):'—'}</td>
@@ -1784,8 +1701,9 @@ function applyRankFilter(){
   if(!PROC)return;
   const f=buildFilter('r');
   const eqFilter=document.getElementById('r-equipo')?.value||'';
+  const cycle=cycleFromSelect('r-cycle','c1');
   const filtered=filterRows(PROC.rawRows,f);
-  const persons=aggregatePersons(filtered,PROC.equipoMap,PROC.equipoFilter);
+  const persons=aggregatePersons(filtered,PROC.equipoMap,PROC.equipoFilter,cycle);
   const show=eqFilter?persons.filter(p=>p.equipo===eqFilter):persons;
   _rankPersons=show.filter(p=>p.activeDays>0);
   RANK_SORT={col:'avgPts',dir:-1};
@@ -1798,7 +1716,7 @@ function sortRank(col){
   renderRankingTable();
 }
 function getRankSortVal(p,col){
-  if(col==='bandIdx')return getBandIdx(p.avgPts);
+  if(col==='bandIdx')return getBandIdx(p.avgPts,p.dayType,cycleFromSelect('r-cycle','c1'));
   return p[col]??'';
 }
 function renderRankTopChart(persons){
@@ -1815,8 +1733,8 @@ function renderRankTopChart(persons){
   if(CHARTS.rankTop)CHARTS.rankTop.destroy();
   CHARTS.rankTop=new Chart(ctx,{type:'bar',data:{
     labels:top.map(p=>p.nombre||p.user),
-    datasets:[{data:top.map(p=>+p.avgPts.toFixed(1)),backgroundColor:top.map(p=>getBand(p.avgPts).color+'88'),borderColor:top.map(p=>getBand(p.avgPts).color),borderWidth:1.5,borderRadius:6}]
-  },options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1c2030',titleColor:'#e8eaf2',bodyColor:'#8b91a8',borderColor:'#252a3a',borderWidth:1,callbacks:{label:c=>`${c.raw} pts/día`}}},scales:{x:{grid:{color:'#252a3a'},ticks:{color:'#8b91a8'},beginAtZero:true},y:{grid:{display:false},ticks:{color:'#8b91a8',font:{size:11}}}}}});
+    datasets:[{data:top.map(p=>+p.avgPts.toFixed(1)),backgroundColor:top.map(p=>p.band.color+'88'),borderColor:top.map(p=>p.band.color),borderWidth:1.5,borderRadius:6}]
+  },options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1c2030',titleColor:'#e8eaf2',bodyColor:'#8b91a8',borderColor:'#252a3a',borderWidth:1,callbacks:{label:c=>`${c.raw} métrica/día`}}},scales:{x:{grid:{color:'#252a3a'},ticks:{color:'#8b91a8'},beginAtZero:true},y:{grid:{display:false},ticks:{color:'#8b91a8',font:{size:11}}}}}});
 }
 function renderRankingTable(){
   if(!_rankPersons.length){
@@ -1834,7 +1752,7 @@ function renderRankingTable(){
   document.getElementById('rank-thead').innerHTML=`<tr>
     <th onclick="sortRank('nombre')">Colaborador${_sa('nombre')}</th>
     <th onclick="sortRank('equipo')">Equipo${_sa('equipo')}</th>
-    <th onclick="sortRank('avgPts')">Pts/día${_sa('avgPts')}</th>
+    <th onclick="sortRank('avgPts')">Métrica/día${_sa('avgPts')}</th>
     <th onclick="sortRank('avgTasks')">Tareas/día${_sa('avgTasks')}</th>
     <th onclick="sortRank('avgIds')">IDs/día${_sa('avgIds')}</th>
     <th onclick="sortRank('activeDays')">Días activos${_sa('activeDays')}</th>
@@ -1869,78 +1787,41 @@ function renderCalcSliders(){
   updateCalc();
 }
 function syncCalcSelectors(){
-  const is=document.getElementById('calc-iniciativa'),ic=document.getElementById('calc-incidencia');
-  if(!is||!ic)return;
-  const ci=is.value,cc=ic.value;
-  is.innerHTML='<option value="">Sin iniciativa</option>';
-  Object.entries(INICIATIVAS).sort((a,b)=>a[1].label.localeCompare(b[1].label)).forEach(([k,v])=>{is.insertAdjacentHTML('beforeend',`<option value="${k}">${v.label} (+${(v.bonus).toFixed(2)}pts)</option>`);});
-  is.value=ci;
-  ic.innerHTML='<option value="">Sin incidencia</option>';
-  Object.entries(INCIDENCIAS).sort((a,b)=>a[1].label.localeCompare(b[1].label)).forEach(([k,v])=>{ic.insertAdjacentHTML('beforeend',`<option value="${k}">${v.label} (+${v.pts.toFixed(1)}pts)</option>`);});
-  ic.value=cc;
-  _updateIniVisibility();
   updateCalc();
 }
 
-function _updateIniVisibility(){
-  const anyAcceptsIni=FLUJOS.some(f=>f.acceptsIni&&(CALC_VALS[f.id]||0)>0);
-  const iniSection=document.getElementById('ini-section');
-  if(iniSection)iniSection.style.opacity=anyAcceptsIni?'1':'0.35';
-  const iniNote=document.getElementById('ini-note');
-  if(!iniNote)return;
-  if(anyAcceptsIni){
-    iniNote.style.display='none';
-  } else {
-    // Generar dinámicamente la lista de flujos que aceptan iniciativas
-    const flujosCon=FLUJOS.filter(f=>f.acceptsIni).map(f=>f.label);
-    const listaFlujos=flujosCon.length
-      ?flujosCon.join(' y ')
-      :'ningún flujo configurado';
-    iniNote.innerHTML=`⚠ Ningún flujo activo acepta iniciativas en el mix actual. Las iniciativas aplican solo a: <strong>${listaFlujos}</strong>.`;
-    iniNote.style.display='block';
-  }
-}
 function onSlide(id,i,val){
   CALC_VALS[id]=+val;
   document.getElementById(`lbl-cf${i}`).textContent=val;
   document.getElementById(`v-cf${i}`).textContent=val;
-  _updateIniVisibility();
   updateCalc();
 }
 function updateCalc(){
-  const iniKey=document.getElementById('calc-iniciativa')?.value||'';
-  const incKey=document.getElementById('calc-incidencia')?.value||'';
-  const iniObj=iniKey?INICIATIVAS[iniKey]:null;
-  const incObj=incKey?INCIDENCIAS[incKey]:null;
-  const iniBonus=iniObj?.bonus||0;
-  const incPts=incObj?.pts||0;
-  // Porcentaje de tareas que tienen esta iniciativa/incidencia (0-1)
-  const pctIni=(+(document.getElementById('pct-ini')?.value||0))/100;
-  const pctInc=(+(document.getElementById('pct-inc')?.value||0))/100;
-  const lbI=document.getElementById('lbl-ini-bonus'),lbC=document.getElementById('lbl-inc-bonus');
-  // Mostrar el bonus efectivo promedio por tarea del día
-  if(lbI)lbI.textContent=`+${(iniBonus*pctIni).toFixed(2)} pts promedio`;
-  if(lbC)lbC.textContent=`+${(incPts*pctInc).toFixed(2)} pts promedio`;
+  const incCount=+(document.getElementById('calc-inc-count')?.value||0)||0;
+  const incBonus=bonusIncDia(incCount);
+  const lbC=document.getElementById('lbl-inc-bonus');
+  if(lbC)lbC.textContent=`+${incBonus.toFixed(1)} pts`;
   let total=0,tasks=0;
   const rows=[];
   FLUJOS.forEach(f=>{
     const v=CALC_VALS[f.id]||0;if(!v)return;
     const ptsBase=v*f.weight;
-    // Bonus de iniciativa solo si el flujo acepta iniciativas
-    const efectivoIni=f.acceptsIni?pctIni:0;
-    const ptsIni=v*efectivoIni*iniBonus;
-    const ptsInc=v*pctInc*incPts;
-    const pts=ptsBase+ptsIni+ptsInc;
+    const pts=ptsBase;
     total+=pts;tasks+=v;
     let lbl=`${f.label} ×${f.weight.toFixed(2)}`;
-    if(iniBonus&&efectivoIni>0)lbl+=` +${(efectivoIni*100).toFixed(0)}% ini(+${iniBonus.toFixed(2)})`;
-    else if(iniBonus&&!f.acceptsIni&&pctIni>0)lbl+=` <span style="color:var(--text3);font-size:10px">(sin ini)</span>`;
-    if(incPts&&pctInc>0)lbl+=` +${(pctInc*100).toFixed(0)}% inc(+${incPts.toFixed(2)})`;
     rows.push(`<div class="bd-row"><span class="bd-lbl">${lbl}:</span><span class="bd-val">${pts.toFixed(1)}</span></div>`);
   });
+  if(incBonus>0){
+    total+=incBonus;
+    rows.push(`<div class="bd-row"><span class="bd-lbl">Bonus incidencias (${incCount}):</span><span class="bd-val">${incBonus.toFixed(1)}</span></div>`);
+  }
   const be=document.getElementById('calc-breakdown');if(be)be.innerHTML=rows.join('');
   const te=document.getElementById('bd-tasks');if(te)te.textContent=tasks;
-  const band=getBand(total);
+  const supportTasks=CALC_VALS.Soporte||0;
+  const dayType=supportTasks>tasks/2?'support':'mixed';
+  const cycle=cycleFromSelect('inc-cycle',activeIncConfig().productivityCycle||'c1');
+  const metric=dayType==='support'?supportTasks+incBonus:total;
+  const band=getBand(metric,dayType,cycle);
   const big=document.getElementById('pts-big');if(big){big.textContent=total.toFixed(1);big.style.color=band.color;}
   const nm=document.getElementById('band-name'),dc=document.getElementById('band-desc');
   if(nm)nm.textContent=band.label;if(dc)dc.textContent=band.desc;
@@ -1949,10 +1830,20 @@ function updateCalc(){
 }
 function renderBandsRef(){
   const el=document.getElementById('bands-ref');if(!el)return;
-  el.innerHTML=BANDS.map(b=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border)">
+  const cycle=cycleFromSelect('inc-cycle',cycleFromSelect('h-cycle',activeIncConfig().productivityCycle||'c1'));
+  const bands=buildProductivityBands({productivityCycle:cycle,productivityBands:bandSetFor(cycle,'mixed')},'mixed');
+  el.innerHTML=bands.map(b=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border)">
     <span class="badge ${b.css}">${b.label}</span>
-    <span class="mono-cell" style="font-size:10px;color:var(--text3)">${b.max>=1e9?`${b.min}+ pts`:bandRangeLabel(b)}</span>
+    <span class="mono-cell" style="font-size:10px;color:var(--text3)">${b.max>=1e9?`${b.min}+ pts`:bandRangeLabelForType(b,'mixed')}</span>
   </div>`).join('');
+  const supportEl=document.getElementById('support-bands-ref');
+  if(supportEl){
+    const supportBands=buildProductivityBands({productivityCycle:cycle,productivityBands:bandSetFor(cycle,'mixed')},'support');
+    supportEl.innerHTML=supportBands.map(b=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border)">
+      <span class="badge ${b.css}">${b.label}</span>
+      <span class="mono-cell" style="font-size:10px;color:var(--text3)">${b.max>=1e9?`${b.min}+ tareas`:bandRangeLabelForType(b,'support')}</span>
+    </div>`).join('');
+  }
 }
 function renderScenarios(){
   const w=Object.fromEntries(FLUJOS.map(f=>[f.id,f.weight]));
@@ -1968,7 +1859,7 @@ function renderScenarios(){
   document.getElementById('scenarios-grid').innerHTML=sc.map(s=>{
     const pts=Object.entries(s.mix).reduce((sum,[id,v])=>sum+v*(get(id)||1),0);
     const tasks=Object.values(s.mix).reduce((a,b)=>a+b,0);
-    const band=getBand(pts);
+    const band=getBand(pts,'mixed',cycleFromSelect('inc-cycle',activeIncConfig().productivityCycle||'c1'));
     const mix=Object.entries(s.mix).map(([k,v])=>`${v} ${k.replace('Enhancement','Enh').replace('Enhanced Content','EC')}`).join(' + ');
     return`<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px;cursor:pointer;transition:border-color .15s"
       onclick="applyScenario(${JSON.stringify(s.mix).replace(/"/g,"'")})"
@@ -1988,7 +1879,6 @@ function applyWeights(){
   FLUJOS.forEach((f,i)=>{
     const inp=document.getElementById(`fw-${i}`);
     if(inp)f.weight=+(inp.value)||0;
-    // acceptsIni se actualiza en tiempo real via onchange del checkbox
   });
   buildLookupCache();
   if(PROC)computeAll();renderCalcSliders();renderScenarios();
@@ -2001,7 +1891,8 @@ function setInputValue(id,value){const el=document.getElementById(id);if(el)el.v
 function getNumberInput(id,fallback=0){const el=document.getElementById(id);const n=+(el?.value);return Number.isFinite(n)?n:fallback;}
 function syncIncConfigUI(){
   const cfg=activeIncConfig();
-  setInputValue('inc-prod-preset',cfg.productivityPreset||'objetivo');
+  setInputValue('inc-prod-preset',cfg.productivityCycle||cfg.productivityPreset||'c1');
+  setInputValue('inc-cycle',cfg.productivityCycle||cfg.productivityPreset||'c1');
   setInputValue('inc-band-base-min',cfg.productivityBands.base);
   setInputValue('inc-band-solid-min',cfg.productivityBands.solid);
   setInputValue('inc-band-hp-min',cfg.productivityBands.hp);
@@ -2022,8 +1913,10 @@ function syncIncConfigUI(){
   updateDynamicCopy();
 }
 function readIncConfigFromUI(){
+  const cycle=cycleKeyFrom(document.getElementById('inc-cycle')?.value||document.getElementById('inc-prod-preset')?.value||'c1');
   INC_CONFIG=mergeIncConfig({
-    productivityPreset:document.getElementById('inc-prod-preset')?.value||'custom',
+    productivityPreset:cycle,
+    productivityCycle:cycle,
     productivityBands:{
       base:getNumberInput('inc-band-base-min',DEFAULT_INC_CONFIG.productivityBands.base),
       solid:getNumberInput('inc-band-solid-min',DEFAULT_INC_CONFIG.productivityBands.solid),
@@ -2057,13 +1950,24 @@ function readIncConfigFromUI(){
 }
 function onProdPresetChange(){
   const preset=document.getElementById('inc-prod-preset')?.value;
-  if(PRODUCTIVITY_PRESETS[preset]){
+  if(PRODUCTIVITY_CYCLES[preset]){
     INC_CONFIG.productivityPreset=preset;
-    INC_CONFIG.productivityBands={...PRODUCTIVITY_PRESETS[preset].bands};
+    INC_CONFIG.productivityCycle=preset;
+    INC_CONFIG.productivityBands={...PRODUCTIVITY_CYCLES[preset].mixed};
     syncIncConfigUI();
   }
   readIncConfigFromUI();
   renderBandsRef();renderScenarios();if(PROC)computeAll();
+}
+function onCycleChange(){
+  const cycle=cycleFromSelect('inc-cycle','c1');
+  setInputValue('inc-prod-preset',cycle);
+  INC_CONFIG.productivityCycle=cycle;
+  INC_CONFIG.productivityPreset=cycle;
+  INC_CONFIG.productivityBands={...PRODUCTIVITY_CYCLES[cycle].mixed};
+  syncIncConfigUI();
+  readIncConfigFromUI();
+  renderBandsRef();renderScenarios();updateTopesPreview();if(PROC)computeAll();
 }
 function onQualityPresetChange(){
   const preset=document.getElementById('inc-quality-preset')?.value;
@@ -2083,7 +1987,6 @@ function setupIncConfigListeners(){
     if(!el||el.dataset.incListener)return;
     el.dataset.incListener='1';
     el.addEventListener('input',()=>{
-      if(id.startsWith('inc-band-'))setInputValue('inc-prod-preset','custom');
       if(id.startsWith('inc-quality-'))setInputValue('inc-quality-preset','custom');
       readIncConfigFromUI();
       updateTopesPreview();
@@ -2092,8 +1995,9 @@ function setupIncConfigListeners(){
   });
 }
 function prodBandsText(cfg=activeIncConfig()){
-  const b=buildProductivityBands(cfg).slice(1);
-  return b.map(x=>`${x.label.replace(/ ✓|✓|⭐/g,'').trim()} ${bandRangeLabel(x)}`).join(' · ');
+  const mixed=buildProductivityBands(cfg,'mixed').slice(1);
+  const support=buildProductivityBands(cfg,'support').slice(1);
+  return `Mixto: ${mixed.map(x=>`${x.label.replace(/ ✓|✓|⭐/g,'').trim()} ${bandRangeLabelForType(x,'mixed')}`).join(' · ')} | Soporte: ${support.map(x=>`${x.label.replace(/ ✓|✓|⭐/g,'').trim()} ${bandRangeLabelForType(x,'support')}`).join(' · ')}`;
 }
 function qualityText(cfg=activeIncConfig()){
   const q=cfg.quality;
@@ -2109,7 +2013,7 @@ function updateDynamicCopy(){
   if(qEl){qEl.className='config-valid '+(qErr?'bad':'ok');qEl.textContent=qErr||`Calidad activa: ${qualityText(cfg)}`;}
   const wprod=getNumberInput('inc-wprod',70),wcal=getNumberInput('inc-wcal',30),piso=getNumberInput('inc-piso',75);
   const pageSub=document.getElementById('inc-page-sub');
-  if(pageSub)pageSub.textContent=`Calculá cuánto le corresponde a cada persona en el período. El monto combina productividad (${wprod}%) y calidad (${wcal}%), con Base desde ${cfg.productivityBands.base} pts y corte de calidad ${cfg.quality.cutoff}%.`;
+  if(pageSub)pageSub.textContent=`Calculá cuánto le corresponde a cada persona en el período. El monto combina productividad (${wprod}%) y calidad (${wcal}%), con bandas ${PRODUCTIVITY_CYCLES[cfg.productivityCycle]?.label||'C1'} y corte de calidad ${cfg.quality.cutoff}%.`;
   const a=document.getElementById('inc-criteria-analistas');
   if(a)a.innerHTML=`
     <div class="crit-row"><div class="crit-dot" style="background:var(--red)"></div><strong style="color:var(--text)">Regla de oro:</strong> Calidad auditada menor a ${cfg.quality.cutoff}% → incentivo $0 ese período, sin excepción.</div>
@@ -2119,7 +2023,7 @@ function updateDynamicCopy(){
   const t=document.getElementById('inc-criteria-tls');
   if(t)t.innerHTML=`
     <div class="crit-row"><div class="crit-dot" style="background:var(--green)"></div><strong style="color:var(--text)">Mínimo de entrada:</strong> el promedio de puntos del equipo tiene que superar ${piso} pts.</div>
-    <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Bandas:</strong> Base desde ${cfg.productivityBands.base} pts · Sólido desde ${cfg.productivityBands.solid} · High Performer desde ${cfg.productivityBands.hp} · Elite desde ${cfg.productivityBands.elite}.</div>
+    <div class="crit-row"><div class="crit-dot" style="background:var(--accent)"></div><strong style="color:var(--text)">Bandas:</strong> ${prodBandsText(cfg)}.</div>
     <div class="crit-row"><div class="crit-dot" style="background:var(--purple)"></div><strong style="color:var(--text)">Topes TL:</strong> Base ×${cfg.multipliers.leader.base} · Sólido ×${cfg.multipliers.leader.solid} · HP ×${cfg.multipliers.leader.hp} · Elite ×${cfg.multipliers.leader.elite}</div>`;
   const c=document.getElementById('inc-criteria-cp');
   if(c)c.innerHTML=`
@@ -2129,14 +2033,13 @@ function updateDynamicCopy(){
     <div class="crit-row"><div class="crit-dot" style="background:var(--amber)"></div><strong style="color:var(--text)">Sin datos de auditoría:</strong> el resultado queda en revisión manual. Cargá auditados.csv para calcularlo automáticamente.</div>`;
   const summary=document.getElementById('config-rules-summary');
   if(summary){
-    const prodPreset=PRODUCTIVITY_PRESETS[cfg.productivityPreset]?.label||'Personalizado';
+    const prodPreset=PRODUCTIVITY_CYCLES[cfg.productivityCycle]?.label||'Ciclo 1';
     const qualityPreset=QUALITY_PRESETS[cfg.qualityPreset]?.label||'Personalizado';
-    const intensity=cfg.productivityBands.base>=88?'exigente':cfg.productivityBands.base>=85?'intermedio':'piloto';
     summary.className='compact-table';
     summary.innerHTML=`
       <table>
         <tbody>
-          <tr><th>Preset activo</th><td>${prodPreset}</td></tr>
+          <tr><th>Ciclo activo</th><td>${prodPreset}</td></tr>
           <tr><th>Calidad activa</th><td>${qualityPreset}</td></tr>
           <tr><th>Productividad/calidad</th><td>${wprod}/${wcal}</td></tr>
           <tr><th>Base</th><td>desde ${cfg.productivityBands.base} pts</td></tr>
@@ -2149,7 +2052,7 @@ function updateDynamicCopy(){
           <tr><th>Multiplicador TL/CP Elite</th><td>×${cfg.multipliers.leader.elite}</td></tr>
         </tbody>
       </table>
-      <div class="scenario-read">Este escenario es ${intensity} en productividad, mantiene calidad bloqueante en ${cfg.quality.cutoff}% y reconoce el máximo del componente de calidad desde ${cfg.quality.max}%.</div>`;
+      <div class="scenario-read">Este escenario usa bandas ${prodPreset}, mantiene calidad bloqueante en ${cfg.quality.cutoff}% y reconoce el máximo del componente de calidad desde ${cfg.quality.max}%.</div>`;
   }
   updateActiveScenarioCard();
 }
@@ -2171,14 +2074,14 @@ function captureScenarioSnapshot(name='Escenario'){
     weights:{productivity:getNumberInput('inc-wprod',70),quality:getNumberInput('inc-wcal',30)},
     productivityFloor:getNumberInput('inc-piso',75),
     config:activeIncConfig(),
-    flows:FLUJOS.map(f=>({id:f.id,label:f.label,weight:f.weight,acceptsIni:!!f.acceptsIni})),
+    flows:FLUJOS.map(f=>({id:f.id,label:f.label,weight:f.weight})),
   };
 }
 function applyScenarioSnapshot(scenario,{persist=true}={}){
   if(!scenario)return;
   INC_CONFIG=mergeIncConfig(scenario.config);
   if(Array.isArray(scenario.flows)&&scenario.flows.length){
-    FLUJOS=scenario.flows.map(f=>({id:f.id,label:f.label||f.id,weight:+f.weight||0,acceptsIni:!!f.acceptsIni}));
+    FLUJOS=scenario.flows.map(f=>({id:f.id,label:f.label||f.id,weight:+f.weight||0}));
     buildLookupCache();
     renderAllSidebar();
   }
@@ -2216,7 +2119,7 @@ function loadSelectedScenario(){
   applyScenarioSnapshot(s);
 }
 function restoreDefaultScenario(){
-  if(!confirm('Esto restaurará bandas de productividad, calidad y multiplicadores a la configuración objetivo recomendada. No modificará los CSV cargados ni los datos del período. ¿Continuar?'))return;
+  if(!confirm('Esto restaurará bandas de productividad, calidad y multiplicadores a la configuración Ciclo 1. No modificará los CSV cargados ni los datos del período. ¿Continuar?'))return;
   INC_CONFIG=cloneObj(DEFAULT_INC_CONFIG);
   syncIncConfigUI();
   refreshBandsFromConfig();
@@ -2293,7 +2196,8 @@ function renderComparison(current,saved,savedName){
 function presetComparisonConfig(presetKey){
   const base=cloneObj(DEFAULT_INC_CONFIG);
   base.productivityPreset=presetKey;
-  base.productivityBands={...PRODUCTIVITY_PRESETS[presetKey].bands};
+  base.productivityCycle=presetKey;
+  base.productivityBands={...PRODUCTIVITY_CYCLES[presetKey].mixed};
   base.qualityPreset='90-98';
   base.quality={...QUALITY_PRESETS['90-98']};
   base.multipliers=cloneObj(DEFAULT_INC_CONFIG.multipliers);
@@ -2314,9 +2218,8 @@ function comparePresetScenarios(){
   const current=captureScenarioSnapshot('Actual');
   const candidates=[
     ['Actual',activeIncConfig()],
-    ['Piloto',presetComparisonConfig('piloto')],
-    ['Intermedio',presetComparisonConfig('intermedio')],
-    ['Objetivo',presetComparisonConfig('objetivo')],
+    ['Ciclo 1',presetComparisonConfig('c1')],
+    ['Ciclo 2',presetComparisonConfig('c2')],
   ];
   const results=candidates.map(([label,config])=>{
     INC_CONFIG=mergeIncConfig(config);
@@ -2355,9 +2258,9 @@ function buildCommunicationSummary(result=LAST_INC_RESULT){
   const wprod=getNumberInput('inc-wprod',70),wcal=getNumberInput('inc-wcal',30);
   return `Resumen de simulación de incentivos
 
-Productividad: ${PRODUCTIVITY_PRESETS[cfg.productivityPreset]?.label||'Personalizado'} · ${prodBandsText(cfg)}.
+Productividad: ${PRODUCTIVITY_CYCLES[cfg.productivityCycle]?.label||'Ciclo 1'} · ${prodBandsText(cfg)}.
 Calidad: ${qualityText(cfg)}. Por debajo de ${cfg.quality.cutoff}% no hay incentivo automático.
-Pesos: productividad ${wprod}% / calidad ${wcal}%. Piso mínimo de productividad: ${getNumberInput('inc-piso',75)} pts/día.
+Pesos: productividad ${wprod}% / calidad ${wcal}%. Piso mínimo de productividad: ${getNumberInput('inc-piso',75)}.
 Presupuesto: ${fmtARS(budget)}. Headcount de referencia: ${hc}.
 Resultado simulado: ${result?`${result.eligibleCount} elegibles, ${result.notEligibleCount} no elegibles, ${result.manualReviewCount} en revisión manual, total estimado ${fmtARS(result.totalAssigned)}.`:'pendiente de calcular.'}
 
@@ -2441,10 +2344,10 @@ function updateActiveScenarioCard(){
   const wprod=getNumberInput('inc-wprod',70),wcal=getNumberInput('inc-wcal',30);
   const budget=getNumberInput('inc-budget-total',0),hc=getNumberInput('inc-headcount',45);
   const topeBase=hc?roundK(budget/hc):0;
-  const preset=PRODUCTIVITY_PRESETS[cfg.productivityPreset]?.label||'Personalizado';
+  const preset=PRODUCTIVITY_CYCLES[cfg.productivityCycle]?.label||'Ciclo 1';
   const qualityPreset=QUALITY_PRESETS[cfg.qualityPreset]?.label||`${cfg.quality.cutoff}-${cfg.quality.max}`;
   el.innerHTML=`Escenario activo: <strong>${preset}</strong> · Calidad ${qualityPreset} · Productividad/calidad ${wprod}/${wcal}<br>
-    Base desde ${cfg.productivityBands.base} pts · Sólido desde ${cfg.productivityBands.solid} · HP desde ${cfg.productivityBands.hp} · Elite desde ${cfg.productivityBands.elite}<br>
+    ${prodBandsText(cfg)}<br>
     Calidad: corte duro ${cfg.quality.cutoff}% · máximo componente ${cfg.quality.max}%<br>
     Tope base estimado: <strong>${fmtARS(topeBase)}</strong>`;
 }
@@ -2520,8 +2423,8 @@ function downloadCSV(filename,rows){
   URL.revokeObjectURL(url);
 }
 function getHistExportSortVal(p,col){
-  if(col.startsWith('m_')){const mk=col.slice(2);const m=p.byMonth[mk];return m?m.pts/m.days:-1;}
-  if(col==='bandIdx')return getBandIdx(p.avgPts);
+  if(col.startsWith('m_')){const mk=col.slice(2);const m=p.byMonth[mk];return m&&m.metricDays?m.metricPts/m.metricDays:-1;}
+  if(col==='bandIdx')return getBandIdx(p.avgPts,p.dayType,cycleFromSelect('h-cycle','c1'));
   return p[col]??'';
 }
 function getVisibleHistPersons(){
@@ -2544,15 +2447,16 @@ function exportHistCSV(){
       colaborador:p.nombre||p.user,
       usuario:p.user,
       equipo:p.equipo||'',
-      pts_dia:+(p.avgPts||0).toFixed(2),
+      metrica_dia:+(p.avgPts||0).toFixed(2),
+      tipo_dia:p.dayType==='support'?'Soporte':'Mixto',
       tareas_dia:+(p.avgTasks||0).toFixed(2),
       ids_dia:+(p.avgIds||0).toFixed(2),
       dias_activos:p.activeDays||0,
-      banda:getBand(p.avgPts||0).label.replace(/✓|⭐/g,'').trim(),
+      banda:(p.band?.label||getBand(p.avgPts||0,p.dayType,cycleFromSelect('h-cycle','c1')).label).replace(/✓|⭐/g,'').trim(),
     };
     allMonths.forEach(mk=>{
       const m=p.byMonth[mk];
-      row[`pts_dia_${mk}`]=m?+(m.pts/m.days).toFixed(2):'';
+      row[`metrica_dia_${mk}`]=m&&m.metricDays?+(m.metricPts/m.metricDays).toFixed(2):'';
       row[`tareas_dia_${mk}`]=m?+(m.tasks/m.days).toFixed(2):'';
       row[`ids_dia_${mk}`]=m?+(m.ids/m.days).toFixed(2):'';
     });
@@ -2574,11 +2478,12 @@ function exportRankCSV(){
     colaborador:p.nombre||p.user,
     usuario:p.user,
     equipo:p.equipo||'',
-    pts_dia:+(p.avgPts||0).toFixed(2),
+    metrica_dia:+(p.avgPts||0).toFixed(2),
+    tipo_dia:p.dayType==='support'?'Soporte':'Mixto',
     tareas_dia:+(p.avgTasks||0).toFixed(2),
     ids_dia:+(p.avgIds||0).toFixed(2),
     dias_activos:p.activeDays||0,
-    banda:getBand(p.avgPts||0).label.replace(/✓|⭐/g,'').trim(),
+    banda:(p.band?.label||getBand(p.avgPts||0,p.dayType,cycleFromSelect('r-cycle','c1')).label).replace(/✓|⭐/g,'').trim(),
   }));
   downloadCSV(`ranking_colaboradores_${todayStamp()}.csv`,rows);
 }
@@ -2596,7 +2501,7 @@ function incExportContext(){
     headcount:getNumberInput('inc-headcount',45),
     peso_productividad:getNumberInput('inc-wprod',70),
     peso_calidad:getNumberInput('inc-wcal',30),
-    preset_productividad:PRODUCTIVITY_PRESETS[cfg.productivityPreset]?.label||'Personalizado',
+    ciclo_productividad:PRODUCTIVITY_CYCLES[cfg.productivityCycle]?.label||'Ciclo 1',
     preset_calidad:QUALITY_PRESETS[cfg.qualityPreset]?.label||'Personalizado',
     corte_calidad:cfg.quality.cutoff,
     calidad_maxima:cfg.quality.max,
@@ -2609,7 +2514,7 @@ function mapIncentiveRow(p,tipo,ctx){
     usuario:p.user||'',
     equipo:p.equipo||'',
     rol:p.rol||tipo,
-    pts_dia:+((p.avgPts??p.avgTeam??p.avgGeneral??0)).toFixed(2),
+    metrica_dia:+((p.avgPts??p.avgTeam??p.avgGeneral??0)).toFixed(2),
     ids_dia:p.avgIds!==undefined?+(p.avgIds||0).toFixed(2):'',
     dias_activos:p.activeDays??'',
     calidad:p.calidad!==undefined&&p.calidad!==null?+p.calidad.toFixed(2):(p.calEq!==undefined&&p.calEq!==null?+p.calEq.toFixed(2):''),
@@ -2683,7 +2588,7 @@ function runIncentivos(options={}){
     return{total:compProd+compCal,compProd,compCal,blocked:false};
   }
 
-  const persons=aggregatePersonsAll(rows,PROC.equipoMap,PROC.equipoFilter);
+  const persons=aggregatePersonsAll(rows,PROC.equipoMap,PROC.equipoFilter,cfg.productivityCycle||'c1');
 
   // Separate roles
   const analistas=persons.filter(p=>!isLiderRol(p.rol));
@@ -2696,7 +2601,7 @@ function runIncentivos(options={}){
   // ── ANALISTAS ──
   const incA=analistas.map(p=>{
     if(p.activeDays===0)return{...p,incStatus:'inactive',reason:'Sin tareas registradas en este período',amount:0,amountFinal:0,compProd:0,compCal:0,compProdFinal:0,compCalFinal:0,calidad:null,calTotal:0,bandIdx:-1};
-    const bi=getBandIdx(p.avgPts);
+    const bi=getBandIdx(p.avgPts,p.dayType,cfg.productivityCycle||'c1');
     const prodBajoPiso=p.avgPts<piso;
 
     let calidad=null,calTotal=0,calStatus='no_data';
@@ -2770,12 +2675,12 @@ function runIncentivos(options={}){
     let status='no_eligible',reason='',tlBandLabel='',tlBandIdx=0;
     if(avgT<pisoTL){
       status='no_eligible';
-      reason='Promedio equipo '+avgT.toFixed(1)+' pts < '+pisoTL+' (piso minimo)';
+      reason='Promedio equipo '+avgT.toFixed(1)+' < '+pisoTL+' (piso mínimo)';
     } else {
       status='eligible';
-      tlBandIdx=Math.max(1,getBandIdx(avgT));
+      tlBandIdx=Math.max(1,getBandIdx(avgT,'mixed',cfg.productivityCycle||'c1'));
       tlBandLabel=(BANDS[tlBandIdx]?.label||'Base').replace(/ ✓|✓|⭐/g,'').trim();
-      reason=avgT.toFixed(1)+' pts dentro de '+bandRangeLabel(BANDS[tlBandIdx]);
+      reason=avgT.toFixed(1)+' dentro de '+bandRangeLabelForType(BANDS[tlBandIdx],'mixed');
     }
     const amount=status==='eligible'?topesTL[tlBandIdx]:0;
     return{nombre:tlPerson.nombre||tlName,user:tlPerson.user||tlName,avgTeam:avgT,avgGeneral,incStatus:status,reason,tlBandLabel,tlBandIdx,amount,amountFinal:0,teamSize:team.length};
@@ -2871,7 +2776,7 @@ function runIncentivos(options={}){
   _incTlData=incTl;
   INC_SORT_TL={col:'avgTeam',dir:-1};
   _renderIncTableTl();
-  document.getElementById('inc-notice-tls').innerHTML=`El promedio general del equipo en este período es <strong>${avgGeneral.toFixed(1)} pts/día</strong>. Bandas de productividad activas: ${prodBandsText(cfg)}. Topes TL/CP: Base ${fmtARS(roundK(topeBase*cfg.multipliers.leader.base))} · Sólido ${fmtARS(roundK(topeBase*cfg.multipliers.leader.solid))} · High Performer ${fmtARS(roundK(topeBase*cfg.multipliers.leader.hp))} · Elite ${fmtARS(roundK(topeBase*cfg.multipliers.leader.elite))}. Por debajo de ${pisoTL} pts no hay incentivo.`;
+  document.getElementById('inc-notice-tls').innerHTML=`El promedio general del equipo en este período es <strong>${avgGeneral.toFixed(1)}</strong>. Bandas de productividad activas: ${prodBandsText(cfg)}. Topes TL/CP: Base ${fmtARS(roundK(topeBase*cfg.multipliers.leader.base))} · Sólido ${fmtARS(roundK(topeBase*cfg.multipliers.leader.solid))} · High Performer ${fmtARS(roundK(topeBase*cfg.multipliers.leader.hp))} · Elite ${fmtARS(roundK(topeBase*cfg.multipliers.leader.elite))}. Por debajo de ${pisoTL} no hay incentivo.`;
 
   // ── CP ──
   document.getElementById('inc-table-cp').innerHTML=cpEntry?`
